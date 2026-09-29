@@ -262,3 +262,18 @@ app_license = "mit"
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
 
+
+# Installation
+# ------------
+
+before_install = "clinic.setup.before_install"
+after_install = "clinic.setup.after_install"
+
+# Scheduled Tasks
+# ---------------
+
+scheduler_events = {
+	"daily": [
+		"clinic.clinic.doctype.clinic_appointment.clinic_appointment.mark_missed_appointments",
+	],
+}

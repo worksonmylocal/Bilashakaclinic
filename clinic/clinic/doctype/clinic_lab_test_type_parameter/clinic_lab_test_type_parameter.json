@@ -1,0 +1,71 @@
+{
+	"actions": [],
+	"creation": "2026-09-29 19:48:54.684466",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"parameter",
+		"result_type",
+		"unit",
+		"normal_low",
+		"normal_high",
+		"options"
+	],
+	"fields": [
+		{
+			"fieldname": "parameter",
+			"fieldtype": "Data",
+			"label": "Parameter",
+			"reqd": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "result_type",
+			"fieldtype": "Select",
+			"label": "Result Type",
+			"options": "Text\nNumeric\nQualitative",
+			"default": "Text",
+			"reqd": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "unit",
+			"fieldtype": "Data",
+			"label": "Unit",
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "normal_low",
+			"fieldtype": "Float",
+			"label": "Normal Low",
+			"depends_on": "eval:doc.result_type=='Numeric'",
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "normal_high",
+			"fieldtype": "Float",
+			"label": "Normal High",
+			"depends_on": "eval:doc.result_type=='Numeric'",
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "options",
+			"fieldtype": "Small Text",
+			"label": "Allowed Results",
+			"depends_on": "eval:doc.result_type=='Qualitative'",
+			"description": "One per line, e.g. Negative / Positive"
+		}
+	],
+	"links": [],
+	"modified": "2026-09-29 19:48:54.684466",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Lab Test Type Parameter",
+	"owner": "Administrator",
+	"permissions": [],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"istable": 1,
+	"editable_grid": 1
+}

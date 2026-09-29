@@ -1,0 +1,92 @@
+{
+	"actions": [],
+	"creation": "2026-09-29 19:48:54.750787",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"parameter",
+		"result_type",
+		"value",
+		"unit",
+		"reference",
+		"flag",
+		"normal_low",
+		"normal_high",
+		"options"
+	],
+	"fields": [
+		{
+			"fieldname": "parameter",
+			"fieldtype": "Data",
+			"label": "Parameter",
+			"reqd": 1,
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "result_type",
+			"fieldtype": "Select",
+			"label": "Result Type",
+			"options": "Text\nNumeric\nQualitative",
+			"read_only": 1
+		},
+		{
+			"fieldname": "value",
+			"fieldtype": "Data",
+			"label": "Value",
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "unit",
+			"fieldtype": "Data",
+			"label": "Unit",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "reference",
+			"fieldtype": "Data",
+			"label": "Reference",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "flag",
+			"fieldtype": "Select",
+			"label": "Flag",
+			"options": "\nNormal\nLow\nHigh\nPositive\nNegative\nAbnormal",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "normal_low",
+			"fieldtype": "Float",
+			"label": "Normal Low",
+			"hidden": 1
+		},
+		{
+			"fieldname": "normal_high",
+			"fieldtype": "Float",
+			"label": "Normal High",
+			"hidden": 1
+		},
+		{
+			"fieldname": "options",
+			"fieldtype": "Small Text",
+			"label": "Options",
+			"hidden": 1
+		}
+	],
+	"links": [],
+	"modified": "2026-09-29 19:48:54.750787",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Lab Test Result Item",
+	"owner": "Administrator",
+	"permissions": [],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"istable": 1,
+	"editable_grid": 1
+}

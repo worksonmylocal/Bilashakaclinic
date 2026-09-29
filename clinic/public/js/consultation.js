@@ -1,0 +1,499 @@
+/* Doctor / consultation page: queue and the single-screen patient workspace */
+(async function () {
+    const { call, $, $$, esc, num, timeOf, dateOf, wait, typeTag, pill, ageSex, empty, toast, kpis, hbars, chart, modal, field, read, suggest, banner, masters, COLORS } = Desk;
+
+    await Desk.shell({
+        page: "consultation",
+        eyebrow: "Northlake Medical Centre · Doctor",
+        title: "Consultation",
+        sub: "Patients sent from triage, results back from the lab, and everything you need to treat them",
+        tools: `<button class="iconbtn" id="refresh" title="Refresh">${Desk.REFRESH_ICON}</button>`,
+    });
+    Desk.tabs((tab) => tab === "insights" && loadInsights());
+    $("#refresh").addEventListener("click", () => { loadAll(); toast("Refreshed"); });
+
+    const M = await masters();
+    const PRIORITY_ORDER = { Emergency: 0, Urgent: 1, Routine: 2 };
+    let dash, ws, state, dirty = false;
+
+    // ============================================================ queue
+    async function loadAll() {
+        dash = await call("consultation.dashboard");
+        renderKpis(dash.kpis);
+        renderQueues(dash);
+        renderCompleted(dash.completed);
+        if ($("#tab-insights").classList.contains("on")) loadInsights();
+    }
+
+    function renderKpis(k) {
+        kpis($("#kpis"), [
+            { label: "Waiting for Doctor", value: k.waiting, cls: k.waiting ? "warn" : "", unit: k.emergency ? `${k.emergency} urgent / emergency` : k.waiting ? `Longest wait ${Desk.duration(k.longest_wait)}` : "Queue is clear" },
+            { label: "Lab Results Ready", value: k.results_ready, cls: k.results_ready ? "info" : "", unit: "Awaiting your review" },
+            { label: "Open Consultations", value: k.in_progress, unit: "In progress now" },
+            { label: "Seen Today", value: k.seen_today, cls: "good", unit: `${Desk.split(k.employees_today, k.community_today)}` },
+            { label: "Avg Wait for Doctor", value: `${k.avg_wait}<span style="font-size:14px;font-weight:500"> min</span>`, unit: "Triage → consultation, today" },
+            { label: "Referred Out / Sick-off", value: `${k.referrals_out} <span style="font-size:14px;color:var(--ink-mute)">/ ${k.sick_days}d</span>`, unit: `${k.work_related} work-related · ${k.follow_ups_week} follow-ups this week` },
+        ]);
+    }
+
+    function queueCard(r, button, extra = "") {
+        return `<div class="qcard"><div class="qcard__stripe ${esc(r.priority || "")}"></div>
+            <div><div class="qcard__name">${esc(r.patient_name)} ${typeTag(r.patient_type)}
+                ${r.priority ? `<span class="tag tag--${esc(r.priority)}">${esc(r.priority)}</span>` : ""}</div>
+            <div class="qcard__meta">${esc(r.visit)} · ${esc(ageSex(r))}${r.department ? " · " + esc(r.department) : ""}</div>
+            ${r.chief_complaint ? `<div class="qcard__note">${esc(r.chief_complaint)}</div>` : ""}
+            ${r.alerts ? `<div class="qcard__note alert">⚠ ${esc(r.alerts.replace(/\n/g, "; "))}</div>` : ""}${extra}</div>
+            <div class="qcard__side">${r.wait_minutes != null ? wait(r.wait_minutes, 20, 45) : ""}${button}</div></div>`;
+    }
+
+    function renderQueues(d) {
+        $("#waiting-meta").textContent = d.waiting.length ? `${d.waiting.length} waiting` : "";
+        $("#waiting").innerHTML = d.waiting.length
+            ? d.waiting.map((r) => queueCard(r, `<button class="btn btn--primary btn--sm" data-open="${esc(r.visit)}">Start consultation</button>`)).join("")
+            : empty("No patients waiting.");
+
+        $("#ready-meta").textContent = d.results_ready.length ? `${d.results_ready.length} to review` : "";
+        $("#ready").innerHTML = d.results_ready.length
+            ? d.results_ready.map((r) => queueCard(r, `<button class="btn btn--signal btn--sm" data-open="${esc(r.visit)}">Review results</button>`,
+                `<div class="qcard__note">${r.tests.map((t) => `${esc(t.test_type)}: <b style="color:${t.interpretation === "Positive" || t.interpretation === "Abnormal" ? "var(--bad)" : "var(--good)"}">${esc(t.interpretation || t.status)}</b>`).join(" · ")}</div>`)).join("")
+            : empty("No lab results waiting.");
+
+        $("#progress").innerHTML = d.in_progress.length
+            ? d.in_progress.map((r) => queueCard(r, `<button class="btn btn--sm" data-open="${esc(r.visit)}">Continue</button>`)).join("")
+            : empty("None open.");
+
+        $("#flight").innerHTML = d.in_flight.length
+            ? d.in_flight.map((r) => `<div class="qcard"><div class="qcard__stripe"></div>
+                <div><div class="qcard__name">${esc(r.patient_name)} ${typeTag(r.patient_type)}</div>
+                <div class="qcard__meta">${esc(r.visit)} · ${esc(ageSex(r))}</div></div>
+                <div class="qcard__side">${pill(r.status, r.status === "Waiting Lab" ? "info" : "warn")}
+                <button class="btn btn--link btn--sm" data-open="${esc(r.visit)}">Open</button></div></div>`).join("")
+            : empty("No one at the lab or pharmacy.");
+        $$("[data-open]").forEach((b) => b.addEventListener("click", () => openVisit(b.dataset.open)));
+    }
+
+    function renderCompleted(rows) {
+        $("#completed").innerHTML = rows.length ? `<table class="dtable"><tr><th>Time</th><th>Patient</th><th>Type</th><th>Diagnosis</th><th class="num">Sick-off</th><th>Outcome</th></tr>
+            ${rows.map((r) => `<tr><td>${timeOf(r.consultation_date)}</td><td><b style="color:var(--ink)">${esc(r.patient_name)}</b><br><span class="printnote">${esc(ageSex(r))}</span></td>
+            <td>${typeTag(r.patient_type)}</td><td>${esc(r.diagnoses || "—")}</td><td class="num">${r.sick_leave_days || "—"}</td>
+            <td>${r.refer_out ? pill("Referred out", "warn") : pill("Treated", "good")}</td></tr>`).join("")}</table>` : empty("No completed consultations yet today.");
+    }
+
+    async function loadInsights() {
+        const d = await call("consultation.insights");
+        chart("dx-chart", { type: "bar", data: { labels: d.top_diagnoses.map((r) => r.label), datasets: Desk.stackedDatasets(d.top_diagnoses) }, options: { indexAxis: "y", plugins: { legend: { display: false } }, scales: { x: { stacked: true, beginAtZero: true, ticks: { precision: 0 } }, y: { stacked: true, grid: { display: false } } } } });
+        chart("day-chart", { type: "bar", data: { labels: d.by_day.map((r) => r.day.slice(5)), datasets: Desk.stackedDatasets(d.by_day) }, options: { ...Desk.stackedOptions, plugins: { legend: { display: false } } } });
+        const w = d.workload;
+        kpis($("#workload"), [
+            { label: "Consultations", value: w.consultations }, { label: "Lab Requests", value: w.lab_requests, cls: "info" },
+            { label: "Drugs Prescribed", value: w.prescriptions }, { label: "Referred Out", value: w.referrals, cls: "warn" },
+            { label: "Work-related Cases", value: w.work_related, cls: w.work_related ? "bad" : "" }, { label: "Sick-off Days", value: w.sick_days },
+        ]);
+    }
+
+    // ============================================================ routing
+    async function openVisit(visit) {
+        let data = await call("consultation.workspace", { visit });
+        if (!data.consultation) {
+            await call("consultation.start", { visit });
+            data = await call("consultation.workspace", { visit });
+        }
+        renderWorkspace(data);
+        location.hash = "#/" + visit; // hashchange sees the workspace is already showing and ignores it
+    }
+
+    function showQueue() {
+        $("#view-ws").style.display = "none";
+        $("#view-queue").style.display = "";
+        $("#pagehead").style.display = "";
+        loadAll();
+    }
+
+    window.addEventListener("hashchange", async () => {
+        const visit = location.hash.replace("#/", "");
+        if (!visit) { dirty = false; showQueue(); return; }
+        const showing = ws && ws.visit.name === visit && $("#view-ws").style.display !== "none";
+        if (!showing) await openVisit(visit);
+    });
+    window.addEventListener("beforeunload", (e) => { if (dirty) { e.preventDefault(); e.returnValue = ""; } });
+
+    // ============================================================ workspace
+    const FREQ = { od: 1, "once daily": 1, bd: 2, bid: 2, tds: 3, tid: 3, qds: 4, qid: 4, nocte: 1, stat: 1 };
+
+    function vitalTile(label, value, unit, level) {
+        return !value ? "" : `<div class="vital ${level || ""}"><small>${label}</small><b>${esc(value)}</b><em>${unit}</em></div>`;
+    }
+
+    function renderWorkspace(data) {
+        ws = data;
+        const c = ws.consultation, p = ws.patient, t = ws.triage, v = ws.visit;
+        const isEmp = p.patient_type === "Employee";
+        const locked = c.status === "Completed";
+        state = {
+            lab: (c.lab_requests || []).map((r) => ({ ...r })),
+            dx: (c.diagnoses || []).map((r) => ({ ...r })),
+            rx: (c.prescriptions || []).map((r) => ({ ...r })),
+        };
+        dirty = false;
+        $("#view-queue").style.display = "none";
+        $("#pagehead").style.display = "none";
+        const root = $("#view-ws");
+        root.style.display = "";
+
+        const tl = t || {};
+        const vitals = t ? [
+            vitalTile("BP", tl.bp_systolic ? `${tl.bp_systolic}/${tl.bp_diastolic}` : "", "mmHg", tl.bp_systolic >= 140 || tl.bp_diastolic >= 90 ? "bad" : tl.bp_systolic < 90 ? "warn" : ""),
+            vitalTile("Pulse", tl.pulse_rate, "bpm", tl.pulse_rate > 100 || tl.pulse_rate < 60 ? "warn" : ""),
+            vitalTile("Temp", tl.temperature, "°C", tl.temperature >= 38 ? "bad" : tl.temperature < 35.5 ? "warn" : ""),
+            vitalTile("SpO₂", tl.spo2, "%", tl.spo2 < 95 ? "bad" : ""),
+            vitalTile("Resp", tl.respiratory_rate, "/min", ""),
+            vitalTile("Weight", tl.weight_kg, "kg", ""),
+            vitalTile("Height", tl.height_cm, "cm", ""),
+            vitalTile("BMI", tl.bmi, tl.bmi_category || "", tl.bmi >= 30 ? "warn" : ""),
+            vitalTile("Glucose", tl.blood_glucose, "mmol/L", tl.blood_glucose > 11.1 || tl.blood_glucose < 3.9 ? "warn" : ""),
+        ].join("") : "";
+
+        root.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px;gap:16px;flex-wrap:wrap">
+                <div><div class="pagehead__eyebrow">Consultation · ${esc(c.name)}</div>
+                <h1 class="pagehead__title" style="font-size:30px">${esc(p.full_name)}</h1></div>
+                <div style="display:flex;gap:10px;align-items:center">${pill(v.status, "info")}
+                    <button class="btn" id="back">← Back to queue</button></div>
+            </div>
+            ${banner(p, { visit: v.name })}
+            ${v.visit_source === "Referral In" ? `<div class="liveinfo" style="background:var(--info-bg);color:var(--info)">Referred in from <b>${esc(v.referring_facility || "another facility")}</b>${v.referring_clinician ? " by " + esc(v.referring_clinician) : ""}${v.referral_reason ? " — " + esc(v.referral_reason) : ""}${v.referral_letter ? ` · <a href="${esc(v.referral_letter)}" target="_blank" style="text-decoration:underline">referral letter</a>` : ""}</div>` : ""}
+            ${locked ? '<div class="liveinfo ok">This consultation is completed and read-only.</div>' : ""}
+            ${c.status === "Awaiting Lab" ? '<div class="liveinfo" style="background:var(--info-bg);color:var(--info)">Waiting for lab results. You can keep working on this consultation meanwhile.</div>' : ""}
+            <div class="card" style="padding:20px 24px">
+                <div class="card__head" style="margin-bottom:14px"><h3>Triage${t ? ` · ${timeOf(t.triage_datetime)}` : ""} ${t ? `<span class="tag tag--${esc(t.triage_priority)}">${esc(t.triage_priority)}</span>` : ""}</h3>
+                    ${t && t.chief_complaint ? `<span class="meta">Complaint: ${esc(t.chief_complaint)}</span>` : ""}</div>
+                ${t ? `<div class="vitals">${vitals}</div>${t.alerts ? `<div class="liveinfo" style="margin:12px 0 0">⚠ ${esc(t.alerts.replace(/\n/g, "; "))}</div>` : ""}${t.triage_notes ? `<div class="printnote" style="margin-top:10px">Nurse: ${esc(t.triage_notes)}</div>` : ""}` : empty("No triage recorded for this visit.")}
+            </div>
+            <div class="ws">
+                <div class="card" id="ws-form">
+                    <div class="subtabs" id="subtabs">
+                        <button class="subtab on" data-p="history">History</button>
+                        <button class="subtab" data-p="exam">Examination</button>
+                        <button class="subtab" data-p="invest">Investigations <span class="dotc" id="c-lab" style="display:none"></span></button>
+                        <button class="subtab" data-p="dx">Diagnosis <span class="dotc" id="c-dx" style="display:none"></span></button>
+                        <button class="subtab" data-p="mgmt">Management</button>
+                        <button class="subtab" data-p="rx">Prescription <span class="dotc" id="c-rx" style="display:none"></span></button>
+                        <button class="subtab" data-p="ref">Referral &amp; Follow-up</button>
+                    </div>
+                    <fieldset id="fs" style="border:0;padding:0;margin:0;min-width:0" ${locked ? "disabled" : ""}>
+                    <div class="subpanel on" id="sp-history">
+                        ${field("presenting_complaint", "Presenting complaint", { type: "textarea", rows: 2, value: c.presenting_complaint })}
+                        ${field("history_of_presenting_illness", "History of presenting illness", { type: "textarea", rows: 5, value: c.history_of_presenting_illness })}
+                        ${field("review_of_systems", "Review of systems", { type: "textarea", rows: 3, value: c.review_of_systems })}
+                        <div class="subhead">Background</div>
+                        <div class="grid-2">
+                            ${field("past_medical_history", "Past medical / surgical history", { type: "textarea", rows: 3, value: c.past_medical_history })}
+                            ${field("current_medication", "Current medication", { type: "textarea", rows: 3, value: c.current_medication })}
+                            ${field("drug_allergies", "Drug allergies", { type: "textarea", rows: 2, value: c.drug_allergies })}
+                            ${field("family_history", "Family history", { type: "textarea", rows: 2, value: c.family_history })}
+                            ${field("social_history", "Social history", { type: "textarea", rows: 2, value: c.social_history, help: "Smoking, alcohol…" })}
+                            ${isEmp ? field("occupational_history", "Work exposure", { type: "textarea", rows: 2, value: c.occupational_history, help: "Farm section, chemicals handled, PPE use" }) : ""}
+                        </div>
+                    </div>
+                    <div class="subpanel" id="sp-exam">
+                        ${field("general_examination", "General examination", { type: "textarea", rows: 5, value: c.general_examination })}
+                        ${field("systemic_examination", "Systemic examination", { type: "textarea", rows: 7, value: c.systemic_examination })}
+                    </div>
+                    <div class="subpanel" id="sp-invest">
+                        ${field("investigations_notes", "Investigation notes / findings", { type: "textarea", rows: 3, value: c.investigations_notes })}
+                        <div class="subhead">Lab requests</div>
+                        ${locked ? "" : `<div class="field"><input class="input" id="lab-add" placeholder="Search a test to request (e.g. malaria, urinalysis, HIV)…"></div>`}
+                        <div id="lab-rows"></div>
+                        <div class="subhead">Lab results for this visit</div>
+                        <div id="lab-results"></div>
+                    </div>
+                    <div class="subpanel" id="sp-dx">
+                        ${locked ? "" : `<div class="field"><input class="input" id="dx-add" placeholder="Search or add a diagnosis…"></div>`}
+                        <div id="dx-rows"></div>
+                        ${isEmp ? field("work_related", "Work-related condition / injury on duty", { type: "checkbox", value: c.work_related }) : ""}
+                    </div>
+                    <div class="subpanel" id="sp-mgmt">
+                        ${field("management_plan", "Management plan", { type: "textarea", rows: 6, value: c.management_plan })}
+                        <div class="grid-2">
+                            ${field("procedures_done", "Procedures done", { type: "textarea", rows: 3, value: c.procedures_done })}
+                            ${field("patient_advice", "Advice given to patient", { type: "textarea", rows: 3, value: c.patient_advice })}
+                        </div>
+                    </div>
+                    <div class="subpanel" id="sp-rx">
+                        <div id="rx-allergy"></div>
+                        ${locked ? "" : `<div class="field"><input class="input" id="rx-add" placeholder="Search a medicine to prescribe…"></div>`}
+                        <div id="rx-rows"></div>
+                    </div>
+                    <div class="subpanel" id="sp-ref">
+                        ${field("refer_out", "Refer to another facility", { type: "checkbox", value: c.refer_out })}
+                        <div id="ref-box" style="display:${c.refer_out ? "block" : "none"}">
+                            <div class="grid-2">
+                                ${field("referral_facility", "Facility", { value: c.referral_facility, placeholder: "Type to search or add" })}
+                                ${field("referral_urgency", "Urgency", { type: "select", options: ["Routine", "Urgent", "Emergency"], value: c.referral_urgency || "Routine" })}
+                            </div>
+                            ${field("referral_reason", "Reason for referral", { type: "textarea", rows: 2, value: c.referral_reason })}
+                            ${field("referral_notes", "Clinical notes for the receiving facility", { type: "textarea", rows: 3, value: c.referral_notes })}
+                        </div>
+                        <div class="subhead">Follow-up</div>
+                        ${field("follow_up_required", "Book a follow-up appointment", { type: "checkbox", value: c.follow_up_required })}
+                        <div id="fu-box" style="display:${c.follow_up_required ? "block" : "none"}">
+                            <div class="grid-2">
+                                ${field("follow_up_date", "Date", { type: "date", value: c.follow_up_date, attrs: c.appointment ? "disabled" : "" })}
+                                ${field("follow_up_reason", "Reason", { value: c.follow_up_reason })}
+                            </div>
+                            ${c.appointment ? `<div class="printnote">Appointment ${esc(c.appointment)} has been booked.</div>` : ""}
+                        </div>
+                        ${isEmp ? `<div class="subhead">Employee work status</div><div class="grid-2">
+                            ${field("sick_leave_days", "Sick-off days recommended", { type: "number", value: c.sick_leave_days || "", attrs: 'min="0"' })}
+                            ${field("light_duty_days", "Light duty days", { type: "number", value: c.light_duty_days || "", attrs: 'min="0"' })}</div>` : ""}
+                    </div>
+                    </fieldset>
+                </div>
+                <div class="ws__rail">
+                    <div class="card"><div class="card__head" style="margin-bottom:12px"><h3>Patient history</h3><button class="btn btn--link btn--sm" id="tl-all">Show all</button></div>
+                        <div class="timeline" id="timeline"></div></div>
+                    ${ws.trend.length > 1 ? `<div class="card"><div class="card__head" style="margin-bottom:12px"><h3>Vitals trend</h3></div>
+                        <table class="dtable"><tr><th>Date</th><th>BP</th><th class="num">Wt</th></tr>${ws.trend.map((r) => `<tr><td>${esc(dateOf(r.triage_datetime).slice(5))}</td><td>${r.bp_systolic ? r.bp_systolic + "/" + r.bp_diastolic : "—"}</td><td class="num">${r.weight_kg || "—"}</td></tr>`).join("")}</table></div>` : ""}
+                </div>
+            </div>
+            <div class="actionbar"><div><button class="btn" id="save" ${locked ? "disabled" : ""}>Save draft</button> <span class="printnote" id="saved-note"></span></div>
+                <div class="actionbar__right" id="actions"></div></div>`;
+
+        bindWorkspace(root, locked, isEmp);
+    }
+
+    function bindWorkspace(root, locked, isEmp) {
+        $$(".subtab", root).forEach((b) => b.addEventListener("click", () => {
+            $$(".subtab", root).forEach((x) => x.classList.toggle("on", x === b));
+            $$(".subpanel", root).forEach((x) => x.classList.toggle("on", x.id === "sp-" + b.dataset.p));
+        }));
+        $("#back", root).addEventListener("click", async () => {
+            if (dirty && !confirm("You have unsaved changes. Leave without saving?")) return;
+            dirty = false;
+            history.replaceState(null, "", location.pathname);
+            showQueue();
+        });
+        $("#ws-form", root).addEventListener("input", () => (dirty = true));
+        $("#ws-form", root).addEventListener("change", () => (dirty = true));
+        $("[data-f=refer_out]", root).addEventListener("change", (e) => ($("#ref-box", root).style.display = e.target.checked ? "block" : "none"));
+        $("[data-f=follow_up_required]", root).addEventListener("change", (e) => ($("#fu-box", root).style.display = e.target.checked ? "block" : "none"));
+
+        renderLab(); renderDx(); renderRx(); renderLabResults();
+        renderTimeline(ws.history);
+        $("#tl-all", root).addEventListener("click", async () => renderTimeline(await call("consultation.patient_timeline", { patient: ws.patient.name })));
+        refreshActions();
+
+        if (!locked) {
+            Desk.facilityField($("[data-f=referral_facility]", root));
+            suggest($("#lab-add"), {
+                fetch: (q) => M.test_types.filter((t) => !q || t.name.toLowerCase().includes(q.toLowerCase()) || t.category.toLowerCase().includes(q.toLowerCase())).slice(0, 12),
+                render: (t) => ({ main: t.name, sub: `${t.category} · ${t.performed_where}` }),
+                onPick: (t) => { addLab(t); $("#lab-add").value = ""; },
+            });
+            suggest($("#dx-add"), {
+                fetch: (q) => M.diagnoses.filter((d) => !q || d.name.toLowerCase().includes(q.toLowerCase()) || (d.icd_code || "").toLowerCase().startsWith(q.toLowerCase())).slice(0, 12),
+                render: (d) => ({ main: d.name, sub: d.icd_code || d.category }),
+                onPick: (d) => { addDx(d.name); $("#dx-add").value = ""; },
+                allowNew: async (name) => {
+                    await call("consultation.add_diagnosis", { diagnosis: name });
+                    const d = { name, icd_code: "", category: "Other" };
+                    M.diagnoses.push(d);
+                    return d;
+                },
+            });
+            suggest($("#rx-add"), {
+                fetch: (q) => call("consultation.search_drugs", { q }, { quiet: true }),
+                render: (i) => ({ main: i.item_name, sub: i.stock_uom }),
+                onPick: (i) => { addRx(i); $("#rx-add").value = ""; },
+                allowNew: async (name) => {
+                    const item = await call("consultation.add_drug", { drug_name: name });
+                    toast(`${item.item_name} added to the medicine list`);
+                    return item;
+                },
+            });
+        }
+        $("#save", root).addEventListener("click", () => save(true));
+    }
+
+    // ---- lab requests
+    function addLab(t) {
+        if (state.lab.some((r) => r.test_type === t.name && !r.lab_test)) return toast(`${t.name} is already requested`, "warn");
+        state.lab.push({ test_type: t.name, urgency: "Routine", clinical_notes: "" });
+        dirty = true; renderLab(); refreshActions();
+    }
+    function renderLab() {
+        const byName = Object.fromEntries(M.test_types.map((t) => [t.name, t]));
+        const el = $("#lab-rows");
+        el.innerHTML = state.lab.length ? state.lab.map((r, i) => {
+            const sent = !!r.lab_test, t = byName[r.test_type] || {};
+            const level = r.result === "Positive" || r.result === "Abnormal" ? "bad" : r.result ? "good" : "mute";
+            return `<div class="linebox ${sent ? "locked" : ""}"><div class="linebox__row">
+                <div><b style="color:var(--ink)">${esc(r.test_type)}</b> <span class="printnote">${esc(t.category || "")}${t.performed_where === "External" ? " · sent to external facility" : ""}</span>
+                    ${t.requires_consent ? pill("Consent required", "warn") : ""}</div>
+                <div style="display:flex;gap:10px;align-items:center">
+                    ${sent ? `${pill(r.lab_status || "Sent", r.lab_status === "Resulted" ? "good" : "info")} ${r.result ? pill(r.result, level) : ""}`
+                        : `<select class="input" style="width:110px;padding:6px 10px" data-lab="${i}" data-k="urgency">${["Routine", "Urgent"].map((u) => `<option ${u === r.urgency ? "selected" : ""}>${u}</option>`).join("")}</select>
+                           <button class="iconx" data-lab-del="${i}" title="Remove">×</button>`}
+                </div></div>
+                ${sent ? "" : `<input class="input" style="margin-top:10px" placeholder="Clinical notes for the lab (optional)" data-lab="${i}" data-k="clinical_notes" value="${esc(r.clinical_notes || "")}">`}
+            </div>`;
+        }).join("") : empty("No tests requested.");
+        $$("[data-lab]", el).forEach((inp) => inp.addEventListener("input", () => (state.lab[inp.dataset.lab][inp.dataset.k] = inp.value)));
+        $$("[data-lab-del]", el).forEach((b) => b.addEventListener("click", () => { state.lab.splice(Number(b.dataset.labDel), 1); dirty = true; renderLab(); refreshActions(); }));
+        const n = state.lab.length; $("#c-lab").style.display = n ? "" : "none"; $("#c-lab").textContent = n;
+    }
+    function renderLabResults() {
+        const el = $("#lab-results");
+        if (!ws.lab_tests.length) { el.innerHTML = '<div class="printnote">Nothing sent to the lab yet.</div>'; return; }
+        el.innerHTML = ws.lab_tests.map((t) => `<div class="linebox"><div class="linebox__row">
+            <b style="color:var(--ink)">${esc(t.test_type)}</b>
+            <div>${pill(t.status, t.status === "Resulted" ? "good" : "info")} ${t.interpretation ? pill(t.interpretation, ["Positive", "Abnormal"].includes(t.interpretation) ? "bad" : "good") : ""}</div></div>
+            ${t.status === "Resulted" || t.results.some((r) => r.value) ? `<table class="rtable" style="margin-top:10px"><tr><th>Parameter</th><th>Result</th><th>Reference</th><th></th></tr>
+                ${t.results.filter((r) => r.value).map((r) => `<tr><td>${esc(r.parameter)}</td><td><b>${esc(r.value)}</b> ${esc(r.unit || "")}</td><td class="printnote">${esc(r.reference || "")}</td><td class="flagcell ${esc(r.flag || "")}">${esc(r.flag || "")}</td></tr>`).join("")}</table>` : ""}
+            ${t.result_comments ? `<div class="printnote" style="margin-top:8px">Lab comment: ${esc(t.result_comments)}</div>` : ""}
+            ${t.external_report ? `<div style="margin-top:8px"><a href="${esc(t.external_report)}" target="_blank" class="btn btn--sm">Open external report</a></div>` : ""}
+        </div>`).join("");
+    }
+
+    // ---- diagnoses
+    function addDx(name) {
+        if (state.dx.some((r) => r.diagnosis === name)) return toast(`${name} is already listed`, "warn");
+        state.dx.push({ diagnosis: name, diagnosis_type: state.dx.length ? "Provisional" : "Provisional", notes: "" });
+        dirty = true; renderDx(); refreshActions();
+    }
+    function renderDx() {
+        const info = Object.fromEntries(M.diagnoses.map((d) => [d.name, d]));
+        const el = $("#dx-rows");
+        el.innerHTML = state.dx.length ? state.dx.map((r, i) => `<div class="linebox"><div class="linebox__row">
+            <div><b style="color:var(--ink)">${esc(r.diagnosis)}</b> <span class="printnote">${esc((info[r.diagnosis] || {}).icd_code || "")}</span>
+                ${(info[r.diagnosis] || {}).is_occupational ? pill("Occupational", "warn") : ""}</div>
+            <div style="display:flex;gap:10px;align-items:center">
+                <select class="input" style="width:130px;padding:6px 10px" data-dx="${i}" data-k="diagnosis_type">${["Provisional", "Confirmed"].map((u) => `<option ${u === r.diagnosis_type ? "selected" : ""}>${u}</option>`).join("")}</select>
+                <button class="iconx" data-dx-del="${i}" title="Remove">×</button></div></div>
+            <input class="input" style="margin-top:10px" placeholder="Notes (optional)" data-dx="${i}" data-k="notes" value="${esc(r.notes || "")}"></div>`).join("") : empty("No diagnosis added yet.");
+        $$("[data-dx]", el).forEach((inp) => inp.addEventListener("input", () => (state.dx[inp.dataset.dx][inp.dataset.k] = inp.value)));
+        $$("[data-dx-del]", el).forEach((b) => b.addEventListener("click", () => { state.dx.splice(Number(b.dataset.dxDel), 1); dirty = true; renderDx(); refreshActions(); }));
+        const n = state.dx.length; $("#c-dx").style.display = n ? "" : "none"; $("#c-dx").textContent = n;
+        if (locked()) $$("#dx-rows input,#dx-rows select,#dx-rows button").forEach((x) => (x.disabled = true));
+    }
+
+    // ---- prescriptions
+    function addRx(item) {
+        state.rx.push({ drug: item.name, drug_name: item.item_name, dose: "", route: "Oral", frequency: "", duration_days: "", quantity: "", instructions: "" });
+        dirty = true; renderRx(); refreshActions();
+    }
+    function autoQty(i) {
+        const r = state.rx[i], per = FREQ[String(r.frequency || "").trim().toLowerCase()];
+        if (per && Number(r.duration_days) > 0 && !r._qtyTouched) {
+            r.quantity = per * Number(r.duration_days);
+            const q = $(`[data-rx="${i}"][data-k="quantity"]`);
+            if (q) q.value = r.quantity;
+        }
+    }
+    function renderRx() {
+        const allergies = [ws.patient.allergies, read($("#ws-form"))?.drug_allergies].filter(Boolean)[0];
+        $("#rx-allergy").innerHTML = allergies ? `<div class="liveinfo" style="background:var(--bad-bg);color:var(--bad)">⚠ Allergies on record: ${esc(allergies)}</div>` : "";
+        const el = $("#rx-rows");
+        const routes = ["Oral", "IM", "IV", "Topical", "Rectal", "Inhalation", "Eye/Ear Drops", "Other"];
+        el.innerHTML = state.rx.length ? state.rx.map((r, i) => `<div class="linebox">
+            <div class="linebox__row" style="margin-bottom:10px"><b style="color:var(--ink)">${esc(r.drug_name || r.drug)}</b><button class="iconx" data-rx-del="${i}" title="Remove">×</button></div>
+            <div class="grid-4">
+                <div class="field"><label>Dose</label><input data-rx="${i}" data-k="dose" value="${esc(r.dose || "")}" placeholder="500 mg"></div>
+                <div class="field"><label>Route</label><select data-rx="${i}" data-k="route">${routes.map((o) => `<option ${o === r.route ? "selected" : ""}>${o}</option>`).join("")}</select></div>
+                <div class="field"><label>Frequency</label><input data-rx="${i}" data-k="frequency" value="${esc(r.frequency || "")}" placeholder="BD / TDS"></div>
+                <div class="field"><label>Days</label><input type="number" min="1" data-rx="${i}" data-k="duration_days" value="${esc(r.duration_days ?? "")}"></div>
+            </div>
+            <div class="grid-4">
+                <div class="field"><label>Quantity <span class="req">*</span></label><input type="number" min="0" step="any" data-rx="${i}" data-k="quantity" value="${esc(r.quantity ?? "")}"></div>
+                <div class="field" style="grid-column:span 3"><label>Instructions</label><input data-rx="${i}" data-k="instructions" value="${esc(r.instructions || "")}" placeholder="After meals, finish the course…"></div>
+            </div></div>`).join("") : empty("No medication prescribed. Complete the consultation without pharmacy if none is needed.");
+        $$("[data-rx]", el).forEach((inp) => inp.addEventListener("input", () => {
+            const i = Number(inp.dataset.rx), k = inp.dataset.k;
+            state.rx[i][k] = inp.value;
+            if (k === "quantity") state.rx[i]._qtyTouched = true;
+            if (k === "frequency" || k === "duration_days") autoQty(i);
+        }));
+        $$("[data-rx-del]", el).forEach((b) => b.addEventListener("click", () => { state.rx.splice(Number(b.dataset.rxDel), 1); dirty = true; renderRx(); refreshActions(); }));
+        const n = state.rx.length; $("#c-rx").style.display = n ? "" : "none"; $("#c-rx").textContent = n;
+        if (locked()) $$("#rx-rows input,#rx-rows select,#rx-rows button").forEach((x) => (x.disabled = true));
+    }
+
+    const locked = () => ws.consultation.status === "Completed";
+
+    // ---- timeline
+    function renderTimeline(rows) {
+        const el = $("#timeline");
+        el.innerHTML = rows.length ? rows.map((h, i) => `<div class="tl" data-tl="${i}">
+            <div class="tl__date">${esc(dateOf(h.consultation_date))} · ${esc(h.doctor_name || "")}</div>
+            <div class="tl__dx">${h.diagnoses.length ? h.diagnoses.map((d) => esc(d.diagnosis)).join(", ") : "<i>No diagnosis</i>"}</div>
+            <div class="printnote">${esc(h.presenting_complaint || "")}</div>
+            <div class="tl__detail">
+                ${h.management_plan ? `<div><b>Management:</b> ${esc(h.management_plan)}</div>` : ""}
+                ${h.prescriptions.length ? `<div><b>Prescribed:</b> ${h.prescriptions.map((x) => esc(x.drug_name || x.drug) + (x.dose ? " " + esc(x.dose) : "") + (x.frequency ? " " + esc(x.frequency) : "") + (x.duration_days ? " × " + x.duration_days + "d" : "")).join("; ")}</div>` : ""}
+                ${h.labs.length ? `<div><b>Labs:</b> ${h.labs.map((x) => esc(x.test_type) + ": " + esc(x.interpretation || x.status)).join("; ")}</div>` : ""}
+                ${h.refer_out ? `<div><b>Referred to:</b> ${esc(h.referral_facility || "")}</div>` : ""}
+                ${h.sick_leave_days ? `<div><b>Sick-off:</b> ${h.sick_leave_days} days</div>` : ""}
+                ${h.work_related ? `<div><b>Work-related</b></div>` : ""}
+            </div></div>`).join("") : empty("First visit — no earlier consultations.");
+        $$(".tl", el).forEach((t) => t.addEventListener("click", () => t.classList.toggle("open")));
+    }
+
+    // ---- actions
+    function refreshActions() {
+        const box = $("#actions");
+        if (locked()) { box.innerHTML = ""; return; }
+        const unsent = state.lab.some((r) => !r.lab_test);
+        const hasRx = state.rx.length > 0;
+        box.innerHTML = `
+            ${unsent ? '<button class="btn btn--signal" id="a-lab">Send to Lab →</button>' : ""}
+            ${hasRx ? `<button class="btn ${unsent ? "" : "btn--primary"}" id="a-rx">Send to Pharmacy →</button>`
+                : `<button class="btn ${unsent ? "" : "btn--primary"}" id="a-done">Complete consultation ✓</button>`}`;
+        $("#a-lab")?.addEventListener("click", () => act("send_to_lab", "Sent to the lab"));
+        $("#a-rx")?.addEventListener("click", () => {
+            if (state.lab.some((r) => !r.lab_test)) return toast("Send the new lab requests first, or remove them.", "warn");
+            act("send_to_pharmacy", "Sent to the pharmacy");
+        });
+        $("#a-done")?.addEventListener("click", () => {
+            if (state.lab.some((r) => !r.lab_test)) return toast("Send the new lab requests first, or remove them.", "warn");
+            act("complete", "Consultation completed");
+        });
+    }
+
+    function collect() {
+        const data = read($("#ws-form"));
+        // unchecked/absent boxes come through as 0; empty date strings are cleaned server side
+        data.lab_requests = state.lab.map(({ test_type, urgency, clinical_notes, lab_test }) => ({ test_type, urgency, clinical_notes, lab_test }));
+        data.diagnoses = state.dx.map(({ diagnosis, diagnosis_type, notes }) => ({ diagnosis, diagnosis_type, notes }));
+        data.prescriptions = state.rx.map(({ drug, dose, route, frequency, duration_days, quantity, instructions }) => ({ drug, dose, route, frequency, duration_days, quantity, instructions }));
+        return data;
+    }
+
+    async function save(showToast) {
+        await call("consultation.save", { name: ws.consultation.name, data: collect() });
+        dirty = false;
+        $("#saved-note").textContent = "Saved " + new Date().toTimeString().slice(0, 5);
+        if (showToast) toast("Draft saved");
+    }
+
+    async function act(action, message) {
+        const btns = $$(".actionbar button"); btns.forEach((b) => (b.disabled = true));
+        try {
+            await call("consultation.action", { name: ws.consultation.name, action, data: collect() });
+            dirty = false;
+            toast(message);
+            // back to the queue so the next patient can be seen; the patient returns here once the lab is done
+            history.replaceState(null, "", location.pathname);
+            showQueue();
+        } catch (e) {
+            btns.forEach((b) => (b.disabled = false));
+            // reload so lab rows already created on the server show as sent
+            if (e.handled) { try { const fresh = await call("consultation.workspace", { visit: ws.visit.name }, { quiet: true }); if (fresh.consultation.lab_requests.some((r) => r.lab_test) !== ws.consultation.lab_requests.some((r) => r.lab_test)) renderWorkspace(fresh); } catch (_) { /* ignore */ } }
+        }
+    }
+
+    // ============================================================ start
+    const start = location.hash.replace("#/", "");
+    if (start) { try { renderWorkspace(await call("consultation.workspace", { visit: start })); } catch (e) { showQueue(); } }
+    else await loadAll();
+    Desk.poll(() => { if ($("#view-ws").style.display === "none") loadAll(); });
+})();

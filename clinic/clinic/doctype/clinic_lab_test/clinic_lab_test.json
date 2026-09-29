@@ -1,0 +1,364 @@
+{
+	"actions": [],
+	"creation": "2026-09-29 19:48:54.750787",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"visit",
+		"consultation",
+		"patient",
+		"patient_name",
+		"patient_type",
+		"column_19",
+		"sex",
+		"age_years",
+		"test_type",
+		"category",
+		"status",
+		"section_20",
+		"requested_by",
+		"requested_on",
+		"urgency",
+		"column_21",
+		"clinical_notes",
+		"sample_type",
+		"sample_collected_on",
+		"requires_consent",
+		"consent_obtained",
+		"section_22",
+		"performed_where",
+		"external_facility",
+		"column_23",
+		"sent_on",
+		"external_report",
+		"section_24",
+		"results",
+		"interpretation",
+		"column_25",
+		"result_comments",
+		"resulted_on",
+		"technician"
+	],
+	"fields": [
+		{
+			"fieldname": "visit",
+			"fieldtype": "Link",
+			"label": "Visit",
+			"options": "Clinic Visit",
+			"reqd": 1,
+			"in_list_view": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "consultation",
+			"fieldtype": "Link",
+			"label": "Consultation",
+			"options": "Clinic Consultation",
+			"read_only": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "patient",
+			"fieldtype": "Link",
+			"label": "Patient",
+			"options": "Clinic Patient",
+			"fetch_from": "visit.patient",
+			"read_only": 1
+		},
+		{
+			"fieldname": "patient_name",
+			"fieldtype": "Data",
+			"label": "Patient Name",
+			"fetch_from": "visit.patient_name",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "patient_type",
+			"fieldtype": "Select",
+			"label": "Patient Type",
+			"options": "Employee\nCommunity Member",
+			"fetch_from": "visit.patient_type",
+			"read_only": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "column_19",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "sex",
+			"fieldtype": "Link",
+			"label": "Sex",
+			"options": "Gender",
+			"fetch_from": "visit.sex",
+			"read_only": 1
+		},
+		{
+			"fieldname": "age_years",
+			"fieldtype": "Int",
+			"label": "Age (Years)",
+			"fetch_from": "visit.age_years",
+			"read_only": 1
+		},
+		{
+			"fieldname": "test_type",
+			"fieldtype": "Link",
+			"label": "Test Type",
+			"options": "Clinic Lab Test Type",
+			"reqd": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "category",
+			"fieldtype": "Data",
+			"label": "Category",
+			"fetch_from": "test_type.category",
+			"read_only": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"label": "Status",
+			"options": "Requested\nSample Collected\nSent to External\nResulted\nCancelled",
+			"default": "Requested",
+			"reqd": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "section_20",
+			"fieldtype": "Section Break",
+			"label": "Request"
+		},
+		{
+			"fieldname": "requested_by",
+			"fieldtype": "Link",
+			"label": "Requested By",
+			"options": "User",
+			"default": "__user",
+			"read_only": 1
+		},
+		{
+			"fieldname": "requested_on",
+			"fieldtype": "Datetime",
+			"label": "Requested On",
+			"default": "Now",
+			"read_only": 1
+		},
+		{
+			"fieldname": "urgency",
+			"fieldtype": "Select",
+			"label": "Urgency",
+			"options": "Routine\nUrgent",
+			"default": "Routine"
+		},
+		{
+			"fieldname": "column_21",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "clinical_notes",
+			"fieldtype": "Small Text",
+			"label": "Clinical Notes"
+		},
+		{
+			"fieldname": "sample_type",
+			"fieldtype": "Data",
+			"label": "Sample Type",
+			"fetch_from": "test_type.sample_type",
+			"read_only": 1
+		},
+		{
+			"fieldname": "sample_collected_on",
+			"fieldtype": "Datetime",
+			"label": "Sample Collected On"
+		},
+		{
+			"fieldname": "requires_consent",
+			"fieldtype": "Check",
+			"label": "Requires Consent",
+			"fetch_from": "test_type.requires_consent",
+			"read_only": 1
+		},
+		{
+			"fieldname": "consent_obtained",
+			"fieldtype": "Check",
+			"label": "Consent / Pre-test Counselling Done",
+			"depends_on": "requires_consent"
+		},
+		{
+			"fieldname": "section_22",
+			"fieldtype": "Section Break",
+			"label": "Where Performed"
+		},
+		{
+			"fieldname": "performed_where",
+			"fieldtype": "Select",
+			"label": "Performed",
+			"options": "Onsite\nExternal",
+			"default": "Onsite",
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "external_facility",
+			"fieldtype": "Link",
+			"label": "External Facility",
+			"options": "Clinic Facility",
+			"depends_on": "eval:doc.performed_where=='External'"
+		},
+		{
+			"fieldname": "column_23",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "sent_on",
+			"fieldtype": "Date",
+			"label": "Sent to Facility On",
+			"depends_on": "eval:doc.performed_where=='External'"
+		},
+		{
+			"fieldname": "external_report",
+			"fieldtype": "Attach",
+			"label": "External Report",
+			"depends_on": "eval:doc.performed_where=='External'"
+		},
+		{
+			"fieldname": "section_24",
+			"fieldtype": "Section Break",
+			"label": "Results"
+		},
+		{
+			"fieldname": "results",
+			"fieldtype": "Table",
+			"label": "Results",
+			"options": "Clinic Lab Test Result Item"
+		},
+		{
+			"fieldname": "interpretation",
+			"fieldtype": "Select",
+			"label": "Interpretation",
+			"options": "\nNormal\nAbnormal\nPositive\nNegative\nInconclusive",
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"description": "Filled automatically from the results if left blank."
+		},
+		{
+			"fieldname": "column_25",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "result_comments",
+			"fieldtype": "Small Text",
+			"label": "Result Comments"
+		},
+		{
+			"fieldname": "resulted_on",
+			"fieldtype": "Datetime",
+			"label": "Resulted On",
+			"read_only": 1
+		},
+		{
+			"fieldname": "technician",
+			"fieldtype": "Link",
+			"label": "Technician",
+			"options": "User",
+			"read_only": 1
+		}
+	],
+	"links": [],
+	"modified": "2026-09-29 19:48:54.750787",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Lab Test",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"role": "System Manager",
+			"read": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1
+		},
+		{
+			"role": "Clinic Lab Technician",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Doctor",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Receptionist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Pharmacist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		}
+	],
+	"sort_field": "requested_on",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1,
+	"autoname": "LAB-.YYYY.-.#####",
+	"naming_rule": "Expression (old style)",
+	"title_field": "patient_name",
+	"search_fields": "patient_name,test_type,visit,status"
+}

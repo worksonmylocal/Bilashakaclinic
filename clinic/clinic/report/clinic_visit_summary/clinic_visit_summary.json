@@ -1,0 +1,38 @@
+{
+	"add_total_row": 0,
+	"columns": [],
+	"creation": "2026-09-29 19:48:54.784253",
+	"disable_prepared_report": 1,
+	"disabled": 0,
+	"docstatus": 0,
+	"doctype": "Report",
+	"filters": [],
+	"idx": 0,
+	"is_standard": "Yes",
+	"modified": "2026-09-29 19:48:54.784253",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Visit Summary",
+	"owner": "Administrator",
+	"prepared_report": 0,
+	"ref_doctype": "Clinic Visit",
+	"report_name": "Clinic Visit Summary",
+	"report_type": "Script Report",
+	"roles": [
+		{
+			"role": "Clinic Manager"
+		},
+		{
+			"role": "Clinic Doctor"
+		},
+		{
+			"role": "System Manager"
+		},
+		{
+			"role": "Clinic Nurse"
+		},
+		{
+			"role": "Clinic Receptionist"
+		}
+	]
+}

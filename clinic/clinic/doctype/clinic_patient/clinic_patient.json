@@ -1,0 +1,259 @@
+{
+	"actions": [],
+	"creation": "2026-09-29 19:48:54.717999",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"patient_type",
+		"employee",
+		"full_name",
+		"column_1",
+		"sex",
+		"date_of_birth",
+		"age",
+		"national_id",
+		"section_2",
+		"phone",
+		"department",
+		"column_3",
+		"village",
+		"next_of_kin",
+		"next_of_kin_relationship",
+		"next_of_kin_phone",
+		"section_4",
+		"blood_group",
+		"allergies",
+		"column_5",
+		"chronic_conditions"
+	],
+	"fields": [
+		{
+			"fieldname": "patient_type",
+			"fieldtype": "Select",
+			"label": "Patient Type",
+			"options": "Employee\nCommunity Member",
+			"default": "Community Member",
+			"reqd": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"search_index": 1,
+			"description": "Employees are farm workers; Community Members are walk-ins from the surrounding community."
+		},
+		{
+			"fieldname": "employee",
+			"fieldtype": "Link",
+			"label": "Employee",
+			"options": "Employee",
+			"depends_on": "eval:doc.patient_type=='Employee'",
+			"mandatory_depends_on": "eval:doc.patient_type=='Employee'",
+			"search_index": 1
+		},
+		{
+			"fieldname": "full_name",
+			"fieldtype": "Data",
+			"label": "Full Name",
+			"reqd": 1,
+			"in_list_view": 1,
+			"fetch_from": "employee.employee_name",
+			"fetch_if_empty": 1
+		},
+		{
+			"fieldname": "column_1",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "sex",
+			"fieldtype": "Link",
+			"label": "Sex",
+			"options": "Gender",
+			"fetch_from": "employee.gender",
+			"fetch_if_empty": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "date_of_birth",
+			"fieldtype": "Date",
+			"label": "Date Of Birth",
+			"fetch_from": "employee.date_of_birth",
+			"fetch_if_empty": 1
+		},
+		{
+			"fieldname": "age",
+			"fieldtype": "Data",
+			"label": "Age",
+			"read_only": 1
+		},
+		{
+			"fieldname": "national_id",
+			"fieldtype": "Data",
+			"label": "National ID / Passport No."
+		},
+		{
+			"fieldname": "section_2",
+			"fieldtype": "Section Break",
+			"label": "Contact"
+		},
+		{
+			"fieldname": "phone",
+			"fieldtype": "Data",
+			"label": "Phone",
+			"fetch_from": "employee.cell_number",
+			"fetch_if_empty": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "department",
+			"fieldtype": "Link",
+			"label": "Department / Farm Section",
+			"options": "Department",
+			"fetch_from": "employee.department",
+			"read_only": 1,
+			"depends_on": "eval:doc.patient_type=='Employee'",
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "column_3",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "village",
+			"fieldtype": "Data",
+			"label": "Village / Location",
+			"depends_on": "eval:doc.patient_type=='Community Member'"
+		},
+		{
+			"fieldname": "next_of_kin",
+			"fieldtype": "Data",
+			"label": "Next Of Kin"
+		},
+		{
+			"fieldname": "next_of_kin_relationship",
+			"fieldtype": "Data",
+			"label": "Next Of Kin Relationship"
+		},
+		{
+			"fieldname": "next_of_kin_phone",
+			"fieldtype": "Data",
+			"label": "Next Of Kin Phone"
+		},
+		{
+			"fieldname": "section_4",
+			"fieldtype": "Section Break",
+			"label": "Medical Background"
+		},
+		{
+			"fieldname": "blood_group",
+			"fieldtype": "Select",
+			"label": "Blood Group",
+			"options": "\nA+\nA-\nB+\nB-\nAB+\nAB-\nO+\nO-"
+		},
+		{
+			"fieldname": "allergies",
+			"fieldtype": "Small Text",
+			"label": "Known Allergies"
+		},
+		{
+			"fieldname": "column_5",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "chronic_conditions",
+			"fieldtype": "Small Text",
+			"label": "Chronic Conditions"
+		}
+	],
+	"links": [],
+	"modified": "2026-09-29 19:48:54.717999",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Patient",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"role": "System Manager",
+			"read": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1
+		},
+		{
+			"role": "Clinic Receptionist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Doctor",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Lab Technician",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Pharmacist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		}
+	],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1,
+	"autoname": "PAT-.#####",
+	"naming_rule": "Expression (old style)",
+	"title_field": "full_name",
+	"search_fields": "patient_type,national_id,phone,employee"
+}

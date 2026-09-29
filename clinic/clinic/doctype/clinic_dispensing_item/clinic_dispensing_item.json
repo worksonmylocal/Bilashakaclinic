@@ -1,0 +1,100 @@
+{
+	"actions": [],
+	"creation": "2026-09-29 19:48:54.750787",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"drug",
+		"drug_name",
+		"uom",
+		"dose",
+		"route",
+		"frequency",
+		"duration_days",
+		"prescribed_qty",
+		"dispensed_qty",
+		"instructions"
+	],
+	"fields": [
+		{
+			"fieldname": "drug",
+			"fieldtype": "Link",
+			"label": "Drug",
+			"options": "Item",
+			"reqd": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "drug_name",
+			"fieldtype": "Data",
+			"label": "Drug Name",
+			"fetch_from": "drug.item_name",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "uom",
+			"fieldtype": "Link",
+			"label": "UOM",
+			"options": "UOM",
+			"fetch_from": "drug.stock_uom",
+			"read_only": 1
+		},
+		{
+			"fieldname": "dose",
+			"fieldtype": "Data",
+			"label": "Dose",
+			"read_only": 1
+		},
+		{
+			"fieldname": "route",
+			"fieldtype": "Data",
+			"label": "Route",
+			"read_only": 1
+		},
+		{
+			"fieldname": "frequency",
+			"fieldtype": "Data",
+			"label": "Frequency",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "duration_days",
+			"fieldtype": "Int",
+			"label": "Days",
+			"read_only": 1
+		},
+		{
+			"fieldname": "prescribed_qty",
+			"fieldtype": "Float",
+			"label": "Prescribed Qty",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "dispensed_qty",
+			"fieldtype": "Float",
+			"label": "Dispensed Qty",
+			"reqd": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "instructions",
+			"fieldtype": "Data",
+			"label": "Instructions"
+		}
+	],
+	"links": [],
+	"modified": "2026-09-29 19:48:54.750787",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Dispensing Item",
+	"owner": "Administrator",
+	"permissions": [],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"istable": 1,
+	"editable_grid": 1
+}

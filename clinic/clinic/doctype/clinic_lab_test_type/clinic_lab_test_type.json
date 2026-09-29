@@ -1,0 +1,186 @@
+{
+	"actions": [],
+	"creation": "2026-09-29 19:48:54.684466",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"test_name",
+		"category",
+		"sample_type",
+		"column_4",
+		"performed_where",
+		"default_external_facility",
+		"enabled",
+		"requires_consent",
+		"section_5",
+		"parameters",
+		"section_6",
+		"instructions"
+	],
+	"fields": [
+		{
+			"fieldname": "test_name",
+			"fieldtype": "Data",
+			"label": "Test Name",
+			"reqd": 1,
+			"unique": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "category",
+			"fieldtype": "Select",
+			"label": "Category",
+			"options": "Haematology\nUrinalysis\nSerology\nParasitology\nMicrobiology\nBiochemistry\nOther",
+			"reqd": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "sample_type",
+			"fieldtype": "Select",
+			"label": "Sample Type",
+			"options": "Blood\nSerum\nUrine\nStool\nSputum\nSwab\nOther",
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "column_4",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "performed_where",
+			"fieldtype": "Select",
+			"label": "Performed",
+			"options": "Onsite\nExternal",
+			"default": "Onsite",
+			"reqd": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"description": "External tests are sent to another facility and the report is attached on return."
+		},
+		{
+			"fieldname": "default_external_facility",
+			"fieldtype": "Link",
+			"label": "Default External Facility",
+			"options": "Clinic Facility",
+			"depends_on": "eval:doc.performed_where=='External'"
+		},
+		{
+			"fieldname": "enabled",
+			"fieldtype": "Check",
+			"label": "Enabled",
+			"default": "1"
+		},
+		{
+			"fieldname": "requires_consent",
+			"fieldtype": "Check",
+			"label": "Requires Patient Consent / Counselling",
+			"description": "e.g. HIV. Consent must be recorded before results can be entered."
+		},
+		{
+			"fieldname": "section_5",
+			"fieldtype": "Section Break",
+			"label": "Result Parameters"
+		},
+		{
+			"fieldname": "parameters",
+			"fieldtype": "Table",
+			"label": "Parameters",
+			"options": "Clinic Lab Test Type Parameter"
+		},
+		{
+			"fieldname": "section_6",
+			"fieldtype": "Section Break",
+			"label": "Instructions"
+		},
+		{
+			"fieldname": "instructions",
+			"fieldtype": "Small Text",
+			"label": "Sample / Patient Preparation"
+		}
+	],
+	"links": [],
+	"modified": "2026-09-29 19:48:54.684466",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Lab Test Type",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"role": "System Manager",
+			"read": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1
+		},
+		{
+			"role": "Clinic Receptionist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Doctor",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Lab Technician",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1
+		},
+		{
+			"role": "Clinic Pharmacist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		}
+	],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1,
+	"autoname": "field:test_name",
+	"naming_rule": "By fieldname",
+	"search_fields": "category"
+}

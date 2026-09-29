@@ -1,0 +1,204 @@
+{
+	"actions": [],
+	"creation": "2026-09-29 22:03:45.521902",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"clinic_name",
+		"branch",
+		"tagline",
+		"column_1",
+		"licence_no",
+		"website",
+		"section_2",
+		"address",
+		"po_box",
+		"column_3",
+		"phone",
+		"alt_phone",
+		"email",
+		"section_4",
+		"lab_incharge",
+		"lab_incharge_title",
+		"column_5",
+		"report_footer_note"
+	],
+	"fields": [
+		{
+			"fieldname": "clinic_name",
+			"fieldtype": "Data",
+			"label": "Clinic Name",
+			"reqd": 1,
+			"default": "Northlake Medical Centre",
+			"description": "Shown on reports and printed documents"
+		},
+		{
+			"fieldname": "branch",
+			"fieldtype": "Data",
+			"label": "Branch",
+			"default": "ROCCO",
+			"description": "Branch or location name"
+		},
+		{
+			"fieldname": "tagline",
+			"fieldtype": "Data",
+			"label": "Tagline"
+		},
+		{
+			"fieldname": "column_1",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "licence_no",
+			"fieldtype": "Data",
+			"label": "Facility Licence / Registration No."
+		},
+		{
+			"fieldname": "website",
+			"fieldtype": "Data",
+			"label": "Website"
+		},
+		{
+			"fieldname": "section_2",
+			"fieldtype": "Section Break",
+			"label": "Contact Details"
+		},
+		{
+			"fieldname": "address",
+			"fieldtype": "Small Text",
+			"label": "Address"
+		},
+		{
+			"fieldname": "po_box",
+			"fieldtype": "Data",
+			"label": "P.O. Box / Postal Address"
+		},
+		{
+			"fieldname": "column_3",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "phone",
+			"fieldtype": "Data",
+			"label": "Phone"
+		},
+		{
+			"fieldname": "alt_phone",
+			"fieldtype": "Data",
+			"label": "Alternative Phone"
+		},
+		{
+			"fieldname": "email",
+			"fieldtype": "Data",
+			"label": "Email",
+			"options": "Email"
+		},
+		{
+			"fieldname": "section_4",
+			"fieldtype": "Section Break",
+			"label": "Laboratory Reports"
+		},
+		{
+			"fieldname": "lab_incharge",
+			"fieldtype": "Data",
+			"label": "Laboratory In-charge",
+			"description": "Name printed under 'Verified by' on lab reports"
+		},
+		{
+			"fieldname": "lab_incharge_title",
+			"fieldtype": "Data",
+			"label": "Title / Registration No.",
+			"description": "e.g. KMLTTB Reg. No."
+		},
+		{
+			"fieldname": "column_5",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "report_footer_note",
+			"fieldtype": "Small Text",
+			"label": "Report Footer Note",
+			"default": "Results relate only to the sample received. Please interpret them together with the clinical findings."
+		}
+	],
+	"links": [],
+	"modified": "2026-09-29 22:03:45.521902",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Settings",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"role": "System Manager",
+			"read": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1
+		},
+		{
+			"role": "Clinic Receptionist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Doctor",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Lab Technician",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Pharmacist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		}
+	],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 0,
+	"issingle": 1
+}

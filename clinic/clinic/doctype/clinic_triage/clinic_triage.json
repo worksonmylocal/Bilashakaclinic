@@ -1,0 +1,271 @@
+{
+	"actions": [],
+	"creation": "2026-09-29 19:48:54.717999",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"visit",
+		"patient",
+		"patient_name",
+		"patient_type",
+		"column_11",
+		"triage_datetime",
+		"triaged_by",
+		"triage_priority",
+		"section_12",
+		"bp_systolic",
+		"bp_diastolic",
+		"pulse_rate",
+		"column_13",
+		"temperature",
+		"spo2",
+		"respiratory_rate",
+		"column_14",
+		"weight_kg",
+		"height_cm",
+		"bmi",
+		"bmi_category",
+		"section_15",
+		"chief_complaint",
+		"blood_glucose",
+		"column_16",
+		"alerts",
+		"triage_notes"
+	],
+	"fields": [
+		{
+			"fieldname": "visit",
+			"fieldtype": "Link",
+			"label": "Visit",
+			"options": "Clinic Visit",
+			"reqd": 1,
+			"in_list_view": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "patient",
+			"fieldtype": "Link",
+			"label": "Patient",
+			"options": "Clinic Patient",
+			"fetch_from": "visit.patient",
+			"read_only": 1
+		},
+		{
+			"fieldname": "patient_name",
+			"fieldtype": "Data",
+			"label": "Patient Name",
+			"fetch_from": "visit.patient_name",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "patient_type",
+			"fieldtype": "Select",
+			"label": "Patient Type",
+			"options": "Employee\nCommunity Member",
+			"fetch_from": "visit.patient_type",
+			"read_only": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "column_11",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "triage_datetime",
+			"fieldtype": "Datetime",
+			"label": "Triage Time",
+			"default": "Now",
+			"reqd": 1
+		},
+		{
+			"fieldname": "triaged_by",
+			"fieldtype": "Link",
+			"label": "Triaged By",
+			"options": "User",
+			"default": "__user",
+			"read_only": 1
+		},
+		{
+			"fieldname": "triage_priority",
+			"fieldtype": "Select",
+			"label": "Triage Priority",
+			"options": "Routine\nUrgent\nEmergency",
+			"default": "Routine",
+			"reqd": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "section_12",
+			"fieldtype": "Section Break",
+			"label": "Vital Signs"
+		},
+		{
+			"fieldname": "bp_systolic",
+			"fieldtype": "Int",
+			"label": "BP Systolic (mmHg)"
+		},
+		{
+			"fieldname": "bp_diastolic",
+			"fieldtype": "Int",
+			"label": "BP Diastolic (mmHg)"
+		},
+		{
+			"fieldname": "pulse_rate",
+			"fieldtype": "Int",
+			"label": "Pulse (bpm)"
+		},
+		{
+			"fieldname": "column_13",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "temperature",
+			"fieldtype": "Float",
+			"label": "Temperature (°C)",
+			"precision": "1"
+		},
+		{
+			"fieldname": "spo2",
+			"fieldtype": "Int",
+			"label": "Blood Oxygen SpO₂ (%)"
+		},
+		{
+			"fieldname": "respiratory_rate",
+			"fieldtype": "Int",
+			"label": "Respiratory Rate (/min)"
+		},
+		{
+			"fieldname": "column_14",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "weight_kg",
+			"fieldtype": "Float",
+			"label": "Weight (kg)",
+			"precision": "1"
+		},
+		{
+			"fieldname": "height_cm",
+			"fieldtype": "Float",
+			"label": "Height (cm)",
+			"precision": "1"
+		},
+		{
+			"fieldname": "bmi",
+			"fieldtype": "Float",
+			"label": "BMI",
+			"precision": "1",
+			"read_only": 1
+		},
+		{
+			"fieldname": "bmi_category",
+			"fieldtype": "Data",
+			"label": "Bmi Category",
+			"read_only": 1
+		},
+		{
+			"fieldname": "section_15",
+			"fieldtype": "Section Break",
+			"label": "Assessment"
+		},
+		{
+			"fieldname": "chief_complaint",
+			"fieldtype": "Small Text",
+			"label": "Chief Complaint",
+			"reqd": 1
+		},
+		{
+			"fieldname": "blood_glucose",
+			"fieldtype": "Float",
+			"label": "Random Blood Glucose (mmol/L)",
+			"precision": "1"
+		},
+		{
+			"fieldname": "column_16",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "alerts",
+			"fieldtype": "Small Text",
+			"label": "Vital Sign Alerts",
+			"read_only": 1
+		},
+		{
+			"fieldname": "triage_notes",
+			"fieldtype": "Small Text",
+			"label": "Triage Notes"
+		}
+	],
+	"links": [],
+	"modified": "2026-09-29 19:48:54.717999",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Triage",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"role": "System Manager",
+			"read": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1
+		},
+		{
+			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Doctor",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1
+		},
+		{
+			"role": "Clinic Receptionist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		}
+	],
+	"sort_field": "triage_datetime",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1,
+	"autoname": "TRI-.YYYY.-.#####",
+	"naming_rule": "Expression (old style)",
+	"title_field": "patient_name",
+	"search_fields": "patient_name,visit"
+}

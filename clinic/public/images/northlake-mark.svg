@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Northlake Medical Centre">
+  <circle cx="50" cy="50" r="50" fill="#24463C"/>
+  <g fill="#F5EFE2">
+    <rect x="42" y="19" width="16" height="44" rx="3.5"/>
+    <rect x="26" y="34" width="48" height="16" rx="3.5"/>
+  </g>
+  <g fill="none" stroke="#B8935F" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M30 69 q4.5 -5 9 0 t9 0 t9 0 t9 0"/>
+    <path d="M36 78 q4 -4.5 8 0 t8 0 t8 0 t8 0"/>
+  </g>
+</svg>

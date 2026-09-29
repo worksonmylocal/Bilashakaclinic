@@ -1,0 +1,183 @@
+{
+	"actions": [],
+	"creation": "2026-09-29 19:48:54.750787",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"visit",
+		"consultation",
+		"patient",
+		"patient_name",
+		"patient_type",
+		"column_26",
+		"dispensed_on",
+		"pharmacist",
+		"section_27",
+		"items",
+		"notes",
+		"amended_from"
+	],
+	"fields": [
+		{
+			"fieldname": "visit",
+			"fieldtype": "Link",
+			"label": "Visit",
+			"options": "Clinic Visit",
+			"reqd": 1,
+			"in_list_view": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "consultation",
+			"fieldtype": "Link",
+			"label": "Consultation",
+			"options": "Clinic Consultation",
+			"read_only": 1
+		},
+		{
+			"fieldname": "patient",
+			"fieldtype": "Link",
+			"label": "Patient",
+			"options": "Clinic Patient",
+			"fetch_from": "visit.patient",
+			"read_only": 1
+		},
+		{
+			"fieldname": "patient_name",
+			"fieldtype": "Data",
+			"label": "Patient Name",
+			"fetch_from": "visit.patient_name",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "patient_type",
+			"fieldtype": "Select",
+			"label": "Patient Type",
+			"options": "Employee\nCommunity Member",
+			"fetch_from": "visit.patient_type",
+			"read_only": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "column_26",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "dispensed_on",
+			"fieldtype": "Datetime",
+			"label": "Dispensed On",
+			"read_only": 1
+		},
+		{
+			"fieldname": "pharmacist",
+			"fieldtype": "Link",
+			"label": "Pharmacist",
+			"options": "User",
+			"read_only": 1
+		},
+		{
+			"fieldname": "section_27",
+			"fieldtype": "Section Break",
+			"label": "Medicines"
+		},
+		{
+			"fieldname": "items",
+			"fieldtype": "Table",
+			"label": "Items",
+			"options": "Clinic Dispensing Item",
+			"reqd": 1
+		},
+		{
+			"fieldname": "notes",
+			"fieldtype": "Small Text",
+			"label": "Pharmacy Notes"
+		},
+		{
+			"fieldname": "amended_from",
+			"fieldtype": "Link",
+			"label": "Amended From",
+			"options": "Clinic Dispensing",
+			"read_only": 1,
+			"no_copy": 1,
+			"print_hide": 1
+		}
+	],
+	"links": [],
+	"modified": "2026-09-29 19:48:54.750787",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Dispensing",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"role": "System Manager",
+			"read": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1,
+			"submit": 1,
+			"cancel": 1
+		},
+		{
+			"role": "Clinic Pharmacist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1,
+			"submit": 1,
+			"cancel": 1
+		},
+		{
+			"role": "Clinic Doctor",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		}
+	],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1,
+	"autoname": "DSP-.YYYY.-.#####",
+	"naming_rule": "Expression (old style)",
+	"is_submittable": 1,
+	"title_field": "patient_name",
+	"search_fields": "patient_name,visit"
+}

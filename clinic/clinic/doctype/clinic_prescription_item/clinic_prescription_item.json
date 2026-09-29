@@ -1,0 +1,84 @@
+{
+	"actions": [],
+	"creation": "2026-09-29 19:48:54.750787",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"drug",
+		"drug_name",
+		"dose",
+		"route",
+		"frequency",
+		"duration_days",
+		"quantity",
+		"instructions"
+	],
+	"fields": [
+		{
+			"fieldname": "drug",
+			"fieldtype": "Link",
+			"label": "Drug",
+			"options": "Item",
+			"reqd": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "drug_name",
+			"fieldtype": "Data",
+			"label": "Drug Name",
+			"fetch_from": "drug.item_name",
+			"read_only": 1
+		},
+		{
+			"fieldname": "dose",
+			"fieldtype": "Data",
+			"label": "Dose",
+			"in_list_view": 1,
+			"description": "e.g. 500 mg"
+		},
+		{
+			"fieldname": "route",
+			"fieldtype": "Select",
+			"label": "Route",
+			"options": "Oral\nIM\nIV\nTopical\nRectal\nInhalation\nEye/Ear Drops\nOther",
+			"default": "Oral"
+		},
+		{
+			"fieldname": "frequency",
+			"fieldtype": "Data",
+			"label": "Frequency",
+			"in_list_view": 1,
+			"description": "e.g. TDS, BD, Once daily"
+		},
+		{
+			"fieldname": "duration_days",
+			"fieldtype": "Int",
+			"label": "Days",
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "quantity",
+			"fieldtype": "Float",
+			"label": "Quantity",
+			"reqd": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "instructions",
+			"fieldtype": "Data",
+			"label": "Instructions"
+		}
+	],
+	"links": [],
+	"modified": "2026-09-29 19:48:54.750787",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Prescription Item",
+	"owner": "Administrator",
+	"permissions": [],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"istable": 1,
+	"editable_grid": 1
+}

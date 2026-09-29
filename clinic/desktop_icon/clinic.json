@@ -1,0 +1,43 @@
+{
+ "app": "clinic",
+ "creation": "2026-09-29 21:30:00.000000",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon_type": "App",
+ "idx": 0,
+ "label": "Clinic",
+ "link": "/desk/clinic",
+ "link_type": "External",
+ "logo_url": "/assets/clinic/images/northlake-mark.svg",
+ "modified": "2026-09-29 21:44:54.999990",
+ "modified_by": "Administrator",
+ "name": "Clinic",
+ "owner": "Administrator",
+ "restrict_removal": 0,
+ "roles": [
+  {
+   "role": "Clinic Manager"
+  },
+  {
+   "role": "Clinic Doctor"
+  },
+  {
+   "role": "Clinic Nurse"
+  },
+  {
+   "role": "Clinic Receptionist"
+  },
+  {
+   "role": "Clinic Lab Technician"
+  },
+  {
+   "role": "Clinic Pharmacist"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "standard": 1,
+ "sidebar": "Clinic"
+}

@@ -1,0 +1,232 @@
+/* Triage / front desk page */
+(async function () {
+    const { call, $, $$, esc, num, timeOf, wait, typeTag, pill, ageSex, empty, toast, kpis, hbars, chart, modal, field, read, banner, masters, COLORS } = Desk;
+
+    await Desk.shell({
+        page: "triage",
+        eyebrow: "Northlake Medical Centre · Front Desk & Triage",
+        title: "Triage",
+        sub: "Register arrivals, take vitals and send patients through to the doctor",
+        tools: `<button class="btn btn--primary" id="new-visit">＋ New patient / check-in</button>
+                <button class="iconbtn" id="refresh" title="Refresh">${Desk.REFRESH_ICON}</button>`,
+    });
+    Desk.tabs((tab) => tab === "insights" && loadInsights());
+    $("#refresh").addEventListener("click", () => { loadAll(); toast("Refreshed"); });
+    $("#new-visit").addEventListener("click", startCheckIn);
+
+    let data;
+
+    // ------------------------------------------------------------ queue
+    async function loadAll() {
+        data = await call("triage.dashboard");
+        renderKpis(data.kpis);
+        renderWaiting(data.waiting);
+        renderRecent(data.recent);
+        if ($("#tab-insights").classList.contains("on")) loadInsights();
+    }
+
+    function renderKpis(k) {
+        kpis($("#kpis"), [
+            { label: "Waiting for Triage", value: k.waiting, cls: k.waiting ? "warn" : "", unit: k.waiting ? `Longest wait ${Desk.duration(k.longest_wait)}` : "No one waiting" },
+            { label: "Sent to Doctor Today", value: k.triaged_today, cls: "good", unit: `Avg wait to triage ${Desk.duration(k.avg_wait)}` },
+            { label: "Visits Today", value: k.visits_today, unit: `${Desk.split(k.employees_today, k.community_today)}` },
+            { label: "Urgent / Emergency", value: k.urgent_today, cls: k.urgent_today ? "bad" : "", unit: "Triaged today" },
+            { label: "Vital Sign Alerts", value: k.with_alerts, cls: k.with_alerts ? "warn" : "", unit: "Patients with abnormal vitals today" },
+            { label: "Referred In Today", value: k.referrals_in_today, cls: "info", unit: "From other facilities" },
+        ]);
+    }
+
+    function renderWaiting(rows) {
+        $("#waiting-meta").textContent = rows.length ? `${rows.length} in queue` : "";
+        $("#waiting").innerHTML = rows.length ? rows.map((r, i) => `
+            <div class="qcard"><div class="qcard__stripe"></div>
+                <div><div class="qcard__name">${esc(r.patient_name)} ${typeTag(r.patient_type)}
+                    ${r.visit_source !== "Walk-in" ? pill(r.visit_source, "info") : ""}</div>
+                <div class="qcard__meta">${esc(r.visit)} · ${esc(ageSex(r))}${r.department ? " · " + esc(r.department) : ""} · arrived ${timeOf(r.visit_date)}</div>
+                ${r.reception_notes ? `<div class="qcard__note">${esc(r.reception_notes)}</div>` : ""}</div>
+                <div class="qcard__side">${wait(r.wait_minutes, 15, 30)}
+                    <button class="btn btn--primary btn--sm" data-triage="${esc(r.visit)}">Take vitals</button>
+                    <button class="btn btn--link btn--sm" data-cancel="${esc(r.visit)}" title="Cancel visit">✕</button></div></div>`).join("")
+            : empty("No one is waiting for triage.");
+        $$("[data-triage]").forEach((b) => b.addEventListener("click", () => openTriage(b.dataset.triage)));
+        $$("[data-cancel]").forEach((b) => b.addEventListener("click", async () => {
+            if (!confirm("Cancel this visit?")) return;
+            await call("common.cancel_visit", { visit: b.dataset.cancel });
+            toast("Visit cancelled");
+            loadAll();
+        }));
+    }
+
+    function renderRecent(rows) {
+        $("#recent-meta").textContent = rows.length ? `${rows.length} today` : "";
+        $("#recent").innerHTML = rows.length ? rows.map((r) => `
+            <div class="qcard"><div class="qcard__stripe ${esc(r.triage_priority)}"></div>
+                <div><div class="qcard__name">${esc(r.patient_name)} ${typeTag(r.patient_type)}
+                    <span class="tag tag--${esc(r.triage_priority)}">${esc(r.triage_priority)}</span></div>
+                <div class="qcard__meta">${esc(r.visit)} · ${timeOf(r.triage_datetime)} · ${esc(r.chief_complaint || "")}</div>
+                ${r.alerts ? `<div class="qcard__note alert">⚠ ${esc(r.alerts.replace(/\n/g, "; "))}</div>` : ""}</div>
+                <div class="qcard__side">${pill(r.status, r.status === "Waiting Consultation" ? "warn" : "mute")}
+                    ${r.status === "Waiting Consultation" ? `<button class="btn btn--sm" data-triage="${esc(r.visit)}">Edit vitals</button>` : ""}</div></div>`).join("")
+            : empty("No patients sent through yet today.");
+        $$("#recent [data-triage]").forEach((b) => b.addEventListener("click", () => openTriage(b.dataset.triage)));
+    }
+
+    // ------------------------------------------------------------ insights
+    async function loadInsights() {
+        const d = await call("triage.insights");
+        const hours = Array.from({ length: 24 }, (_, h) => h).filter((h) => h >= 5 && h <= 21);
+        const byHour = Object.fromEntries(d.by_hour.map((r) => [r.hour, r.visits]));
+        chart("hour-chart", { type: "bar", data: { labels: hours.map((h) => `${h}:00`), datasets: [{ label: "Arrivals", data: hours.map((h) => byHour[h] || 0), backgroundColor: COLORS.ink, borderRadius: 6, maxBarThickness: 26 }] }, options: { plugins: { legend: { display: false } } } });
+        chart("day-chart", { type: "bar", data: { labels: d.by_day.map((r) => r.day.slice(5)), datasets: Desk.stackedDatasets(d.by_day) }, options: { ...Desk.stackedOptions, plugins: { legend: { display: false } } } });
+        const pc = { Routine: COLORS.good, Urgent: COLORS.warn, Emergency: COLORS.bad };
+        chart("priority-chart", { type: "doughnut", data: { labels: d.priority.map((r) => r.label), datasets: [{ data: d.priority.map((r) => r.value), backgroundColor: d.priority.map((r) => pc[r.label]), borderWidth: 0 }] }, options: { plugins: { legend: { position: "right" } } } });
+        const f = d.flags, total = f.total || 0;
+        $("#flag-meta").textContent = `${total} patients triaged`;
+        hbars($("#flags"), [
+            { label: "Fever", value: f.fever }, { label: "High BP", value: f.high_bp },
+            { label: "Low oxygen", value: f.low_spo2 }, { label: "Fast pulse", value: f.tachycardia },
+            { label: "Abnormal glucose", value: f.glucose }, { label: "Obese (BMI ≥ 30)", value: f.obese },
+        ], { format: (v) => `${v} <span style="color:var(--ink-mute)">(${total ? Math.round(v * 100 / total) : 0}%)</span>`, cls: (r) => (r.value ? "" : "") });
+    }
+
+    // ------------------------------------------------------------ check-in
+    function startCheckIn() {
+        Desk.pickPatient({
+            onPick: async (p) => {
+                if (p.open_visit) {
+                    toast(`${p.full_name} already has an open visit (${p.open_visit.status}).`, "warn");
+                    if (p.open_visit.status === "Waiting Triage") openTriage(p.open_visit.name);
+                    return;
+                }
+                openCheckIn(p);
+            },
+        });
+    }
+
+    async function openCheckIn(p) {
+        const m = await masters();
+        const h = modal({
+            title: "Check in",
+            sub: "Record how the patient arrived",
+            body: `${banner(p)}
+                <div class="grid-2">
+                    ${field("visit_source", "Arrived as", { type: "select", options: ["Walk-in", "Appointment", "Follow-up", "Referral In"] })}
+                </div>
+                <div id="ref-box" style="display:none">
+                    <div class="subhead">Referred from another facility</div>
+                    <div class="grid-2">
+                        ${field("referring_facility", "Referring facility", { placeholder: "Type to search or add" })}
+                        ${field("referring_clinician", "Referring clinician")}
+                    </div>
+                    ${field("referral_reason", "Reason for referral", { type: "textarea", rows: 2 })}
+                </div>
+                ${field("reception_notes", "Notes", { type: "textarea", rows: 2, placeholder: "Anything the nurse should know" })}`,
+            foot: [
+                { label: "Cancel" },
+                { label: "Check in only", onClick: (hh) => submit(hh, false) },
+                { label: "Check in & take vitals", cls: "btn--primary", onClick: (hh) => submit(hh, true) },
+            ],
+        });
+        Desk.facilityField($("[data-f=referring_facility]", h.body));
+        const src = $("[data-f=visit_source]", h.body);
+        src.addEventListener("change", () => { $("#ref-box", h.body).style.display = src.value === "Referral In" ? "block" : "none"; });
+
+        async function submit(hh, thenTriage) {
+            const v = read(hh.body);
+            if (v.visit_source === "Referral In" && !v.referring_facility) return toast("Select the referring facility", "warn");
+            const r = await call("common.check_in", { patient: p.name, ...v });
+            toast(`${p.full_name} checked in (${r.visit})`);
+            hh.close();
+            await loadAll();
+            if (thenTriage) openTriage(r.visit);
+        }
+    }
+
+    // ------------------------------------------------------------ triage form
+    const VITAL_RULES = (v) => {
+        const a = [];
+        let severe = false;
+        const n = (x) => (x === "" || x == null ? null : Number(x));
+        const t = n(v.temperature), s = n(v.spo2), sys = n(v.bp_systolic), dia = n(v.bp_diastolic), pr = n(v.pulse_rate), rr = n(v.respiratory_rate), g = n(v.blood_glucose);
+        if (t != null && t >= 38) a.push(`Fever (${t} °C)`); else if (t != null && t < 35.5) a.push(`Low temperature (${t} °C)`);
+        if (t != null && t >= 40) severe = true;
+        if (s != null && s < 95) a.push(`Low oxygen saturation (${s}%)`);
+        if (s != null && s < 90) severe = true;
+        if (sys != null && dia != null && (sys >= 140 || dia >= 90)) a.push(`High BP (${sys}/${dia})`);
+        else if (sys != null && sys < 90) a.push(`Low BP (${sys}/${dia})`);
+        if (sys != null && (sys < 80 || sys >= 180)) severe = true;
+        if (pr != null && pr > 100) a.push(`Tachycardia (${pr} bpm)`); else if (pr != null && pr < 60) a.push(`Bradycardia (${pr} bpm)`);
+        if (pr != null && (pr > 140 || pr < 40)) severe = true;
+        if (rr != null && (rr > 24 || rr < 12)) a.push(`Abnormal respiratory rate (${rr}/min)`);
+        if (g != null && (g > 11.1 || g < 3.9)) a.push(`Abnormal glucose (${g} mmol/L)`);
+        return { alerts: a, severe };
+    };
+
+    async function openTriage(visit) {
+        const ctx = await call("triage.get_triage_context", { visit });
+        const ex = ctx.existing || {};
+        const prev = ctx.previous[0];
+        const val = (k, fallback = "") => (ex[k] != null ? ex[k] : fallback);
+        const h = modal({
+            title: ex.name ? "Update vitals" : "Take vitals",
+            sub: `${esc(ctx.visit.name)} · arrived ${timeOf(ctx.visit.visit_date)}${ctx.visit.visit_source !== "Walk-in" ? " · " + esc(ctx.visit.visit_source) : ""}`,
+            size: "wide",
+            body: `${banner(ctx.patient)}
+                ${ctx.visit.reception_notes ? `<div class="liveinfo ok" style="background:var(--info-bg);color:var(--info)">Reception: ${esc(ctx.visit.reception_notes)}</div>` : ""}
+                ${prev ? `<div class="printnote" style="margin-bottom:14px">Last recorded ${esc(Desk.dateOf(prev.triage_datetime))}: ${[prev.weight_kg && prev.weight_kg + " kg", prev.height_cm && prev.height_cm + " cm", prev.bp_systolic && `BP ${prev.bp_systolic}/${prev.bp_diastolic}`, prev.pulse_rate && prev.pulse_rate + " bpm"].filter(Boolean).join(" · ")}</div>` : ""}
+                <div class="subhead">Vital signs</div>
+                <div class="grid-4">
+                    ${field("bp_systolic", "BP systolic (mmHg)", { type: "number", value: val("bp_systolic"), attrs: 'min="40" max="300"' })}
+                    ${field("bp_diastolic", "BP diastolic (mmHg)", { type: "number", value: val("bp_diastolic"), attrs: 'min="20" max="200"' })}
+                    ${field("pulse_rate", "Pulse (bpm)", { type: "number", value: val("pulse_rate"), attrs: 'min="20" max="250"' })}
+                    ${field("temperature", "Temperature (°C)", { type: "number", value: val("temperature"), attrs: 'step="0.1" min="25" max="45"' })}
+                    ${field("spo2", "Blood oxygen SpO₂ (%)", { type: "number", value: val("spo2"), attrs: 'min="30" max="100"' })}
+                    ${field("respiratory_rate", "Respiratory rate (/min)", { type: "number", value: val("respiratory_rate") })}
+                    ${field("weight_kg", "Weight (kg)", { type: "number", value: val("weight_kg"), attrs: 'step="0.1"' })}
+                    ${field("height_cm", "Height (cm)", { type: "number", value: val("height_cm", prev?.height_cm || ""), attrs: 'step="0.1"' })}
+                </div>
+                <div class="grid-4">
+                    <div class="field"><label>BMI</label><div class="input" id="bmi" style="background:transparent">—</div></div>
+                    ${field("blood_glucose", "Random glucose (mmol/L)", { type: "number", value: val("blood_glucose"), attrs: 'step="0.1"' })}
+                </div>
+                <div id="live"></div>
+                <div class="subhead">Assessment</div>
+                ${field("chief_complaint", "Chief complaint", { type: "textarea", rows: 2, value: val("chief_complaint"), required: true, placeholder: "Why has the patient come today?" })}
+                <div class="grid-2">
+                    ${field("triage_priority", "Priority", { type: "select", options: ["Routine", "Urgent", "Emergency"], value: val("triage_priority", "Routine") })}
+                    ${field("triage_notes", "Nurse notes", { type: "textarea", rows: 2, value: val("triage_notes") })}
+                </div>`,
+            foot: [
+                { label: "Cancel" },
+                { label: ex.name && ctx.visit.status !== "Waiting Triage" ? "Update vitals" : "Send to Consultation →", cls: "btn--primary", onClick: async (hh) => {
+                    const v = read(hh.body);
+                    if (!v.chief_complaint.trim()) return toast("Enter the chief complaint", "warn");
+                    const r = await call("triage.save_triage", { visit, data: v });
+                    toast(r.status === "Waiting Consultation" ? "Sent to consultation" : "Vitals updated");
+                    hh.close();
+                    loadAll();
+                } },
+            ],
+        });
+
+        let manualPriority = !!ex.name;
+        const prio = $("[data-f=triage_priority]", h.body);
+        prio.addEventListener("change", () => (manualPriority = true));
+        const update = () => {
+            const v = read(h.body);
+            const w = Number(v.weight_kg), ht = Number(v.height_cm);
+            $("#bmi", h.body).textContent = w && ht ? (w / Math.pow(ht / 100, 2)).toFixed(1) : "—";
+            const { alerts, severe } = VITAL_RULES(v);
+            $("#live", h.body).innerHTML = alerts.length
+                ? `<div class="liveinfo">⚠ ${alerts.map(esc).join(" · ")}</div>`
+                : (v.bp_systolic || v.temperature || v.spo2 || v.pulse_rate) ? '<div class="liveinfo ok">Vitals within normal limits</div>' : "";
+            if (!manualPriority) prio.value = severe ? "Emergency" : alerts.length ? "Urgent" : "Routine";
+        };
+        $$("input", h.body).forEach((i) => i.addEventListener("input", update));
+        update();
+        $("[data-f=bp_systolic]", h.body).focus();
+    }
+
+    await loadAll();
+    Desk.poll(loadAll);
+})();

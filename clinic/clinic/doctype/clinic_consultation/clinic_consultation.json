@@ -1,0 +1,513 @@
+{
+	"actions": [],
+	"creation": "2026-09-29 19:48:54.750787",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"tab_1",
+		"visit",
+		"patient",
+		"patient_name",
+		"patient_type",
+		"column_2",
+		"sex",
+		"age_years",
+		"department",
+		"consultation_date",
+		"doctor",
+		"status",
+		"section_3",
+		"triage",
+		"vitals_summary",
+		"tab_4",
+		"presenting_complaint",
+		"history_of_presenting_illness",
+		"review_of_systems",
+		"section_5",
+		"past_medical_history",
+		"current_medication",
+		"drug_allergies",
+		"column_6",
+		"family_history",
+		"social_history",
+		"occupational_history",
+		"section_7",
+		"general_examination",
+		"systemic_examination",
+		"tab_8",
+		"investigations_notes",
+		"section_9",
+		"lab_requests",
+		"section_10",
+		"diagnoses",
+		"work_related",
+		"tab_11",
+		"management_plan",
+		"procedures_done",
+		"patient_advice",
+		"tab_12",
+		"prescriptions",
+		"dispensing",
+		"tab_13",
+		"refer_out",
+		"referral_facility",
+		"referral_urgency",
+		"column_14",
+		"referral_reason",
+		"referral_notes",
+		"section_15",
+		"follow_up_required",
+		"follow_up_date",
+		"column_16",
+		"follow_up_reason",
+		"appointment",
+		"section_17",
+		"sick_leave_days",
+		"column_18",
+		"light_duty_days"
+	],
+	"fields": [
+		{
+			"fieldname": "tab_1",
+			"fieldtype": "Tab Break",
+			"label": "Patient"
+		},
+		{
+			"fieldname": "visit",
+			"fieldtype": "Link",
+			"label": "Visit",
+			"options": "Clinic Visit",
+			"reqd": 1,
+			"in_list_view": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "patient",
+			"fieldtype": "Link",
+			"label": "Patient",
+			"options": "Clinic Patient",
+			"fetch_from": "visit.patient",
+			"read_only": 1
+		},
+		{
+			"fieldname": "patient_name",
+			"fieldtype": "Data",
+			"label": "Patient Name",
+			"fetch_from": "visit.patient_name",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "patient_type",
+			"fieldtype": "Select",
+			"label": "Patient Type",
+			"options": "Employee\nCommunity Member",
+			"fetch_from": "visit.patient_type",
+			"read_only": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "column_2",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "sex",
+			"fieldtype": "Link",
+			"label": "Sex",
+			"options": "Gender",
+			"fetch_from": "visit.sex",
+			"read_only": 1
+		},
+		{
+			"fieldname": "age_years",
+			"fieldtype": "Int",
+			"label": "Age (Years)",
+			"fetch_from": "visit.age_years",
+			"read_only": 1
+		},
+		{
+			"fieldname": "department",
+			"fieldtype": "Link",
+			"label": "Department / Farm Section",
+			"options": "Department",
+			"fetch_from": "visit.department",
+			"read_only": 1
+		},
+		{
+			"fieldname": "consultation_date",
+			"fieldtype": "Datetime",
+			"label": "Consultation Date",
+			"default": "Now",
+			"reqd": 1
+		},
+		{
+			"fieldname": "doctor",
+			"fieldtype": "Link",
+			"label": "Clinician",
+			"options": "User",
+			"default": "__user"
+		},
+		{
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"label": "Status",
+			"options": "Open\nAwaiting Lab\nCompleted",
+			"default": "Open",
+			"read_only": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"no_copy": 1
+		},
+		{
+			"fieldname": "section_3",
+			"fieldtype": "Section Break",
+			"label": "Triage Vitals"
+		},
+		{
+			"fieldname": "triage",
+			"fieldtype": "Link",
+			"label": "Triage",
+			"options": "Clinic Triage",
+			"read_only": 1
+		},
+		{
+			"fieldname": "vitals_summary",
+			"fieldtype": "Small Text",
+			"label": "Vitals Summary",
+			"read_only": 1
+		},
+		{
+			"fieldname": "tab_4",
+			"fieldtype": "Tab Break",
+			"label": "History"
+		},
+		{
+			"fieldname": "presenting_complaint",
+			"fieldtype": "Small Text",
+			"label": "Presenting Complaint"
+		},
+		{
+			"fieldname": "history_of_presenting_illness",
+			"fieldtype": "Text",
+			"label": "History of Presenting Illness"
+		},
+		{
+			"fieldname": "review_of_systems",
+			"fieldtype": "Text",
+			"label": "Review Of Systems"
+		},
+		{
+			"fieldname": "section_5",
+			"fieldtype": "Section Break",
+			"label": "Background"
+		},
+		{
+			"fieldname": "past_medical_history",
+			"fieldtype": "Small Text",
+			"label": "Past Medical / Surgical History"
+		},
+		{
+			"fieldname": "current_medication",
+			"fieldtype": "Small Text",
+			"label": "Current Medication"
+		},
+		{
+			"fieldname": "drug_allergies",
+			"fieldtype": "Small Text",
+			"label": "Drug Allergies"
+		},
+		{
+			"fieldname": "column_6",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "family_history",
+			"fieldtype": "Small Text",
+			"label": "Family History"
+		},
+		{
+			"fieldname": "social_history",
+			"fieldtype": "Small Text",
+			"label": "Social History",
+			"description": "Smoking, alcohol, etc."
+		},
+		{
+			"fieldname": "occupational_history",
+			"fieldtype": "Small Text",
+			"label": "Occupational / Work Exposure",
+			"depends_on": "eval:doc.patient_type=='Employee'",
+			"description": "Work section, chemicals handled, PPE use"
+		},
+		{
+			"fieldname": "section_7",
+			"fieldtype": "Section Break",
+			"label": "Examination"
+		},
+		{
+			"fieldname": "general_examination",
+			"fieldtype": "Text",
+			"label": "General Examination"
+		},
+		{
+			"fieldname": "systemic_examination",
+			"fieldtype": "Text",
+			"label": "Systemic Examination"
+		},
+		{
+			"fieldname": "tab_8",
+			"fieldtype": "Tab Break",
+			"label": "Investigations & Diagnosis"
+		},
+		{
+			"fieldname": "investigations_notes",
+			"fieldtype": "Text",
+			"label": "Investigation Notes / Findings"
+		},
+		{
+			"fieldname": "section_9",
+			"fieldtype": "Section Break",
+			"label": "Lab Requests"
+		},
+		{
+			"fieldname": "lab_requests",
+			"fieldtype": "Table",
+			"label": "Lab Requests",
+			"options": "Clinic Lab Request Item"
+		},
+		{
+			"fieldname": "section_10",
+			"fieldtype": "Section Break",
+			"label": "Diagnosis"
+		},
+		{
+			"fieldname": "diagnoses",
+			"fieldtype": "Table",
+			"label": "Diagnoses",
+			"options": "Clinic Consultation Diagnosis"
+		},
+		{
+			"fieldname": "work_related",
+			"fieldtype": "Check",
+			"label": "Work-related Condition / Injury on Duty",
+			"depends_on": "eval:doc.patient_type=='Employee'"
+		},
+		{
+			"fieldname": "tab_11",
+			"fieldtype": "Tab Break",
+			"label": "Management"
+		},
+		{
+			"fieldname": "management_plan",
+			"fieldtype": "Text",
+			"label": "Management Plan"
+		},
+		{
+			"fieldname": "procedures_done",
+			"fieldtype": "Small Text",
+			"label": "Procedures Done"
+		},
+		{
+			"fieldname": "patient_advice",
+			"fieldtype": "Small Text",
+			"label": "Advice Given"
+		},
+		{
+			"fieldname": "tab_12",
+			"fieldtype": "Tab Break",
+			"label": "Prescription"
+		},
+		{
+			"fieldname": "prescriptions",
+			"fieldtype": "Table",
+			"label": "Prescriptions",
+			"options": "Clinic Prescription Item"
+		},
+		{
+			"fieldname": "dispensing",
+			"fieldtype": "Link",
+			"label": "Dispensing",
+			"options": "Clinic Dispensing",
+			"read_only": 1,
+			"no_copy": 1
+		},
+		{
+			"fieldname": "tab_13",
+			"fieldtype": "Tab Break",
+			"label": "Referral & Follow-up"
+		},
+		{
+			"fieldname": "refer_out",
+			"fieldtype": "Check",
+			"label": "Refer to Another Facility"
+		},
+		{
+			"fieldname": "referral_facility",
+			"fieldtype": "Link",
+			"label": "Referral Facility",
+			"options": "Clinic Facility",
+			"depends_on": "refer_out",
+			"mandatory_depends_on": "refer_out"
+		},
+		{
+			"fieldname": "referral_urgency",
+			"fieldtype": "Select",
+			"label": "Referral Urgency",
+			"options": "Routine\nUrgent\nEmergency",
+			"default": "Routine",
+			"depends_on": "refer_out"
+		},
+		{
+			"fieldname": "column_14",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "referral_reason",
+			"fieldtype": "Small Text",
+			"label": "Referral Reason",
+			"depends_on": "refer_out",
+			"mandatory_depends_on": "refer_out"
+		},
+		{
+			"fieldname": "referral_notes",
+			"fieldtype": "Small Text",
+			"label": "Referral Notes",
+			"depends_on": "refer_out"
+		},
+		{
+			"fieldname": "section_15",
+			"fieldtype": "Section Break",
+			"label": "Follow-up"
+		},
+		{
+			"fieldname": "follow_up_required",
+			"fieldtype": "Check",
+			"label": "Follow-up Appointment Needed"
+		},
+		{
+			"fieldname": "follow_up_date",
+			"fieldtype": "Date",
+			"label": "Follow Up Date",
+			"depends_on": "follow_up_required",
+			"mandatory_depends_on": "follow_up_required"
+		},
+		{
+			"fieldname": "column_16",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "follow_up_reason",
+			"fieldtype": "Data",
+			"label": "Follow Up Reason",
+			"depends_on": "follow_up_required"
+		},
+		{
+			"fieldname": "appointment",
+			"fieldtype": "Link",
+			"label": "Appointment",
+			"options": "Clinic Appointment",
+			"read_only": 1,
+			"no_copy": 1
+		},
+		{
+			"fieldname": "section_17",
+			"fieldtype": "Section Break",
+			"label": "Employee Work Status",
+			"depends_on": "eval:doc.patient_type=='Employee'"
+		},
+		{
+			"fieldname": "sick_leave_days",
+			"fieldtype": "Int",
+			"label": "Sick Leave Days",
+			"description": "Days off work recommended"
+		},
+		{
+			"fieldname": "column_18",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "light_duty_days",
+			"fieldtype": "Int",
+			"label": "Light Duty Days",
+			"description": "Days on light duty / restricted work"
+		}
+	],
+	"links": [],
+	"modified": "2026-09-29 19:48:54.750787",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Consultation",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"role": "System Manager",
+			"read": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1
+		},
+		{
+			"role": "Clinic Doctor",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Lab Technician",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Pharmacist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		}
+	],
+	"sort_field": "consultation_date",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1,
+	"autoname": "CON-.YYYY.-.#####",
+	"naming_rule": "Expression (old style)",
+	"title_field": "patient_name",
+	"search_fields": "patient_name,visit,status"
+}

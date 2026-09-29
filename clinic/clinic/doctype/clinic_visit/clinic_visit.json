@@ -1,0 +1,290 @@
+{
+	"actions": [],
+	"creation": "2026-09-29 19:48:54.717999",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"patient",
+		"patient_name",
+		"patient_type",
+		"sex",
+		"age_years",
+		"department",
+		"column_6",
+		"visit_date",
+		"visit_purpose",
+		"visit_source",
+		"status",
+		"section_7",
+		"referring_facility",
+		"referring_clinician",
+		"column_8",
+		"referral_reason",
+		"referral_letter",
+		"section_9",
+		"triage",
+		"consultation",
+		"column_10",
+		"appointment",
+		"reception_notes"
+	],
+	"fields": [
+		{
+			"fieldname": "patient",
+			"fieldtype": "Link",
+			"label": "Patient",
+			"options": "Clinic Patient",
+			"reqd": 1,
+			"in_list_view": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "patient_name",
+			"fieldtype": "Data",
+			"label": "Patient Name",
+			"fetch_from": "patient.full_name",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "patient_type",
+			"fieldtype": "Select",
+			"label": "Patient Type",
+			"options": "Employee\nCommunity Member",
+			"fetch_from": "patient.patient_type",
+			"read_only": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "sex",
+			"fieldtype": "Link",
+			"label": "Sex",
+			"options": "Gender",
+			"fetch_from": "patient.sex",
+			"read_only": 1
+		},
+		{
+			"fieldname": "age_years",
+			"fieldtype": "Int",
+			"label": "Age (Years)",
+			"read_only": 1
+		},
+		{
+			"fieldname": "department",
+			"fieldtype": "Link",
+			"label": "Department / Farm Section",
+			"options": "Department",
+			"fetch_from": "patient.department",
+			"read_only": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "column_6",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "visit_date",
+			"fieldtype": "Datetime",
+			"label": "Visit Date",
+			"default": "Now",
+			"reqd": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "visit_purpose",
+			"fieldtype": "Select",
+			"label": "Visit Purpose",
+			"options": "Consultation\nLab Only",
+			"default": "Consultation",
+			"reqd": 1,
+			"in_standard_filter": 1,
+			"description": "Lab Only skips triage and consultation, e.g. a patient referred in just for tests."
+		},
+		{
+			"fieldname": "visit_source",
+			"fieldtype": "Select",
+			"label": "Visit Source",
+			"options": "Walk-in\nAppointment\nReferral In\nFollow-up",
+			"default": "Walk-in",
+			"reqd": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"label": "Status",
+			"options": "Waiting Triage\nWaiting Consultation\nIn Consultation\nWaiting Lab\nLab Results Ready\nWaiting Pharmacy\nCompleted\nCancelled",
+			"default": "Waiting Triage",
+			"read_only": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"search_index": 1,
+			"no_copy": 1
+		},
+		{
+			"fieldname": "section_7",
+			"fieldtype": "Section Break",
+			"label": "Referral From Another Facility",
+			"depends_on": "eval:doc.visit_source=='Referral In'"
+		},
+		{
+			"fieldname": "referring_facility",
+			"fieldtype": "Link",
+			"label": "Referring Facility",
+			"options": "Clinic Facility",
+			"mandatory_depends_on": "eval:doc.visit_source=='Referral In'"
+		},
+		{
+			"fieldname": "referring_clinician",
+			"fieldtype": "Data",
+			"label": "Referring Clinician"
+		},
+		{
+			"fieldname": "column_8",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "referral_reason",
+			"fieldtype": "Small Text",
+			"label": "Referral Reason"
+		},
+		{
+			"fieldname": "referral_letter",
+			"fieldtype": "Attach",
+			"label": "Referral Letter"
+		},
+		{
+			"fieldname": "section_9",
+			"fieldtype": "Section Break",
+			"label": "Journey"
+		},
+		{
+			"fieldname": "triage",
+			"fieldtype": "Link",
+			"label": "Triage",
+			"options": "Clinic Triage",
+			"read_only": 1,
+			"no_copy": 1
+		},
+		{
+			"fieldname": "consultation",
+			"fieldtype": "Link",
+			"label": "Consultation",
+			"options": "Clinic Consultation",
+			"read_only": 1,
+			"no_copy": 1
+		},
+		{
+			"fieldname": "column_10",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "appointment",
+			"fieldtype": "Link",
+			"label": "Appointment",
+			"options": "Clinic Appointment",
+			"read_only": 1,
+			"no_copy": 1
+		},
+		{
+			"fieldname": "reception_notes",
+			"fieldtype": "Small Text",
+			"label": "Reception Notes"
+		}
+	],
+	"links": [],
+	"modified": "2026-09-29 19:48:54.717999",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Visit",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"role": "System Manager",
+			"read": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1
+		},
+		{
+			"role": "Clinic Receptionist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Doctor",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Lab Technician",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Pharmacist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		}
+	],
+	"sort_field": "visit_date",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1,
+	"autoname": "VIS-.YYYY.-.#####",
+	"naming_rule": "Expression (old style)",
+	"title_field": "patient_name",
+	"search_fields": "patient,patient_name,status"
+}
