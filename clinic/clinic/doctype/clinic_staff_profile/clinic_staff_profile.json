@@ -1,0 +1,142 @@
+{
+	"actions": [],
+	"creation": "2026-09-30 15:49:23.181683",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"user",
+		"full_name",
+		"designation",
+		"column_4",
+		"registration_no",
+		"signature"
+	],
+	"fields": [
+		{
+			"fieldname": "user",
+			"fieldtype": "Link",
+			"label": "User",
+			"options": "User",
+			"reqd": 1,
+			"unique": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "full_name",
+			"fieldtype": "Data",
+			"label": "Full Name",
+			"fetch_from": "user.full_name",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "designation",
+			"fieldtype": "Select",
+			"label": "Designation",
+			"options": "Doctor\nClinical Officer\nNurse\nLab Technologist\nPharmacist\nOther",
+			"reqd": 1,
+			"in_list_view": 1,
+			"description": "Doctors and clinical officers sign sick sheets."
+		},
+		{
+			"fieldname": "column_4",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "registration_no",
+			"fieldtype": "Data",
+			"label": "Registration / Licence No.",
+			"description": "e.g. KMPDC or clinical officers' council number"
+		},
+		{
+			"fieldname": "signature",
+			"fieldtype": "Attach Image",
+			"label": "Signature",
+			"description": "Optional. Printed above the signature line."
+		}
+	],
+	"links": [],
+	"modified": "2026-09-30 15:49:23.181683",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Staff Profile",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"role": "System Manager",
+			"read": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1
+		},
+		{
+			"role": "Clinic Receptionist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Doctor",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Lab Technician",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Pharmacist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		}
+	],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1,
+	"autoname": "field:user",
+	"naming_rule": "By fieldname",
+	"title_field": "full_name"
+}

@@ -361,3 +361,89 @@ a{color:inherit}
 .brand__text{display:flex;flex-direction:column;line-height:1}
 .brand__text b{font:600 22px/1 'Cormorant Garamond',Georgia,serif;color:var(--brand);letter-spacing:.2px}
 .brand__text small{font:500 8.5px var(--sans);letter-spacing:2.4px;text-transform:uppercase;color:var(--ink-4);margin-top:5px;padding-top:5px;border-top:1.5px solid var(--gold)}
+
+/* At most five queue cards visible; the rest scroll */
+.queue.scrolls{overflow-y:auto;overscroll-behavior:contain;scroll-snap-type:y proximity;padding-right:8px;margin-right:-8px;scrollbar-width:thin;scrollbar-color:var(--ink-faint) transparent}
+.queue.scrolls .qcard{scroll-snap-align:start}
+.queue.scrolls::-webkit-scrollbar{width:6px}
+.queue.scrolls::-webkit-scrollbar-thumb{background:var(--ink-faint);border-radius:6px}
+/* Long month tables scroll inside the card with a fixed header */
+.tscroll{max-height:480px;overflow:auto;scrollbar-width:thin}
+.tscroll .dtable th{position:sticky;top:0;background:var(--surface-2);z-index:1}
+.queue > .qcard{flex-shrink:0}
+.hb--wide{grid-template-columns:150px 1fr 200px}
+
+/* Send-to menu (triage) */
+.modal__foot{position:relative}
+.tag--dest{background:rgba(36,70,60,.10);color:var(--brand)}
+.sendmenu{position:absolute;right:32px;bottom:calc(100% - 6px);width:340px;background:var(--surface-2);border-radius:20px;box-shadow:0 24px 60px -12px rgba(10,10,10,.35);padding:8px;z-index:50;animation:fadein .15s;border:1px solid var(--hairline)}
+.sendmenu__head{font:600 10.5px var(--sans);letter-spacing:1.6px;text-transform:uppercase;color:var(--ink-mute);padding:10px 12px 8px}
+.sendmenu__item{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:0;background:none;border-radius:14px;padding:11px 12px;cursor:pointer;font-family:var(--sans);transition:background .15s}
+.sendmenu__item:hover{background:rgba(36,70,60,.08)}
+.sendmenu__item:disabled{opacity:.5}
+.sendmenu__item b{display:block;font:600 13.5px var(--sans);color:var(--ink)}
+.sendmenu__item small{display:block;font-size:11.5px;color:var(--ink-mute);margin-top:1px}
+.sendmenu__item em{margin-left:auto;font:600 10px var(--sans);font-style:normal;color:var(--brand);background:rgba(36,70,60,.10);padding:3px 8px;border-radius:999px}
+.sendmenu__icon{width:38px;height:38px;border-radius:12px;background:rgba(36,70,60,.10);color:var(--brand);display:grid;place-items:center;flex:none}
+.sendmenu__icon svg{width:19px;height:19px}
+.sendmenu__item.current{background:rgba(36,70,60,.06)}
+
+/* TB screening bar */
+.tbbar{background:var(--surface-2);border-radius:24px;box-shadow:var(--shadow-card);padding:18px 24px;margin-bottom:18px;border:1.5px solid transparent}
+.tbbar.required{border-color:var(--warn);animation:tbpulse 2.4s ease-in-out infinite}
+@keyframes tbpulse{0%,100%{box-shadow:var(--shadow-card)}50%{box-shadow:0 0 0 4px var(--warn-bg)}}
+.tbbar__head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+.tbbar__head h3{margin:0;font:600 15px var(--sans);color:var(--ink)}
+.tbbar__head span{font-size:12px;color:var(--ink-mute)}
+.tbbar__opts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:900px){.tbbar__opts{grid-template-columns:1fr 1fr}}
+.tbopt{display:flex;align-items:center;gap:12px;border:1.5px solid var(--hairline);background:var(--surface);border-radius:16px;padding:12px 14px;cursor:pointer;font:500 13px var(--sans);color:var(--ink-3);text-align:left;transition:all .15s}
+.tbopt:hover:not(:disabled){border-color:var(--ink-faint);background:#fff}
+.tbopt:disabled{cursor:default}
+.tbopt__n{width:30px;height:30px;border-radius:50%;background:rgba(10,10,10,.06);display:grid;place-items:center;font:700 14px var(--sans);color:var(--ink-3);flex:none}
+.tbopt.on{border-color:var(--brand);background:rgba(36,70,60,.07);color:var(--ink);font-weight:600}
+.tbopt.on .tbopt__n{background:var(--brand);color:#fff}
+.tbopt.on.alert{border-color:var(--bad);background:var(--bad-bg)}
+.tbopt.on.alert .tbopt__n{background:var(--bad)}
+
+/* Billing panels (pharmacy) */
+.billbox{background:var(--surface);border-radius:14px;padding:6px 10px;margin-bottom:10px;border:1px solid var(--hairline)}
+.billbox .rtable td{border-top:1px solid var(--hairline)}
+.rtable tr.billtotal td{font:700 15px var(--sans);color:var(--ink);border-top:1.5px solid var(--ink)}
+
+/* CWC register (MCH desk) */
+.cwcbar{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:flex-start;background:rgba(36,70,60,.05);border-radius:16px;padding:14px 18px;margin-bottom:12px}
+.cwcbar>div{display:flex;flex-direction:column;min-width:0}
+.cwcbar small{font:600 9px var(--sans);letter-spacing:1.1px;text-transform:uppercase;color:var(--ink-mute)}
+.cwcbar b{font:600 14px var(--sans);color:var(--ink);margin-top:2px}
+.cwcbar .printnote{margin-top:1px}
+.cwcbar__end{margin-left:auto;flex-direction:row!important;align-items:center;gap:10px}
+.msblock{border:1px solid var(--hairline);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.msblock__head{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:rgba(10,10,10,.03);padding:8px 14px;font:600 12px var(--sans);color:var(--ink);letter-spacing:.3px}
+.msblock__head span{font-weight:500;font-size:11px;color:var(--ink-mute)}
+.msblock .rtable{margin:0}
+.msblock .rtable th{padding:8px 12px 6px}
+.msblock .rtable td{padding:5px 12px}
+.msblock tr.na td{opacity:.5}
+.msblock input[type=date]{min-width:130px}
+
+/* Defaulter follow-up popup */
+.contactbox{display:flex;flex-wrap:wrap;gap:18px 34px;align-items:center;background:rgba(36,70,60,.06);border-radius:16px;padding:16px 20px;margin-bottom:14px}
+.contactbox small{display:block;font:600 9px var(--sans);letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-mute)}
+.contactbox b{font:600 17px var(--sans);color:var(--ink)}
+.contactbox__nums{display:flex;gap:26px;margin-left:auto}
+.telnum{color:var(--brand);text-decoration:none;border-bottom:1.5px solid rgba(36,70,60,.3)}
+.telnum:hover{border-bottom-color:var(--brand)}
+.cwchead{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:rgba(36,70,60,.05);border-radius:16px;padding:14px 18px;margin-bottom:12px}
+.multi{display:flex;flex-wrap:wrap;gap:8px}
+.chipcheck{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;border:1px solid var(--line,#d9ddd8);font:500 13px var(--sans);cursor:pointer;background:#fff}
+.chipcheck.on{background:rgba(36,70,60,.1);border-color:var(--ink,#24463c);color:var(--ink,#24463c)}
+.chipcheck input{accent-color:#24463c}
+.msblock__head::-webkit-details-marker{display:none}
+.msblock__head b::before{content:'▸';display:inline-block;width:16px;transition:transform .15s}
+.msblock[open]>.msblock__head b::before{transform:rotate(90deg)}
+.msblock[open]>.msblock__head{border-bottom:1px solid var(--hairline)}
+
+/* family planning: grouped method boxes */
+.fpgroup{border:1px solid var(--line,#d9ddd8);border-radius:12px;padding:12px 16px 4px;margin-bottom:12px;background:#fff}
+.fpgroup h4{margin:0 0 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-mute);font-weight:600}

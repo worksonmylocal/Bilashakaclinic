@@ -5,7 +5,13 @@
 	"engine": "InnoDB",
 	"field_order": [
 		"patient_type",
+		"employer",
 		"employee",
+		"staff_no",
+		"section",
+		"employer_uses_employee_records",
+		"requires_sick_sheet",
+		"billed_at_clinic",
 		"full_name",
 		"column_1",
 		"sex",
@@ -40,13 +46,60 @@
 			"description": "Employees are farm workers; Community Members are walk-ins from the surrounding community."
 		},
 		{
+			"fieldname": "employer",
+			"fieldtype": "Link",
+			"label": "Employer",
+			"options": "Clinic Employer",
+			"depends_on": "eval:doc.patient_type=='Employee'",
+			"mandatory_depends_on": "eval:doc.patient_type=='Employee'",
+			"in_standard_filter": 1,
+			"search_index": 1,
+			"description": "Which farm the employee works for"
+		},
+		{
 			"fieldname": "employee",
 			"fieldtype": "Link",
 			"label": "Employee",
 			"options": "Employee",
-			"depends_on": "eval:doc.patient_type=='Employee'",
-			"mandatory_depends_on": "eval:doc.patient_type=='Employee'",
+			"depends_on": "eval:doc.patient_type=='Employee' && doc.employer_uses_employee_records",
+			"mandatory_depends_on": "eval:doc.patient_type=='Employee' && doc.employer_uses_employee_records",
 			"search_index": 1
+		},
+		{
+			"fieldname": "staff_no",
+			"fieldtype": "Data",
+			"label": "Staff / Payroll No.",
+			"depends_on": "eval:doc.patient_type=='Employee' && !doc.employer_uses_employee_records"
+		},
+		{
+			"fieldname": "section",
+			"fieldtype": "Data",
+			"label": "Section / Department",
+			"depends_on": "eval:doc.patient_type=='Employee' && !doc.employer_uses_employee_records"
+		},
+		{
+			"fieldname": "employer_uses_employee_records",
+			"fieldtype": "Check",
+			"label": "Employer Uses Employee Records",
+			"fetch_from": "employer.uses_employee_records",
+			"read_only": 1,
+			"hidden": 1
+		},
+		{
+			"fieldname": "requires_sick_sheet",
+			"fieldtype": "Check",
+			"label": "Requires Sick Sheet",
+			"fetch_from": "employer.requires_sick_sheet",
+			"read_only": 1,
+			"hidden": 1
+		},
+		{
+			"fieldname": "billed_at_clinic",
+			"fieldtype": "Check",
+			"label": "Billed At Clinic",
+			"fetch_from": "employer.billed_at_clinic",
+			"read_only": 1,
+			"hidden": 1
 		},
 		{
 			"fieldname": "full_name",
@@ -164,7 +217,7 @@
 		}
 	],
 	"links": [],
-	"modified": "2026-09-29 19:48:54.717999",
+	"modified": "2026-09-30 15:49:23.181683",
 	"modified_by": "Administrator",
 	"module": "Clinic",
 	"name": "Clinic Patient",

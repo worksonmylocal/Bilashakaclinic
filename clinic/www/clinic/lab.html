@@ -19,6 +19,7 @@
     <button class="tab on" data-tab="queue">Test Queue</button>
     <button class="tab" data-tab="external">Sent to External <span class="tab-badge" id="ext-badge" style="display:none"></span></button>
     <button class="tab" data-tab="done">Resulted Today</button>
+    <button class="tab" data-tab="month">Resulted This Month</button>
     <button class="tab" data-tab="insights">Insights</button>
   </div>
   <div class="tabpanel on" id="tab-queue"><div class="card">
@@ -27,11 +28,16 @@
     <div id="queue"><div class="skel"></div></div></div></div>
   <div class="tabpanel" id="tab-external"><div class="card"><div class="card__head"><h3>Out at External Facilities</h3><span class="meta">Receive the result when the report comes back</span></div><div id="external"><div class="skel"></div></div></div></div>
   <div class="tabpanel" id="tab-done"><div class="card"><div class="card__head"><h3>Results Released Today</h3><span class="meta">Each one has gone back to the doctor</span></div><div id="resulted"><div class="skel"></div></div></div></div>
+  <div class="tabpanel" id="tab-month">
+    <div class="kpi-grid" id="month-kpis"></div>
+    <div class="card"><div class="card__head"><h3>Results Released This Month</h3><span class="meta" id="month-meta"></span></div><div class="tscroll" id="resulted-month"><div class="skel"></div></div></div>
+  </div>
   <div class="tabpanel" id="tab-insights">
     <div class="row-2-eq">
       <div class="card chart-wrap"><div class="card__head"><h3>Tests by Category — Last 14 Days</h3><div class="legend"><span><i style="background:#2c6bb3"></i>Employees</span><span><i style="background:#228883"></i>Community</span></div></div><canvas id="cat-chart" height="240"></canvas></div>
       <div class="card chart-wrap"><div class="card__head"><h3>Daily Test Volume</h3></div><canvas id="day-chart" height="240"></canvas></div>
     </div>
+    <div class="card"><div class="card__head"><h3>Top Tests This Month</h3><span class="meta" id="top-month-meta">Most requested since the 1st</span></div><div id="top-month"><div class="skel"></div></div></div>
     <div class="card"><div class="card__head"><h3>Positivity by Test — Last 30 Days</h3><span class="meta">Positive results ÷ tests resulted</span></div><div id="positivity"><div class="skel"></div></div></div>
   </div>
 </div>

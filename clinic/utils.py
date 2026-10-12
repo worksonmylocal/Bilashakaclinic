@@ -13,6 +13,16 @@ def age_in_years(date_of_birth, on=None):
 	return max(years, 0)
 
 
+def age_in_months(date_of_birth, on=None):
+	"""Completed months of age (0 for a newborn)."""
+	if not date_of_birth:
+		return None
+	dob = getdate(date_of_birth)
+	on = getdate(on) if on else getdate()
+	months = (on.year - dob.year) * 12 + on.month - dob.month - (on.day < dob.day)
+	return max(months, 0)
+
+
 def age_text(date_of_birth, on=None):
 	"""Human readable age: '3 yrs', '8 months' or '12 days'."""
 	if not date_of_birth:

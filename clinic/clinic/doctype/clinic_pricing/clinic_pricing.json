@@ -1,0 +1,127 @@
+{
+	"actions": [],
+	"creation": "2026-09-30 15:49:23.181683",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"consultation_price",
+		"section_5",
+		"lab_prices",
+		"section_6",
+		"drug_prices"
+	],
+	"fields": [
+		{
+			"fieldname": "consultation_price",
+			"fieldtype": "Currency",
+			"label": "Consultation Price",
+			"default": "350",
+			"reqd": 1,
+			"description": "Charged once per visit when the patient sees the doctor"
+		},
+		{
+			"fieldname": "section_5",
+			"fieldtype": "Section Break",
+			"label": "Lab Tests"
+		},
+		{
+			"fieldname": "lab_prices",
+			"fieldtype": "Table",
+			"label": "Lab Test Prices",
+			"options": "Clinic Lab Price",
+			"description": "Charged for each test conducted. Tests not listed are not charged."
+		},
+		{
+			"fieldname": "section_6",
+			"fieldtype": "Section Break",
+			"label": "Drugs"
+		},
+		{
+			"fieldname": "drug_prices",
+			"fieldtype": "Table",
+			"label": "Additional Drug Costs",
+			"options": "Clinic Drug Price",
+			"description": "Only the drugs listed here carry a charge. Every other drug is covered by the consultation."
+		}
+	],
+	"links": [],
+	"modified": "2026-09-30 15:49:23.181683",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Pricing",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"role": "System Manager",
+			"read": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1
+		},
+		{
+			"role": "Clinic Receptionist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Doctor",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Lab Technician",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Pharmacist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		}
+	],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1,
+	"issingle": 1
+}

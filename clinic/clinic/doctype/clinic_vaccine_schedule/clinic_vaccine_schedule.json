@@ -1,0 +1,104 @@
+{
+	"actions": [],
+	"creation": "2026-10-07 10:40:21.515935",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"intro",
+		"items"
+	],
+	"fields": [
+		{
+			"fieldname": "intro",
+			"fieldtype": "HTML",
+			"label": "Intro",
+			"options": "<p class='text-muted'>The immunization schedule every child's card is built from. Changing it only affects children registered afterwards, unless you rebuild a child's schedule from their record.</p>"
+		},
+		{
+			"fieldname": "items",
+			"fieldtype": "Table",
+			"label": "Schedule",
+			"options": "Clinic Vaccine Schedule Item"
+		}
+	],
+	"links": [],
+	"modified": "2026-10-07 10:40:21.515935",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Vaccine Schedule",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"role": "System Manager",
+			"read": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1
+		},
+		{
+			"role": "Clinic Receptionist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Doctor",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Lab Technician",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Pharmacist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		}
+	],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1,
+	"issingle": 1
+}

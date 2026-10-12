@@ -1,0 +1,302 @@
+{
+	"actions": [],
+	"creation": "2026-09-30 15:49:23.181683",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"visit",
+		"patient",
+		"patient_name",
+		"employer",
+		"patient_type",
+		"billing_mode",
+		"column_7",
+		"bill_date",
+		"status",
+		"invoice_no",
+		"invoiced_on",
+		"section_8",
+		"items",
+		"consultation_total",
+		"lab_total",
+		"drug_total",
+		"column_9",
+		"total",
+		"section_10",
+		"payment_mode",
+		"amount_paid",
+		"change_amount",
+		"column_11",
+		"payment_reference",
+		"paid_on",
+		"received_by",
+		"receipt_no"
+	],
+	"fields": [
+		{
+			"fieldname": "visit",
+			"fieldtype": "Link",
+			"label": "Visit",
+			"options": "Clinic Visit",
+			"reqd": 1,
+			"in_list_view": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "patient",
+			"fieldtype": "Link",
+			"label": "Patient",
+			"options": "Clinic Patient",
+			"fetch_from": "visit.patient",
+			"read_only": 1
+		},
+		{
+			"fieldname": "patient_name",
+			"fieldtype": "Data",
+			"label": "Patient Name",
+			"fetch_from": "visit.patient_name",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "employer",
+			"fieldtype": "Link",
+			"label": "Employer",
+			"options": "Clinic Employer",
+			"fetch_from": "visit.employer",
+			"read_only": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "patient_type",
+			"fieldtype": "Select",
+			"label": "Patient Type",
+			"options": "Employee\nCommunity Member",
+			"fetch_from": "visit.patient_type",
+			"read_only": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "billing_mode",
+			"fieldtype": "Select",
+			"label": "Billing Mode",
+			"options": "Cash\nInvoice",
+			"default": "Cash",
+			"read_only": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "column_7",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "bill_date",
+			"fieldtype": "Datetime",
+			"label": "Bill Date",
+			"default": "Now",
+			"reqd": 1
+		},
+		{
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"label": "Status",
+			"options": "Open\nInvoiced\nPaid\nCancelled",
+			"default": "Open",
+			"read_only": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "invoice_no",
+			"fieldtype": "Data",
+			"label": "Invoice No",
+			"read_only": 1,
+			"in_list_view": 1,
+			"search_index": 1,
+			"no_copy": 1
+		},
+		{
+			"fieldname": "invoiced_on",
+			"fieldtype": "Datetime",
+			"label": "Invoiced On",
+			"read_only": 1
+		},
+		{
+			"fieldname": "section_8",
+			"fieldtype": "Section Break",
+			"label": "Charges"
+		},
+		{
+			"fieldname": "items",
+			"fieldtype": "Table",
+			"label": "Items",
+			"options": "Clinic Bill Item"
+		},
+		{
+			"fieldname": "consultation_total",
+			"fieldtype": "Currency",
+			"label": "Consultation Total",
+			"read_only": 1
+		},
+		{
+			"fieldname": "lab_total",
+			"fieldtype": "Currency",
+			"label": "Lab Tests Total",
+			"read_only": 1
+		},
+		{
+			"fieldname": "drug_total",
+			"fieldtype": "Currency",
+			"label": "Drug Total",
+			"read_only": 1
+		},
+		{
+			"fieldname": "column_9",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "total",
+			"fieldtype": "Currency",
+			"label": "Total Due",
+			"read_only": 1,
+			"in_list_view": 1,
+			"bold": 1
+		},
+		{
+			"fieldname": "section_10",
+			"fieldtype": "Section Break",
+			"label": "Payment"
+		},
+		{
+			"fieldname": "payment_mode",
+			"fieldtype": "Select",
+			"label": "Payment Mode",
+			"options": "\nCash\nM-Pesa\nBank / Card\nBank Transfer\nCheque\nOther"
+		},
+		{
+			"fieldname": "amount_paid",
+			"fieldtype": "Currency",
+			"label": "Amount Paid",
+			"read_only": 1
+		},
+		{
+			"fieldname": "change_amount",
+			"fieldtype": "Currency",
+			"label": "Change Given",
+			"read_only": 1
+		},
+		{
+			"fieldname": "column_11",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "payment_reference",
+			"fieldtype": "Data",
+			"label": "Payment Reference",
+			"description": "e.g. M-Pesa code"
+		},
+		{
+			"fieldname": "paid_on",
+			"fieldtype": "Datetime",
+			"label": "Paid On",
+			"read_only": 1
+		},
+		{
+			"fieldname": "received_by",
+			"fieldtype": "Link",
+			"label": "Received By",
+			"options": "User",
+			"read_only": 1
+		},
+		{
+			"fieldname": "receipt_no",
+			"fieldtype": "Data",
+			"label": "Receipt No",
+			"read_only": 1,
+			"in_list_view": 1,
+			"search_index": 1,
+			"no_copy": 1
+		}
+	],
+	"links": [],
+	"modified": "2026-09-30 16:23:08.483480",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Bill",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"role": "System Manager",
+			"read": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1
+		},
+		{
+			"role": "Clinic Pharmacist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Doctor",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Lab Technician",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		}
+	],
+	"sort_field": "bill_date",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1,
+	"autoname": "BILL-.YYYY.-.#####",
+	"naming_rule": "Expression (old style)",
+	"title_field": "patient_name",
+	"search_fields": "patient_name,visit,receipt_no"
+}

@@ -1,217 +1,389 @@
 {
-	"app": "clinic",
-	"charts": [],
-	"content": "[{\"id\": \"LXjLJH8VEq\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Clinic Desks</b></span>\", \"col\": 12}}, {\"id\": \"dan3Seqzjn\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Triage Desk\", \"col\": 3}}, {\"id\": \"lShDFMOoDN\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Doctor Desk\", \"col\": 3}}, {\"id\": \"J7eo85e0Fu\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Lab Desk\", \"col\": 3}}, {\"id\": \"03tQeB28dO\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Pharmacy Desk\", \"col\": 3}}, {\"id\": \"vjnGHaf5kJ\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"w4icwrk56g\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"40yCPv31yK\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Patient Journey</b></span>\", \"col\": 12}}, {\"id\": \"bnShAfNESq\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Clinic Patient\", \"col\": 3}}, {\"id\": \"pBv7FLlgXK\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Clinic Visit\", \"col\": 3}}, {\"id\": \"5OmCKfcpPd\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Clinic Triage\", \"col\": 3}}, {\"id\": \"I0rCCDLdIC\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Clinic Consultation\", \"col\": 3}}, {\"id\": \"tLw5M5KE5E\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Clinic Lab Test\", \"col\": 3}}, {\"id\": \"GwxsA6vezT\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Clinic Dispensing\", \"col\": 3}}, {\"id\": \"ZH4ecJj80x\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Clinic Appointment\", \"col\": 3}}, {\"id\": \"Ypp1P4VOw8\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"4zU2obrKRV\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Reports &amp; Setup</b></span>\", \"col\": 12}}, {\"id\": \"l4EJE0Ctvi\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 4}}, {\"id\": \"eCu8t4IdtD\", \"type\": \"card\", \"data\": {\"card_name\": \"Setup\", \"col\": 4}}]",
-	"creation": "2026-09-29 19:48:54.784253",
-	"custom_blocks": [],
-	"docstatus": 0,
-	"doctype": "Workspace",
-	"for_user": "",
-	"hide_custom": 0,
-	"icon": "health",
-	"idx": 0,
-	"indicator_color": "green",
-	"is_hidden": 0,
-	"label": "Clinic",
-	"links": [
-		{
-			"hidden": 0,
-			"is_query_report": 0,
-			"label": "Reports",
-			"link_count": 5,
-			"onboard": 0,
-			"type": "Card Break"
-		},
-		{
-			"hidden": 0,
-			"is_query_report": 1,
-			"label": "Clinic Visit Summary",
-			"link_to": "Clinic Visit Summary",
-			"link_type": "Report",
-			"onboard": 0,
-			"type": "Link"
-		},
-		{
-			"hidden": 0,
-			"is_query_report": 1,
-			"label": "Clinic Morbidity Report",
-			"link_to": "Clinic Morbidity Report",
-			"link_type": "Report",
-			"onboard": 0,
-			"type": "Link"
-		},
-		{
-			"hidden": 0,
-			"is_query_report": 1,
-			"label": "Clinic Lab Test Summary",
-			"link_to": "Clinic Lab Test Summary",
-			"link_type": "Report",
-			"onboard": 0,
-			"type": "Link"
-		},
-		{
-			"hidden": 0,
-			"is_query_report": 1,
-			"label": "Employee Health by Department",
-			"link_to": "Employee Health by Department",
-			"link_type": "Report",
-			"onboard": 0,
-			"type": "Link"
-		},
-		{
-			"hidden": 0,
-			"is_query_report": 1,
-			"label": "Clinic Referral Register",
-			"link_to": "Clinic Referral Register",
-			"link_type": "Report",
-			"onboard": 0,
-			"type": "Link"
-		},
-		{
-			"hidden": 0,
-			"is_query_report": 0,
-			"label": "Setup",
-			"link_count": 5,
-			"onboard": 0,
-			"type": "Card Break"
-		},
-		{
-			"hidden": 0,
-			"is_query_report": 0,
-			"label": "Lab Test Type",
-			"link_to": "Clinic Lab Test Type",
-			"link_type": "DocType",
-			"onboard": 0,
-			"type": "Link"
-		},
-		{
-			"hidden": 0,
-			"is_query_report": 0,
-			"label": "Diagnosis",
-			"link_to": "Clinic Diagnosis",
-			"link_type": "DocType",
-			"onboard": 0,
-			"type": "Link"
-		},
-		{
-			"hidden": 0,
-			"is_query_report": 0,
-			"label": "Facility",
-			"link_to": "Clinic Facility",
-			"link_type": "DocType",
-			"onboard": 0,
-			"type": "Link"
-		},
-		{
-			"hidden": 0,
-			"is_query_report": 0,
-			"label": "Employees",
-			"link_to": "Employee",
-			"link_type": "DocType",
-			"onboard": 0,
-			"type": "Link"
-		},
-		{
-			"hidden": 0,
-			"is_query_report": 0,
-			"label": "Clinic Settings",
-			"link_to": "Clinic Settings",
-			"link_type": "DocType",
-			"onboard": 0,
-			"type": "Link"
-		}
-	],
-	"modified": "2026-09-29 22:05:39.996684",
-	"modified_by": "Administrator",
-	"module": "Clinic",
-	"name": "Clinic",
-	"number_cards": [],
-	"owner": "Administrator",
-	"parent_page": "",
-	"public": 1,
-	"quick_lists": [],
-	"restrict_to_domain": "",
-	"roles": [],
-	"sequence_id": 50.0,
-	"shortcuts": [
-		{
-			"color": "Green",
-			"doc_view": "List",
-			"label": "Triage Desk",
-			"type": "URL",
-			"url": "/clinic/triage"
-		},
-		{
-			"color": "Green",
-			"doc_view": "List",
-			"label": "Doctor Desk",
-			"type": "URL",
-			"url": "/clinic/consultation"
-		},
-		{
-			"color": "Green",
-			"doc_view": "List",
-			"label": "Lab Desk",
-			"type": "URL",
-			"url": "/clinic/lab"
-		},
-		{
-			"color": "Green",
-			"doc_view": "List",
-			"label": "Pharmacy Desk",
-			"type": "URL",
-			"url": "/clinic/pharmacy"
-		},
-		{
-			"color": "Grey",
-			"doc_view": "List",
-			"label": "Clinic Patient",
-			"link_to": "Clinic Patient",
-			"type": "DocType"
-		},
-		{
-			"color": "Grey",
-			"doc_view": "List",
-			"label": "Clinic Visit",
-			"link_to": "Clinic Visit",
-			"type": "DocType"
-		},
-		{
-			"color": "Grey",
-			"doc_view": "List",
-			"label": "Clinic Triage",
-			"link_to": "Clinic Triage",
-			"type": "DocType"
-		},
-		{
-			"color": "Grey",
-			"doc_view": "List",
-			"label": "Clinic Consultation",
-			"link_to": "Clinic Consultation",
-			"type": "DocType"
-		},
-		{
-			"color": "Grey",
-			"doc_view": "List",
-			"label": "Clinic Lab Test",
-			"link_to": "Clinic Lab Test",
-			"type": "DocType"
-		},
-		{
-			"color": "Grey",
-			"doc_view": "List",
-			"label": "Clinic Dispensing",
-			"link_to": "Clinic Dispensing",
-			"type": "DocType"
-		},
-		{
-			"color": "Grey",
-			"doc_view": "List",
-			"label": "Clinic Appointment",
-			"link_to": "Clinic Appointment",
-			"type": "DocType"
-		}
-	],
-	"title": "Clinic",
-	"type": "Workspace"
+ "app": "clinic",
+ "charts": [],
+ "content": "[{\"id\": \"LXjLJH8VEq\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Clinic Desks</b></span>\", \"col\": 12}}, {\"id\": \"dan3Seqzjn\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Triage Desk\", \"col\": 3}}, {\"id\": \"lShDFMOoDN\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Doctor Desk\", \"col\": 3}}, {\"id\": \"J7eo85e0Fu\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Lab Desk\", \"col\": 3}}, {\"id\": \"03tQeB28dO\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Pharmacy Desk\", \"col\": 3}}, {\"id\": \"a7gyY4kX94\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Antenatal Clinic Desk\", \"col\": 3}}, {\"id\": \"s51fCS2Qkd\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"MCH & Postnatal Desk\", \"col\": 3}}, {\"id\": \"r9PEm2EPGi\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"TB Clinic Desk\", \"col\": 3}}, {\"id\": \"vjnGHaf5kJ\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"w4icwrk56g\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"40yCPv31yK\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Patient Journey</b></span>\", \"col\": 12}}, {\"id\": \"RT24CFDsou\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Clinic Attendance\", \"col\": 3}}, {\"id\": \"bnShAfNESq\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Clinic Patient\", \"col\": 3}}, {\"id\": \"pBv7FLlgXK\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Clinic Visit\", \"col\": 3}}, {\"id\": \"5OmCKfcpPd\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Clinic Triage\", \"col\": 3}}, {\"id\": \"I0rCCDLdIC\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Clinic Consultation\", \"col\": 3}}, {\"id\": \"tLw5M5KE5E\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Clinic Lab Test\", \"col\": 3}}, {\"id\": \"GwxsA6vezT\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Clinic Dispensing\", \"col\": 3}}, {\"id\": \"ZH4ecJj80x\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Clinic Appointment\", \"col\": 3}}, {\"id\": \"Ypp1P4VOw8\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"4zU2obrKRV\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Reports &amp; Setup</b></span>\", \"col\": 12}}, {\"id\": \"l4EJE0Ctvi\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 4}}, {\"id\": \"eCu8t4IdtD\", \"type\": \"card\", \"data\": {\"card_name\": \"Setup\", \"col\": 4}}]",
+ "creation": "2026-09-29 19:48:54.784253",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "health",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Clinic",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 12,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Clinic Visit Summary",
+   "link_to": "Clinic Visit Summary",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Clinic Morbidity Report",
+   "link_to": "Clinic Morbidity Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Clinic Lab Test Summary",
+   "link_to": "Clinic Lab Test Summary",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Employee Health by Department",
+   "link_to": "Employee Health by Department",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Clinic Referral Register",
+   "link_to": "Clinic Referral Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "TB Screening Register",
+   "link_to": "TB Screening Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Clinic Attendance Summary",
+   "link_to": "Clinic Attendance Summary",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Clinic Revenue",
+   "link_to": "Clinic Revenue",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Farm Invoices",
+   "link_to": "Farm Invoices",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "CWC Register",
+   "link_to": "CWC Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Immunization Defaulters",
+   "link_to": "Immunization Defaulters",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Immunization Coverage",
+   "link_to": "Immunization Coverage",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Setup",
+   "link_count": 11,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Lab Test Type",
+   "link_to": "Clinic Lab Test Type",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Diagnosis",
+   "link_to": "Clinic Diagnosis",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Facility",
+   "link_to": "Clinic Facility",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employees",
+   "link_to": "Employee",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Clinic Settings",
+   "link_to": "Clinic Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Price List",
+   "link_to": "Clinic Pricing",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employers",
+   "link_to": "Clinic Employer",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Staff Profiles",
+   "link_to": "Clinic Staff Profile",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Bills",
+   "link_to": "Clinic Bill",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "CWC Register Entries",
+   "link_to": "Clinic Child Record",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "ANC Register Entries",
+   "link_to": "Clinic ANC Record",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "FP Register Entries",
+   "link_to": "Clinic FP Record",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "PNC Register Entries",
+   "link_to": "Clinic PNC Record",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Vaccine Schedule",
+   "link_to": "Clinic Vaccine Schedule",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-10-07 10:47:58.659093",
+ "modified_by": "Administrator",
+ "module": "Clinic",
+ "name": "Clinic",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [],
+ "sequence_id": 50.0,
+ "shortcuts": [
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "Triage Desk",
+   "type": "URL",
+   "url": "/clinic/triage"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "Doctor Desk",
+   "type": "URL",
+   "url": "/clinic/consultation"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "Lab Desk",
+   "type": "URL",
+   "url": "/clinic/lab"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "Pharmacy Desk",
+   "type": "URL",
+   "url": "/clinic/pharmacy"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "Antenatal Clinic Desk",
+   "type": "URL",
+   "url": "/clinic/antenatal"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "MCH & Postnatal Desk",
+   "type": "URL",
+   "url": "/clinic/mch"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "TB Clinic Desk",
+   "type": "URL",
+   "url": "/clinic/tb"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Clinic Patient",
+   "link_to": "Clinic Patient",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Clinic Visit",
+   "link_to": "Clinic Visit",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Clinic Triage",
+   "link_to": "Clinic Triage",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Clinic Consultation",
+   "link_to": "Clinic Consultation",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Clinic Lab Test",
+   "link_to": "Clinic Lab Test",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Clinic Dispensing",
+   "link_to": "Clinic Dispensing",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Clinic Appointment",
+   "link_to": "Clinic Appointment",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Clinic Attendance",
+   "link_to": "Clinic Attendance",
+   "type": "DocType"
+  }
+ ],
+ "title": "Clinic",
+ "type": "Workspace"
 }

@@ -10,10 +10,15 @@
 		"sex",
 		"age_years",
 		"department",
+		"employer",
+		"sick_sheet_required",
+		"billable",
+		"billing_mode",
 		"column_6",
 		"visit_date",
 		"visit_purpose",
 		"visit_source",
+		"service_point",
 		"status",
 		"section_7",
 		"referring_facility",
@@ -24,6 +29,7 @@
 		"section_9",
 		"triage",
 		"consultation",
+		"attendance",
 		"column_10",
 		"appointment",
 		"reception_notes"
@@ -81,6 +87,41 @@
 			"in_standard_filter": 1
 		},
 		{
+			"fieldname": "employer",
+			"fieldtype": "Link",
+			"label": "Employer",
+			"options": "Clinic Employer",
+			"fetch_from": "patient.employer",
+			"read_only": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "sick_sheet_required",
+			"fieldtype": "Check",
+			"label": "Sick Sheet Required",
+			"fetch_from": "patient.requires_sick_sheet",
+			"read_only": 1,
+			"hidden": 1
+		},
+		{
+			"fieldname": "billable",
+			"fieldtype": "Check",
+			"label": "Billable",
+			"read_only": 0,
+			"hidden": 1,
+			"default": "1"
+		},
+		{
+			"fieldname": "billing_mode",
+			"fieldtype": "Select",
+			"label": "Billing Mode",
+			"options": "Cash\nInvoice",
+			"default": "Cash",
+			"read_only": 1,
+			"in_standard_filter": 1,
+			"description": "Cash: paid at the pharmacy. Invoice: sent to the employer."
+		},
+		{
 			"fieldname": "column_6",
 			"fieldtype": "Column Break"
 		},
@@ -112,10 +153,19 @@
 			"in_standard_filter": 1
 		},
 		{
+			"fieldname": "service_point",
+			"fieldtype": "Select",
+			"label": "Sent To",
+			"options": "Consultation\nAntenatal Clinic\nMCH & Postnatal Clinic\nTB Clinic",
+			"default": "Consultation",
+			"in_standard_filter": 1,
+			"description": "Where triage sent the patient"
+		},
+		{
 			"fieldname": "status",
 			"fieldtype": "Select",
 			"label": "Status",
-			"options": "Waiting Triage\nWaiting Consultation\nIn Consultation\nWaiting Lab\nLab Results Ready\nWaiting Pharmacy\nCompleted\nCancelled",
+			"options": "Waiting Triage\nWaiting Consultation\nWaiting Clinic\nIn Consultation\nIn Clinic\nWaiting Lab\nLab Results Ready\nWaiting Pharmacy\nCompleted\nCancelled",
 			"default": "Waiting Triage",
 			"read_only": 1,
 			"in_list_view": 1,
@@ -177,6 +227,14 @@
 			"no_copy": 1
 		},
 		{
+			"fieldname": "attendance",
+			"fieldtype": "Link",
+			"label": "Attendance",
+			"options": "Clinic Attendance",
+			"read_only": 1,
+			"no_copy": 1
+		},
+		{
 			"fieldname": "column_10",
 			"fieldtype": "Column Break"
 		},
@@ -195,7 +253,7 @@
 		}
 	],
 	"links": [],
-	"modified": "2026-09-29 19:48:54.717999",
+	"modified": "2026-09-30 16:23:08.483480",
 	"modified_by": "Administrator",
 	"module": "Clinic",
 	"name": "Clinic Visit",

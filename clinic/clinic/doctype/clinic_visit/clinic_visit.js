@@ -29,6 +29,11 @@ frappe.ui.form.on("Clinic Visit", {
 			}, __("Actions"));
 		}
 
+		if (["Waiting Clinic", "In Clinic"].includes(status)) {
+			const slug = { "Antenatal Clinic": "antenatal", "MCH & Postnatal Clinic": "mch", "TB Clinic": "tb" }[frm.doc.service_point];
+			if (slug) frm.add_custom_button(__("Open in Clinic Desk"), () => window.open(`/clinic/${slug}#/${frm.doc.name}`, "_blank")).addClass("btn-primary");
+		}
+
 		if (frm.doc.triage) {
 			frm.add_custom_button(__("Triage"), () => frappe.set_route("Form", "Clinic Triage", frm.doc.triage), __("View"));
 		}

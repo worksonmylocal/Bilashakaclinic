@@ -1,0 +1,108 @@
+{
+	"actions": [],
+	"creation": "2026-10-07 10:40:21.515935",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"milestone",
+		"vaccine",
+		"due_date",
+		"date_given",
+		"batch_no",
+		"status",
+		"given_by",
+		"attendance",
+		"age_days",
+		"grace_days",
+		"optional"
+	],
+	"fields": [
+		{
+			"fieldname": "milestone",
+			"fieldtype": "Select",
+			"label": "Milestone",
+			"options": "At Birth\n6 Weeks\n10 Weeks\n14 Weeks\n6 Months\n9 Months\n12 Months\n18 Months",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "vaccine",
+			"fieldtype": "Data",
+			"label": "Vaccine",
+			"read_only": 1,
+			"reqd": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "due_date",
+			"fieldtype": "Date",
+			"label": "Due Date",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "date_given",
+			"fieldtype": "Date",
+			"label": "Date Given",
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "batch_no",
+			"fieldtype": "Data",
+			"label": "Batch No.",
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"label": "Status",
+			"options": "Scheduled\nDue\nOverdue\nGiven\nNot Applicable",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "given_by",
+			"fieldtype": "Link",
+			"label": "Given By",
+			"options": "User",
+			"read_only": 1
+		},
+		{
+			"fieldname": "attendance",
+			"fieldtype": "Link",
+			"label": "Attendance",
+			"options": "Clinic Attendance",
+			"read_only": 1
+		},
+		{
+			"fieldname": "age_days",
+			"fieldtype": "Int",
+			"label": "Age Days",
+			"hidden": 1
+		},
+		{
+			"fieldname": "grace_days",
+			"fieldtype": "Int",
+			"label": "Grace Days",
+			"hidden": 1
+		},
+		{
+			"fieldname": "optional",
+			"fieldtype": "Check",
+			"label": "Optional",
+			"hidden": 1
+		}
+	],
+	"links": [],
+	"modified": "2026-10-07 10:40:21.515935",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Immunization Dose",
+	"owner": "Administrator",
+	"permissions": [],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"istable": 1,
+	"editable_grid": 1
+}

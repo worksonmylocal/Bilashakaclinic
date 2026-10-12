@@ -206,9 +206,14 @@ LAB_TEST_TYPES = [
 		"test_name": "Sputum for AAFB (TB)",
 		"category": "Microbiology",
 		"sample_type": "Sputum",
-		"performed_where": "External",
+		"performed_where": "Onsite",
 		"parameters": [
-			{"parameter": "Result", "result_type": "Text", "unit": ""},
+			{
+				"parameter": "AAFB Smear",
+				"result_type": "Qualitative",
+				"unit": "",
+				"options": "Negative\nPositive (Scanty)\nPositive (1+)\nPositive (2+)\nPositive (3+)",
+			},
 		],
 	},
 	{
@@ -271,4 +276,30 @@ DIAGNOSES = [
 	("Pelvic Inflammatory Disease", "N73.9", "Genito-urinary/Reproductive", 0),
 	("Depression / Anxiety", "F41.9", "Mental Health", 0),
 	("Medical Check-up / Screening", "Z00", "Other", 0),
+]
+
+# Kenya KEPI childhood immunization schedule: (milestone, vaccine, age in days, optional)
+VACCINE_SCHEDULE = [
+    ("At Birth", "BCG", 0, 0),
+    ("At Birth", "OPV 0", 0, 0),
+    ("6 Weeks", "OPV 1", 42, 0),
+    ("6 Weeks", "Penta 1 (DPT-HepB-Hib)", 42, 0),
+    ("6 Weeks", "PCV 1", 42, 0),
+    ("6 Weeks", "Rotavirus 1", 42, 0),
+    ("10 Weeks", "OPV 2", 70, 0),
+    ("10 Weeks", "Penta 2 (DPT-HepB-Hib)", 70, 0),
+    ("10 Weeks", "PCV 2", 70, 0),
+    ("10 Weeks", "Rotavirus 2", 70, 0),
+    ("14 Weeks", "OPV 3", 98, 0),
+    ("14 Weeks", "IPV 1", 98, 0),
+    ("14 Weeks", "Penta 3 (DPT-HepB-Hib)", 98, 0),
+    ("14 Weeks", "PCV 3", 98, 0),
+    ("14 Weeks", "Rotavirus 3", 98, 1),
+    ("6 Months", "Vitamin A (100,000 IU)", 182, 0),
+    ("9 Months", "MR 1 (Measles-Rubella)", 273, 0),
+    ("9 Months", "Yellow Fever", 273, 1),
+    ("12 Months", "Vitamin A (200,000 IU)", 365, 0),
+    ("12 Months", "Deworming", 365, 0),
+    ("18 Months", "MR 2 (Measles-Rubella)", 547, 0),
+    ("18 Months", "Vitamin A (200,000 IU)", 547, 0),
 ]

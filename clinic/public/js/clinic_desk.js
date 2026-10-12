@@ -6,6 +6,9 @@ window.Desk = (function () {
         { key: "consultation", label: "Consultation", href: "/clinic/consultation" },
         { key: "lab", label: "Laboratory", href: "/clinic/lab" },
         { key: "pharmacy", label: "Pharmacy", href: "/clinic/pharmacy" },
+        { key: "antenatal", label: "Antenatal", href: "/clinic/antenatal" },
+        { key: "mch", label: "MCH & PNC", href: "/clinic/mch" },
+        { key: "tb", label: "TB Clinic", href: "/clinic/tb" },
     ];
     const COLORS = { emp: "#2c6bb3", com: "#228883", ink: "#0a0a0a", warn: "#b9770e", bad: "#c4302b", good: "#1a8a3a" };
 
@@ -32,6 +35,7 @@ window.Desk = (function () {
     const pill = (text, cls = "mute") => `<span class="pill ${cls}">${esc(text)}</span>`;
     const ageSex = (r) => [r.age_years != null && r.age_years !== "" ? r.age_years + " yrs" : r.age, r.sex].filter(Boolean).join(" · ");
     const split = (e, c) => `${num(e)} employee${Number(e) === 1 ? "" : "s"} · ${num(c)} community`;
+    const money = (n) => "KSh " + Number(n || 0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 });
     const empty = (msg) => `<div class="empty empty--pad">${esc(msg)}</div>`;
     const plain = (html) => {
         const d = document.createElement("div");
@@ -120,6 +124,34 @@ window.Desk = (function () {
         return who;
     }
 
+    // Queue cards: show at most `n` at a time and scroll through the rest.
+    const listScroll = new WeakMap();
+    function limitList(el, n = 5) {
+        if (!listScroll.has(el)) {
+            listScroll.set(el, 0);
+            el.addEventListener("scroll", () => listScroll.set(el, el.scrollTop), { passive: true });
+        }
+        el.style.maxHeight = "";
+        el.classList.remove("scrolls");
+        const cards = Array.from(el.children).filter((c) => c.classList.contains("qcard"));
+        if (cards.length <= n || !el.offsetParent) return; // few entries, or hidden tab (measured when shown)
+        const gap = parseFloat(getComputedStyle(el).rowGap) || 0;
+        const height = cards.slice(0, n).reduce((sum, c) => sum + c.offsetHeight, 0) + gap * (n - 1);
+        el.style.maxHeight = Math.ceil(height) + "px";
+        el.classList.add("scrolls");
+        el.scrollTop = listScroll.get(el) || 0;
+    }
+    const limitAll = () => $$(".queue").forEach((q) => limitList(q));
+    new MutationObserver((mutations) => {
+        const lists = new Set();
+        mutations.forEach((m) => { const q = m.target.closest && m.target.closest(".queue"); if (q) lists.add(q); });
+        lists.forEach((q) => limitList(q));
+    }).observe(document.body, { childList: true, subtree: true });
+    window.addEventListener("resize", limitAll);
+    // Card heights change once the web font has loaded, so measure again then.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => setTimeout(limitAll, 50));
+    window.addEventListener("load", () => setTimeout(limitAll, 300));
+
     function tabs(onChange) {
         $$(".tab").forEach((btn) =>
             btn.addEventListener("click", () => {
@@ -127,6 +159,7 @@ window.Desk = (function () {
                 $$(".tabpanel").forEach((c) => c.classList.remove("on"));
                 btn.classList.add("on");
                 $("#tab-" + btn.dataset.tab).classList.add("on");
+                requestAnimationFrame(limitAll);
                 if (onChange) onChange(btn.dataset.tab);
             })
         );
@@ -151,10 +184,10 @@ window.Desk = (function () {
             .join("");
     }
 
-    function hbars(el, rows, { nameKey = "label", valueKey = "value", format = num, cls = () => "" } = {}) {
+    function hbars(el, rows, { nameKey = "label", valueKey = "value", format = num, cls = () => "", wide = false } = {}) {
         if (!rows.length) { el.innerHTML = empty("No data yet."); return; }
         const max = Math.max(...rows.map((r) => Number(r[valueKey]) || 0), 1);
-        el.innerHTML = rows.map((r) => `<div class="hb">
+        el.innerHTML = rows.map((r) => `<div class="hb${wide ? " hb--wide" : ""}">
             <div class="hb__name" title="${esc(r[nameKey])}">${esc(r[nameKey])}</div>
             <div class="hb__lane"><div class="hb__est"></div><div class="hb__act ${cls(r)}" style="width:${(Number(r[valueKey]) || 0) / max * 100}%"></div></div>
             <div class="hb__pct">${format(r[valueKey], r)}</div></div>`).join("");
@@ -323,7 +356,7 @@ window.Desk = (function () {
 
     // ---------------------------------------------------------------- domain widgets
     function banner(p, { visit, extra = "" } = {}) {
-        const where = p.patient_type === "Employee" ? p.department : p.village;
+        const where = p.patient_type === "Employee" ? (p.department || p.section) : p.village;
         const flags = [];
         if (p.allergies) flags.push(`<span class="flag flag--bad" title="Known allergies">⚠ Allergy: ${esc(p.allergies)}</span>`);
         if (p.chronic_conditions) flags.push(`<span class="flag flag--warn">Chronic: ${esc(p.chronic_conditions)}</span>`);
@@ -335,6 +368,7 @@ window.Desk = (function () {
                 <div class="pbanner__meta">
                     <span>${esc(p.name || p.patient)}</span>
                     ${ageSex(p) ? `<span>${esc(ageSex(p))}</span>` : ""}
+                    ${p.patient_type === "Employee" && p.employer ? `<span>${esc(p.employer)}${p.staff_no ? " · " + esc(p.staff_no) : ""}</span>` : ""}
                     ${where ? `<span>${esc(where)}</span>` : ""}
                     ${p.phone ? `<span>${esc(p.phone)}</span>` : ""}
                     ${visit ? `<span>${esc(visit)}</span>` : ""}
@@ -408,24 +442,36 @@ window.Desk = (function () {
     }
 
     function renderNewPatientForm(form, m, chosen) {
+        const employers = m.employers || [];
         let type = "Community Member", employee = null;
+        let employer = (employers.find((e) => e.uses_employee_records) || employers[0] || {}).name;
+        const usesRecords = () => !!(employers.find((e) => e.name === employer) || {}).uses_employee_records;
+        const keepValues = (keep) => Object.entries(keep).forEach(([k, v]) => { const el = $(`[data-f=${k}]`, form); if (el && v && !el.value) el.value = v; });
         const draw = () => {
+            const fromList = type === "Employee" && usesRecords();
+            const typedIn = type === "Employee" && !usesRecords();
             form.innerHTML = `<div class="subhead">New patient</div>
                 <div class="seg-toggle">
                     <button data-t="Community Member" class="${type === "Community Member" ? "on" : ""}">Community member</button>
                     <button data-t="Employee" class="${type === "Employee" ? "on" : ""}">Employee</button>
                 </div>
-                ${type === "Employee" ? `<div class="field"><label>Find employee <span class="req">*</span></label>
-                    <input class="input" id="emp-q" placeholder="Employee name, number or phone">
-                    ${employee ? `<small>Selected: <b>${esc(employee.employee_name)}</b> (${esc(employee.name)}) ${esc(employee.department || "")}</small>` : ""}</div>` : ""}
+                ${type === "Employee" ? `<div class="grid-2">
+                    <div class="field"><label>Farm / employer <span class="req">*</span></label>
+                        <select id="pp-employer">${employers.map((e) => `<option ${e.name === employer ? "selected" : ""}>${esc(e.name)}</option>`).join("")}</select></div>
+                    ${fromList ? `<div class="field"><label>Find employee <span class="req">*</span></label>
+                        <input class="input" id="emp-q" placeholder="Employee name, number or phone">
+                        ${employee ? `<small>Selected: <b>${esc(employee.employee_name)}</b> (${esc(employee.name)}) ${esc(employee.department || "")}</small>` : ""}</div>`
+                        : field("staff_no", "Staff / payroll no.", { required: true })}
+                </div>` : ""}
                 <div class="grid-3">
-                    ${field("full_name", "Full name", { required: true, value: employee?.employee_name || "", attrs: employee ? "readonly" : "" })}
+                    ${field("full_name", "Full name", { required: true, value: employee?.employee_name || "", attrs: fromList && employee ? "readonly" : "" })}
                     ${field("sex", "Sex", { type: "select", options: ["", ...m.genders.filter((g) => ["Male", "Female", "Other", "Prefer not to say"].includes(g))], value: employee?.gender || "", required: true })}
                     ${field("phone", "Phone", { value: employee?.cell_number || "" })}
                     ${field("date_of_birth", "Date of birth", { type: "date", value: employee?.date_of_birth || "" })}
                     ${field("age_years", "…or age (years)", { type: "number", attrs: 'min="0" max="120"', help: "Used when the date of birth is unknown" })}
                     ${field("national_id", "National ID / Passport")}
                 </div>
+                ${typedIn ? `<div class="grid-3">${field("section", "Section / department")}</div>` : ""}
                 ${type === "Community Member" ? `<div class="grid-3">
                     ${field("village", "Village / Location")}
                     ${field("next_of_kin", "Next of kin")}
@@ -437,17 +483,17 @@ window.Desk = (function () {
                 </div>
                 <div style="text-align:right"><button class="btn btn--primary" id="pp-save">Register &amp; continue</button></div>`;
             $$("[data-t]", form).forEach((b) => b.addEventListener("click", () => {
-                const keep = read(form); type = b.dataset.t; employee = null; draw();
-                Object.entries(keep).forEach(([k, v]) => { const el = $(`[data-f=${k}]`, form); if (el && v && !el.value) el.value = v; });
+                const keep = read(form); type = b.dataset.t; employee = null; draw(); keepValues(keep);
             }));
-            if (type === "Employee") {
+            const empSel = $("#pp-employer", form);
+            if (empSel) empSel.addEventListener("change", () => { const keep = read(form); employer = empSel.value; employee = null; draw(); keepValues(keep); });
+            if (fromList) {
                 suggest($("#emp-q", form), {
                     fetch: (q) => call("common.search_employees", { q }, { quiet: true }),
                     render: (e) => ({ main: e.employee_name, sub: `${e.name} · ${e.department || ""}${e.patient ? " · already a patient" : ""}` }),
                     onPick: async (e) => {
                         if (e.patient) { toast("This employee is already registered."); return chosen((await call("common.search_patients", { q: e.patient }))[0]); }
-                        employee = e; const keep = read(form); draw();
-                        Object.entries(keep).forEach(([k, v]) => { const el = $(`[data-f=${k}]`, form); if (el && v && !el.value) el.value = v; });
+                        employee = e; const keep = read(form); draw(); keepValues(keep);
                     },
                 });
             }
@@ -455,7 +501,8 @@ window.Desk = (function () {
                 const btn = ev.currentTarget, v = read(form);
                 if (!v.full_name.trim()) return toast("Enter the patient's name", "warn");
                 if (!v.sex) return toast("Select the patient's sex", "warn");
-                if (type === "Employee" && !employee) return toast("Pick the employee from the list", "warn");
+                if (fromList && !employee) return toast("Pick the employee from the list", "warn");
+                if (typedIn && !(v.staff_no || "").trim()) return toast("Enter the staff / payroll number", "warn");
                 if (!v.date_of_birth && v.age_years) {
                     const d = new Date(); d.setFullYear(d.getFullYear() - Number(v.age_years));
                     v.date_of_birth = d.toISOString().slice(0, 10);
@@ -464,7 +511,7 @@ window.Desk = (function () {
                 delete v.age_years;
                 btn.disabled = true;
                 try {
-                    const p = await call("common.register_patient", { data: { ...v, patient_type: type, employee: employee?.name } });
+                    const p = await call("common.register_patient", { data: { ...v, patient_type: type, employer: type === "Employee" ? employer : null, employee: employee?.name } });
                     toast("Patient registered: " + p.name);
                     await chosen(p);
                 } catch (e) { btn.disabled = false; }
@@ -473,7 +520,7 @@ window.Desk = (function () {
         draw();
     }
 
-    return { call, esc, $, $$, num, initials, timeOf, dateOf, duration, wait, waitClass, typeTag, pill, ageSex, empty, split,
+    return { call, esc, $, $$, num, initials, timeOf, dateOf, duration, wait, waitClass, typeTag, pill, ageSex, empty, split, money,
         toast, shell, tabs, poll, kpis, hbars, chart, stackedDatasets, stackedOptions, COLORS, modal, field, read, suggest,
         banner, masters, facilityField, pickPatient, REFRESH_ICON, cfg };
 })();

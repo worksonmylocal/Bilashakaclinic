@@ -8,7 +8,7 @@ app_license = "mit"
 # Apps
 # ------------------
 
-# required_apps = []
+required_apps = ["erpnext"]
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
@@ -275,5 +275,6 @@ after_install = "clinic.setup.after_install"
 scheduler_events = {
 	"daily": [
 		"clinic.clinic.doctype.clinic_appointment.clinic_appointment.mark_missed_appointments",
+		"clinic.clinic.doctype.clinic_child_record.clinic_child_record.refresh_defaulters",
 	],
 }

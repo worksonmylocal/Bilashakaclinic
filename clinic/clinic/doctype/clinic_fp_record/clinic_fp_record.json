@@ -1,0 +1,244 @@
+{
+	"actions": [],
+	"creation": "2026-10-08 12:00:00.000000",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"intro_section",
+		"patient",
+		"fp_no",
+		"serial_no",
+		"column_1",
+		"registration_date",
+		"status",
+		"exit_notes",
+		"section_2",
+		"client_name",
+		"dob",
+		"age",
+		"column_3",
+		"phone",
+		"village",
+		"section_4",
+		"current_method",
+		"method_since",
+		"column_5",
+		"last_visit_date",
+		"visits_count"
+	],
+	"fields": [
+		{
+			"fieldname": "intro_section",
+			"fieldtype": "Section Break",
+			"label": "Registration"
+		},
+		{
+			"fieldname": "patient",
+			"fieldtype": "Link",
+			"label": "Client",
+			"options": "Clinic Patient",
+			"reqd": 1,
+			"unique": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "fp_no",
+			"fieldtype": "Data",
+			"label": "FP No.",
+			"unique": 1,
+			"reqd": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"description": "The number already in the client's FP card. Leave blank only to have one generated."
+		},
+		{
+			"fieldname": "serial_no",
+			"fieldtype": "Int",
+			"label": "Serial / Permanent Register No.",
+			"read_only": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "column_1",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "registration_date",
+			"fieldtype": "Date",
+			"label": "Registration Date",
+			"default": "Today",
+			"reqd": 1
+		},
+		{
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"label": "Status",
+			"options": "Active\nDiscontinued\nTransferred Out\nInactive",
+			"default": "Active",
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "exit_notes",
+			"fieldtype": "Small Text",
+			"label": "Exit Notes",
+			"depends_on": "eval:doc.status!='Active'"
+		},
+		{
+			"fieldname": "section_2",
+			"fieldtype": "Section Break",
+			"label": "Client"
+		},
+		{
+			"fieldname": "client_name",
+			"fieldtype": "Data",
+			"label": "Full Name",
+			"fetch_from": "patient.full_name",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "dob",
+			"fieldtype": "Date",
+			"label": "Date of Birth",
+			"fetch_from": "patient.date_of_birth",
+			"read_only": 1
+		},
+		{
+			"fieldname": "age",
+			"fieldtype": "Data",
+			"label": "Age",
+			"read_only": 1
+		},
+		{
+			"fieldname": "column_3",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "phone",
+			"fieldtype": "Data",
+			"label": "Client Phone Number"
+		},
+		{
+			"fieldname": "village",
+			"fieldtype": "Data",
+			"label": "Residence / Village / Landmark"
+		},
+		{
+			"fieldname": "section_4",
+			"fieldtype": "Section Break",
+			"label": "Method"
+		},
+		{
+			"fieldname": "current_method",
+			"fieldtype": "Data",
+			"label": "Current Method",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "method_since",
+			"fieldtype": "Date",
+			"label": "Method Since",
+			"read_only": 1
+		},
+		{
+			"fieldname": "column_5",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "last_visit_date",
+			"fieldtype": "Date",
+			"label": "Last FP Visit",
+			"read_only": 1
+		},
+		{
+			"fieldname": "visits_count",
+			"fieldtype": "Int",
+			"label": "FP Visits Here",
+			"read_only": 1
+		}
+	],
+	"links": [],
+	"modified": "2026-10-08 12:00:00.000000",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic FP Record",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"role": "System Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1
+		},
+		{
+			"role": "Clinic Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1
+		},
+		{
+			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Doctor",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Receptionist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Pharmacist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		}
+	],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1,
+	"autoname": "FPR-.#####",
+	"naming_rule": "Expression (old style)",
+	"title_field": "client_name",
+	"search_fields": "fp_no,client_name,phone,serial_no"
+}

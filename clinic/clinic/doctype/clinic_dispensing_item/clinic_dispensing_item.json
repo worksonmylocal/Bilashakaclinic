@@ -13,6 +13,7 @@
 		"duration_days",
 		"prescribed_qty",
 		"dispensed_qty",
+		"not_available",
 		"instructions"
 	],
 	"fields": [
@@ -80,13 +81,19 @@
 			"in_list_view": 1
 		},
 		{
+			"fieldname": "not_available",
+			"fieldtype": "Check",
+			"label": "Not in Stock",
+			"description": "Not dispensed: the patient buys it from a pharmacy of their choice"
+		},
+		{
 			"fieldname": "instructions",
 			"fieldtype": "Data",
 			"label": "Instructions"
 		}
 	],
 	"links": [],
-	"modified": "2026-09-29 19:48:54.750787",
+	"modified": "2026-09-30 15:49:23.181683",
 	"modified_by": "Administrator",
 	"module": "Clinic",
 	"name": "Clinic Dispensing Item",

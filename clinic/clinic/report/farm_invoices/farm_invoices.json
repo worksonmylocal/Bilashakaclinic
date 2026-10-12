@@ -1,0 +1,32 @@
+{
+	"add_total_row": 1,
+	"columns": [],
+	"creation": "2026-09-30 16:25:56.192582",
+	"disable_prepared_report": 1,
+	"disabled": 0,
+	"docstatus": 0,
+	"doctype": "Report",
+	"filters": [],
+	"idx": 0,
+	"is_standard": "Yes",
+	"modified": "2026-09-30 16:25:56.192582",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Farm Invoices",
+	"owner": "Administrator",
+	"prepared_report": 0,
+	"ref_doctype": "Clinic Bill",
+	"report_name": "Farm Invoices",
+	"report_type": "Script Report",
+	"roles": [
+		{
+			"role": "Clinic Manager"
+		},
+		{
+			"role": "Clinic Pharmacist"
+		},
+		{
+			"role": "System Manager"
+		}
+	]
+}

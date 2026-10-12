@@ -1,0 +1,1882 @@
+{
+	"actions": [],
+	"creation": "2026-09-30 12:53:25.795598",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"visit",
+		"patient",
+		"patient_name",
+		"patient_type",
+		"sex",
+		"age_years",
+		"column_2",
+		"clinic_unit",
+		"service_type",
+		"attendance_date",
+		"clinician",
+		"status",
+		"section_3",
+		"triage",
+		"vitals_summary",
+		"column_4",
+		"tb_screening",
+		"tb_screening_code",
+		"section_5",
+		"fp_client_type",
+		"fp_method",
+		"column_6",
+		"fp_counselled",
+		"fp_next_visit",
+		"sec_fp1",
+		"fp_record",
+		"fp_method_from",
+		"fp_method_to",
+		"col_fp1",
+		"fp_switch_reason",
+		"fp_switch_notes",
+		"fp_side_effects",
+		"sec_fp2",
+		"cervical_screening",
+		"sec_fp3",
+		"coc_cycles",
+		"pop_cycles",
+		"ecp_doses",
+		"dmpa_im_given",
+		"dmpa_sc_given",
+		"dmpa_sc_doses",
+		"col_fp3",
+		"implant1_action",
+		"implant2_action",
+		"iucd_copper_action",
+		"iucd_hormonal_action",
+		"male_condoms",
+		"female_condoms",
+		"btl_status",
+		"vasectomy_status",
+		"sdm_given",
+		"lam_educated",
+		"fp_methods_provided",
+		"sec_fp4",
+		"fp_hiv_result",
+		"fp_partner_hiv",
+		"fp_dual_protection",
+		"section_7",
+		"anc_visit_number",
+		"lmp",
+		"edd",
+		"gestation_weeks",
+		"column_8",
+		"gravida",
+		"parity",
+		"fundal_height_cm",
+		"fetal_heart_rate",
+		"presentation",
+		"column_9",
+		"hb_level",
+		"iron_folate_given",
+		"ipt_given",
+		"tt_given",
+		"anc_next_visit",
+		"sec_anc1",
+		"anc_record",
+		"anc_visit_kind",
+		"col_anc1",
+		"abortions",
+		"sec_anc3",
+		"bp_systolic",
+		"bp_diastolic",
+		"fhr_status",
+		"col_anc3",
+		"anc_muac_category",
+		"sec_anc4",
+		"blood_group",
+		"blood_sugar",
+		"urine_protein",
+		"urine_glucose",
+		"col_anc4",
+		"syphilis_client",
+		"syphilis_treatment",
+		"syphilis_partner",
+		"sec_anc5",
+		"hiv_status_prior",
+		"hiv_test_anc",
+		"hiv_final_status",
+		"art_status",
+		"col_anc5",
+		"partner_hiv_status",
+		"partner_art_status",
+		"ctx_given",
+		"sec_anc6",
+		"ifa_count",
+		"iptp_doses",
+		"tt_dose",
+		"col_anc6",
+		"llin_issued",
+		"anc_dewormed",
+		"sec_anc7",
+		"complications",
+		"anc_referral",
+		"col_anc7",
+		"ibp_discussed",
+		"anc_remarks",
+		"section_10",
+		"delivery_date",
+		"mode_of_delivery",
+		"days_postpartum",
+		"column_11",
+		"postnatal_visit_no",
+		"mother_condition",
+		"baby_condition",
+		"sec_pn1",
+		"pnc_record",
+		"delivery_time",
+		"delivery_place",
+		"col_pn1",
+		"delivery_mode",
+		"delivery_outcome",
+		"sec_pn3",
+		"mother_pnc_timing",
+		"baby_pnc_timing",
+		"sec_pn4",
+		"pulse_bpm",
+		"temp_c",
+		"resp_rate",
+		"col_pn4",
+		"infant_temp_c",
+		"infant_weight_kg",
+		"sec_pn5",
+		"maternal_condition",
+		"breast_exam",
+		"uterine_involution",
+		"lochia_exam",
+		"wound_exam",
+		"col_pn5",
+		"cord_condition",
+		"infant_feeding",
+		"infant_jaundice",
+		"infant_danger_signs",
+		"sec_pn6",
+		"mat_hiv_initial",
+		"mat_hiv_retest",
+		"maternal_haart",
+		"col_pn6",
+		"infant_arv",
+		"infant_ctx",
+		"eid_pcr",
+		"sec_pn7",
+		"pnc_partner_hiv",
+		"partner_tested_pnc",
+		"hiv_disclosure",
+		"col_pn7",
+		"pnc_cervical",
+		"cervical_treatment",
+		"sec_pn9",
+		"pnc_fp_counselling",
+		"pnc_fp_method",
+		"pnc_fp_date",
+		"sec_pn10",
+		"mother_vit_a",
+		"deworming_mother",
+		"maternal_complications",
+		"exclusive_breastfeeding",
+		"section_12",
+		"cwc_visit_type",
+		"child_record",
+		"doses_given_today",
+		"weight_kg",
+		"height_cm",
+		"vaccines_given",
+		"vitamin_a_given",
+		"deworming_given",
+		"column_13",
+		"growth_status",
+		"muac_cm",
+		"guardian_name",
+		"guardian_phone",
+		"section_1",
+		"cwc_visit_kind",
+		"cwc_age_months",
+		"section_2",
+		"weight_category",
+		"weight_category_code",
+		"stunting_status",
+		"stunting_code",
+		"muac_category",
+		"muac_code",
+		"cwc_exclusive_bf",
+		"vit_a_supplementation",
+		"vit_a_code",
+		"mnp_given",
+		"dewormed",
+		"section_4",
+		"developmental_status",
+		"developmental_code",
+		"milestones_checked",
+		"milestone_delay_details",
+		"disability_identified",
+		"disability_details",
+		"danger_signs",
+		"has_danger_signs",
+		"immunization_up_to_date",
+		"section_14",
+		"tb_registration_no",
+		"tb_type",
+		"tb_category",
+		"treatment_phase",
+		"column_15",
+		"regimen",
+		"treatment_start_date",
+		"weeks_on_treatment",
+		"adherence",
+		"dot_supporter",
+		"latest_sputum_result",
+		"side_effects",
+		"section_16",
+		"assessment_notes",
+		"management_plan",
+		"patient_advice",
+		"section_17",
+		"lab_requests",
+		"section_18",
+		"prescriptions",
+		"dispensing",
+		"section_19",
+		"referred_to_doctor",
+		"refer_out",
+		"referral_facility",
+		"referral_reason",
+		"column_20",
+		"follow_up_required",
+		"follow_up_date",
+		"follow_up_reason",
+		"appointment"
+	],
+	"fields": [
+		{
+			"fieldname": "visit",
+			"fieldtype": "Link",
+			"label": "Visit",
+			"options": "Clinic Visit",
+			"reqd": 1,
+			"in_list_view": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "patient",
+			"fieldtype": "Link",
+			"label": "Patient",
+			"options": "Clinic Patient",
+			"fetch_from": "visit.patient",
+			"read_only": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "patient_name",
+			"fieldtype": "Data",
+			"label": "Patient Name",
+			"fetch_from": "visit.patient_name",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "patient_type",
+			"fieldtype": "Select",
+			"label": "Patient Type",
+			"options": "Employee\nCommunity Member",
+			"fetch_from": "visit.patient_type",
+			"read_only": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "sex",
+			"fieldtype": "Link",
+			"label": "Sex",
+			"options": "Gender",
+			"fetch_from": "visit.sex",
+			"read_only": 1
+		},
+		{
+			"fieldname": "age_years",
+			"fieldtype": "Int",
+			"label": "Age (Years)",
+			"fetch_from": "visit.age_years",
+			"read_only": 1
+		},
+		{
+			"fieldname": "column_2",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "clinic_unit",
+			"fieldtype": "Select",
+			"label": "Clinic Unit",
+			"options": "Antenatal Clinic\nMCH & Postnatal Clinic\nTB Clinic",
+			"reqd": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "service_type",
+			"fieldtype": "Select",
+			"label": "Service Type",
+			"options": "Family Planning\nANC Attendance\nPostnatal Attendance\nCWC Attendance\nTB Registration\nTB Follow-up",
+			"reqd": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "attendance_date",
+			"fieldtype": "Datetime",
+			"label": "Attendance Date",
+			"default": "Now",
+			"reqd": 1
+		},
+		{
+			"fieldname": "clinician",
+			"fieldtype": "Link",
+			"label": "Clinician",
+			"options": "User",
+			"default": "__user"
+		},
+		{
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"label": "Status",
+			"options": "Open\nAwaiting Lab\nCompleted",
+			"default": "Open",
+			"read_only": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"no_copy": 1
+		},
+		{
+			"fieldname": "section_3",
+			"fieldtype": "Section Break",
+			"label": "Triage & TB Screening"
+		},
+		{
+			"fieldname": "triage",
+			"fieldtype": "Link",
+			"label": "Triage",
+			"options": "Clinic Triage",
+			"read_only": 1
+		},
+		{
+			"fieldname": "vitals_summary",
+			"fieldtype": "Small Text",
+			"label": "Vitals Summary",
+			"read_only": 1
+		},
+		{
+			"fieldname": "column_4",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "tb_screening",
+			"fieldtype": "Select",
+			"label": "TB Screening",
+			"options": "\n1 - Presumed TB\n2 - No Signs\n3 - On TB Treatment\n4 - Not Done",
+			"read_only": 1,
+			"description": "Required for every patient"
+		},
+		{
+			"fieldname": "tb_screening_code",
+			"fieldtype": "Int",
+			"label": "TB Screening Code",
+			"read_only": 1
+		},
+		{
+			"fieldname": "section_5",
+			"fieldtype": "Section Break",
+			"label": "Family Planning",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "fp_client_type",
+			"fieldtype": "Select",
+			"label": "Client Type",
+			"options": "\n1 = New Client (First time ever using FP)\n2 = Revisit / Continuing Client (Same method)\n3 = Change of Method (Switching)\n4 = Restart Client (Resuming after stopping)"
+		},
+		{
+			"fieldname": "fp_method",
+			"fieldtype": "Select",
+			"label": "Method",
+			"options": "\nPills\nInjectable\nImplant\nIUCD\nCondoms\nNatural Method\nPermanent (BTL/Vasectomy)\nCounselling only"
+		},
+		{
+			"fieldname": "column_6",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "fp_counselled",
+			"fieldtype": "Check",
+			"label": "Counselled"
+		},
+		{
+			"fieldname": "fp_next_visit",
+			"fieldtype": "Date",
+			"label": "Next Visit"
+		},
+		{
+			"fieldname": "section_7",
+			"fieldtype": "Section Break",
+			"label": "Antenatal Attendance",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "anc_visit_number",
+			"fieldtype": "Int",
+			"label": "ANC Visit No."
+		},
+		{
+			"fieldname": "lmp",
+			"fieldtype": "Date",
+			"label": "LMP (Last Menstrual Period)"
+		},
+		{
+			"fieldname": "edd",
+			"fieldtype": "Date",
+			"label": "Expected Delivery Date",
+			"read_only": 1
+		},
+		{
+			"fieldname": "gestation_weeks",
+			"fieldtype": "Int",
+			"label": "Gestation (weeks)",
+			"read_only": 1
+		},
+		{
+			"fieldname": "column_8",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "gravida",
+			"fieldtype": "Int",
+			"label": "Gravida"
+		},
+		{
+			"fieldname": "parity",
+			"fieldtype": "Int",
+			"label": "Parity"
+		},
+		{
+			"fieldname": "fundal_height_cm",
+			"fieldtype": "Float",
+			"label": "Fundal Height (cm)"
+		},
+		{
+			"fieldname": "fetal_heart_rate",
+			"fieldtype": "Int",
+			"label": "Fetal Heart Rate (bpm)"
+		},
+		{
+			"fieldname": "presentation",
+			"fieldtype": "Select",
+			"label": "Presentation",
+			"options": "\nCephalic\nBreech\nTransverse\nOblique\nN/A (<28 weeks)"
+		},
+		{
+			"fieldname": "column_9",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "hb_level",
+			"fieldtype": "Float",
+			"label": "Haemoglobin (g/dL)"
+		},
+		{
+			"fieldname": "iron_folate_given",
+			"fieldtype": "Check",
+			"label": "Iron / Folate given"
+		},
+		{
+			"fieldname": "ipt_given",
+			"fieldtype": "Check",
+			"label": "IPTp-SP given"
+		},
+		{
+			"fieldname": "tt_given",
+			"fieldtype": "Check",
+			"label": "TT given"
+		},
+		{
+			"fieldname": "anc_next_visit",
+			"fieldtype": "Date",
+			"label": "Next ANC Visit"
+		},
+		{
+			"fieldname": "section_10",
+			"fieldtype": "Section Break",
+			"label": "Postnatal Attendance",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "delivery_date",
+			"fieldtype": "Date",
+			"label": "Delivery Date"
+		},
+		{
+			"fieldname": "mode_of_delivery",
+			"fieldtype": "Select",
+			"label": "Mode Of Delivery",
+			"options": "\nSVD\nC-Section\nAssisted"
+		},
+		{
+			"fieldname": "days_postpartum",
+			"fieldtype": "Int",
+			"label": "Days Postpartum",
+			"read_only": 1
+		},
+		{
+			"fieldname": "column_11",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "postnatal_visit_no",
+			"fieldtype": "Int",
+			"label": "Postnatal Visit No."
+		},
+		{
+			"fieldname": "mother_condition",
+			"fieldtype": "Small Text",
+			"label": "Mother Condition"
+		},
+		{
+			"fieldname": "baby_condition",
+			"fieldtype": "Select",
+			"label": "Baby Condition",
+			"options": "\nWell\nNeeds review\nReferred"
+		},
+		{
+			"fieldname": "exclusive_breastfeeding",
+			"fieldtype": "Check",
+			"label": "Exclusive Breastfeeding"
+		},
+		{
+			"fieldname": "section_12",
+			"fieldtype": "Section Break",
+			"label": "Child Welfare Clinic (CWC)",
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "cwc_visit_type",
+			"fieldtype": "Select",
+			"label": "Visit Type",
+			"options": "\nImmunization\nGrowth Monitoring\nImmunization & Growth Monitoring\nSick Child"
+		},
+		{
+			"fieldname": "child_record",
+			"fieldtype": "Link",
+			"label": "CWC Register Entry",
+			"options": "Clinic Child Record",
+			"read_only": 1,
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "doses_given_today",
+			"fieldtype": "Small Text",
+			"label": "Immunizations Given Today",
+			"read_only": 1,
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "weight_kg",
+			"fieldtype": "Float",
+			"label": "Weight (kg)",
+			"precision": "2",
+			"depends_on": "eval:['CWC Attendance','ANC Attendance','Family Planning'].includes(doc.service_type)"
+		},
+		{
+			"fieldname": "height_cm",
+			"fieldtype": "Float",
+			"label": "Length / Height (cm)",
+			"precision": "1",
+			"depends_on": "eval:['CWC Attendance','ANC Attendance','Family Planning'].includes(doc.service_type)"
+		},
+		{
+			"fieldname": "vaccines_given",
+			"fieldtype": "Small Text",
+			"label": "Vaccines Given",
+			"depends_on": "eval:doc.vaccines_given",
+			"description": "Recorded before the CWC register was introduced"
+		},
+		{
+			"fieldname": "vitamin_a_given",
+			"fieldtype": "Check",
+			"label": "Vitamin A given",
+			"depends_on": "eval:doc.vitamin_a_given",
+			"description": "Recorded before the CWC register was introduced"
+		},
+		{
+			"fieldname": "deworming_given",
+			"fieldtype": "Check",
+			"label": "Deworming given",
+			"depends_on": "eval:doc.deworming_given",
+			"description": "Recorded before the CWC register was introduced"
+		},
+		{
+			"fieldname": "column_13",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "growth_status",
+			"fieldtype": "Select",
+			"label": "Growth Status",
+			"options": "\nNormal\nUnderweight\nStunted\nWasted\nOverweight"
+		},
+		{
+			"fieldname": "muac_cm",
+			"fieldtype": "Float",
+			"label": "MUAC (cm)"
+		},
+		{
+			"fieldname": "guardian_name",
+			"fieldtype": "Data",
+			"label": "Guardian / Caregiver",
+			"depends_on": "eval:doc.guardian_name",
+			"description": "Recorded before the CWC register was introduced"
+		},
+		{
+			"fieldname": "guardian_phone",
+			"fieldtype": "Data",
+			"label": "Guardian Phone",
+			"depends_on": "eval:doc.guardian_phone",
+			"description": "Recorded before the CWC register was introduced"
+		},
+		{
+			"fieldname": "section_1",
+			"fieldtype": "Section Break",
+			"label": "CWC Register: Visit",
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "cwc_visit_kind",
+			"fieldtype": "Select",
+			"label": "New Visit / Revisit",
+			"options": "\nNew Visit\nRevisit",
+			"read_only": 1,
+			"in_standard_filter": 1,
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "cwc_age_months",
+			"fieldtype": "Int",
+			"label": "Age in Months",
+			"read_only": 1,
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "section_2",
+			"fieldtype": "Section Break",
+			"label": "CWC Register: Anthropometric & Nutrition",
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "weight_category",
+			"fieldtype": "Select",
+			"label": "Weight Category",
+			"options": "\n1 = Normal\n2 = Underweight (UW)\n3 = Severe Underweight (SUW)\n4 = Overweight (OW)\n5 = Obese",
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "weight_category_code",
+			"fieldtype": "Int",
+			"label": "Weight Category Code",
+			"read_only": 1,
+			"hidden": 1
+		},
+		{
+			"fieldname": "stunting_status",
+			"fieldtype": "Select",
+			"label": "Height/Length Stunting Category",
+			"options": "\n1 = Normal\n2 = Stunted\n3 = Severely Stunted",
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "stunting_code",
+			"fieldtype": "Int",
+			"label": "Stunting Code",
+			"read_only": 1,
+			"hidden": 1
+		},
+		{
+			"fieldname": "muac_category",
+			"fieldtype": "Select",
+			"label": "MUAC Color Category",
+			"options": "\n1 = Green (Normal >= 12.5cm)\n2 = Yellow (MAM 11.5cm - 12.4cm)\n3 = Red (SAM < 11.5cm)",
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "muac_code",
+			"fieldtype": "Int",
+			"label": "Muac Code",
+			"read_only": 1,
+			"hidden": 1
+		},
+		{
+			"fieldname": "cwc_exclusive_bf",
+			"fieldtype": "Select",
+			"label": "Exclusive Breastfeeding (< 6 Months)",
+			"options": "\nYes\nNo",
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "vit_a_supplementation",
+			"fieldtype": "Select",
+			"label": "Vitamin A Supplementation",
+			"options": "\n1 = 6-11 Months (100,000 IU)\n2 = 12-59 Months (200,000 IU)\n3 = Not Supplemented",
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "vit_a_code",
+			"fieldtype": "Int",
+			"label": "Vit A Code",
+			"read_only": 1,
+			"hidden": 1
+		},
+		{
+			"fieldname": "mnp_given",
+			"fieldtype": "Check",
+			"label": "Micronutrient Powder (MNP) Received",
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "dewormed",
+			"fieldtype": "Check",
+			"label": "Dewormed (12-59 Months)",
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "section_4",
+			"fieldtype": "Section Break",
+			"label": "CWC Register: Development & Health Screening",
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "developmental_status",
+			"fieldtype": "Select",
+			"label": "Developmental Milestones Assessed",
+			"options": "\n1 = Normal / Up to Date\n2 = Delayed (Specify details)\n3 = Not Assessed",
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "developmental_code",
+			"fieldtype": "Int",
+			"label": "Developmental Code",
+			"read_only": 1,
+			"hidden": 1
+		},
+		{
+			"fieldname": "milestones_checked",
+			"fieldtype": "Small Text",
+			"label": "Milestones Checked",
+			"description": "Head Control, Sitting, Standing / Walking, Talking / Speech",
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "milestone_delay_details",
+			"fieldtype": "Small Text",
+			"label": "Delay Details",
+			"depends_on": "eval:doc.developmental_status && doc.developmental_status.startsWith('2')"
+		},
+		{
+			"fieldname": "disability_identified",
+			"fieldtype": "Check",
+			"label": "Disability Identified",
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "disability_details",
+			"fieldtype": "Small Text",
+			"label": "Disability Details",
+			"depends_on": "disability_identified"
+		},
+		{
+			"fieldname": "danger_signs",
+			"fieldtype": "Small Text",
+			"label": "Danger Signs Screened",
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "has_danger_signs",
+			"fieldtype": "Check",
+			"label": "Has Danger Signs",
+			"read_only": 1,
+			"hidden": 1
+		},
+		{
+			"fieldname": "immunization_up_to_date",
+			"fieldtype": "Check",
+			"label": "Immunization Status Up-To-Date",
+			"read_only": 1,
+			"depends_on": "eval:doc.service_type=='CWC Attendance'"
+		},
+		{
+			"fieldname": "section_14",
+			"fieldtype": "Section Break",
+			"label": "TB Clinic",
+			"depends_on": "eval:doc.clinic_unit=='TB Clinic'"
+		},
+		{
+			"fieldname": "tb_registration_no",
+			"fieldtype": "Data",
+			"label": "TB Registration No."
+		},
+		{
+			"fieldname": "tb_type",
+			"fieldtype": "Select",
+			"label": "TB Type",
+			"options": "\nPulmonary\nExtra-pulmonary"
+		},
+		{
+			"fieldname": "tb_category",
+			"fieldtype": "Select",
+			"label": "Patient Category",
+			"options": "\nNew\nRelapse\nTreatment after failure\nTreatment after loss to follow-up\nTransfer in"
+		},
+		{
+			"fieldname": "treatment_phase",
+			"fieldtype": "Select",
+			"label": "Treatment Phase",
+			"options": "\nIntensive\nContinuation"
+		},
+		{
+			"fieldname": "column_15",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "regimen",
+			"fieldtype": "Data",
+			"label": "Regimen"
+		},
+		{
+			"fieldname": "treatment_start_date",
+			"fieldtype": "Date",
+			"label": "Treatment Start Date"
+		},
+		{
+			"fieldname": "weeks_on_treatment",
+			"fieldtype": "Int",
+			"label": "Weeks On Treatment",
+			"read_only": 1
+		},
+		{
+			"fieldname": "adherence",
+			"fieldtype": "Select",
+			"label": "Adherence",
+			"options": "\nGood\nFair\nPoor"
+		},
+		{
+			"fieldname": "dot_supporter",
+			"fieldtype": "Data",
+			"label": "DOT Supporter"
+		},
+		{
+			"fieldname": "latest_sputum_result",
+			"fieldtype": "Data",
+			"label": "Latest Sputum Result"
+		},
+		{
+			"fieldname": "side_effects",
+			"fieldtype": "Small Text",
+			"label": "Side Effects"
+		},
+		{
+			"fieldname": "section_16",
+			"fieldtype": "Section Break",
+			"label": "Assessment & Plan"
+		},
+		{
+			"fieldname": "assessment_notes",
+			"fieldtype": "Text",
+			"label": "Assessment / Findings"
+		},
+		{
+			"fieldname": "management_plan",
+			"fieldtype": "Text",
+			"label": "Management Plan"
+		},
+		{
+			"fieldname": "patient_advice",
+			"fieldtype": "Small Text",
+			"label": "Advice Given"
+		},
+		{
+			"fieldname": "section_17",
+			"fieldtype": "Section Break",
+			"label": "Lab Requests"
+		},
+		{
+			"fieldname": "lab_requests",
+			"fieldtype": "Table",
+			"label": "Lab Requests",
+			"options": "Clinic Lab Request Item"
+		},
+		{
+			"fieldname": "section_18",
+			"fieldtype": "Section Break",
+			"label": "Prescription"
+		},
+		{
+			"fieldname": "prescriptions",
+			"fieldtype": "Table",
+			"label": "Prescriptions",
+			"options": "Clinic Prescription Item"
+		},
+		{
+			"fieldname": "dispensing",
+			"fieldtype": "Link",
+			"label": "Dispensing",
+			"options": "Clinic Dispensing",
+			"read_only": 1,
+			"no_copy": 1
+		},
+		{
+			"fieldname": "section_19",
+			"fieldtype": "Section Break",
+			"label": "Referral & Follow-up"
+		},
+		{
+			"fieldname": "referred_to_doctor",
+			"fieldtype": "Check",
+			"label": "Referred to Doctor",
+			"read_only": 1,
+			"no_copy": 1
+		},
+		{
+			"fieldname": "refer_out",
+			"fieldtype": "Check",
+			"label": "Refer to Another Facility"
+		},
+		{
+			"fieldname": "referral_facility",
+			"fieldtype": "Link",
+			"label": "Referral Facility",
+			"options": "Clinic Facility",
+			"depends_on": "refer_out"
+		},
+		{
+			"fieldname": "referral_reason",
+			"fieldtype": "Small Text",
+			"label": "Referral Reason",
+			"depends_on": "refer_out"
+		},
+		{
+			"fieldname": "column_20",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "follow_up_required",
+			"fieldtype": "Check",
+			"label": "Book a Follow-up Appointment"
+		},
+		{
+			"fieldname": "follow_up_date",
+			"fieldtype": "Date",
+			"label": "Follow Up Date",
+			"depends_on": "follow_up_required"
+		},
+		{
+			"fieldname": "follow_up_reason",
+			"fieldtype": "Data",
+			"label": "Follow Up Reason",
+			"depends_on": "follow_up_required"
+		},
+		{
+			"fieldname": "appointment",
+			"fieldtype": "Link",
+			"label": "Appointment",
+			"options": "Clinic Appointment",
+			"read_only": 1,
+			"no_copy": 1
+		},
+		{
+			"fieldname": "sec_anc1",
+			"fieldtype": "Section Break",
+			"label": "ANC · Register & Visit",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "anc_record",
+			"fieldtype": "Link",
+			"label": "ANC Register Entry",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "Clinic ANC Record",
+			"read_only": 1
+		},
+		{
+			"fieldname": "anc_visit_kind",
+			"fieldtype": "Select",
+			"label": "Visit Type",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "\nNew Client\nRevisit",
+			"read_only": 1
+		},
+		{
+			"fieldname": "col_anc1",
+			"fieldtype": "Column Break",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "abortions",
+			"fieldtype": "Int",
+			"label": "Abortions / Miscarriages",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "sec_anc3",
+			"fieldtype": "Section Break",
+			"label": "ANC · Physical Examination",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "bp_systolic",
+			"fieldtype": "Int",
+			"label": "Systolic BP (mmHg)",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "bp_diastolic",
+			"fieldtype": "Int",
+			"label": "Diastolic BP (mmHg)",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "fhr_status",
+			"fieldtype": "Select",
+			"label": "Fetal Heart Sounds",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "\nPresent\nAbsent"
+		},
+		{
+			"fieldname": "col_anc3",
+			"fieldtype": "Column Break",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "anc_muac_category",
+			"fieldtype": "Select",
+			"label": "MUAC Category (ANC)",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "\nNormal (>=23.0 cm)\nUnderweight/MAM (<23.0 cm)\nSAM (<19.0 cm)",
+			"read_only": 1
+		},
+		{
+			"fieldname": "sec_anc4",
+			"fieldtype": "Section Break",
+			"label": "ANC · Laboratory & Screening",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "blood_group",
+			"fieldtype": "Select",
+			"label": "Blood Group & Rhesus",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "\nA+\nA-\nB+\nB-\nAB+\nAB-\nO+\nO-"
+		},
+		{
+			"fieldname": "blood_sugar",
+			"fieldtype": "Float",
+			"label": "Blood Sugar (mmol/L)",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "urine_protein",
+			"fieldtype": "Select",
+			"label": "Urine Protein",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "\nNegative\nTrace\n1+\n2+\n3+\n4+"
+		},
+		{
+			"fieldname": "urine_glucose",
+			"fieldtype": "Select",
+			"label": "Urine Glucose",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "\nNegative\nTrace\n1+\n2+\n3+"
+		},
+		{
+			"fieldname": "col_anc4",
+			"fieldtype": "Column Break",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "syphilis_client",
+			"fieldtype": "Select",
+			"label": "Syphilis Test (Client)",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "\nReactive\nNon-Reactive\nNot Done"
+		},
+		{
+			"fieldname": "syphilis_treatment",
+			"fieldtype": "Check",
+			"label": "Syphilis Treatment Given",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "syphilis_partner",
+			"fieldtype": "Select",
+			"label": "Syphilis Test (Partner)",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "\nReactive\nNon-Reactive\nNot Done"
+		},
+		{
+			"fieldname": "sec_anc5",
+			"fieldtype": "Section Break",
+			"label": "ANC · HIV Testing & PMTCT",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "hiv_status_prior",
+			"fieldtype": "Select",
+			"label": "HIV Status Prior to ANC",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "\nPositive\nNegative\nUnknown"
+		},
+		{
+			"fieldname": "hiv_test_anc",
+			"fieldtype": "Select",
+			"label": "HIV Test at ANC",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "\nTested Negative\nTested Positive\nDeclined\nNot Done"
+		},
+		{
+			"fieldname": "hiv_final_status",
+			"fieldtype": "Select",
+			"label": "Final Maternal HIV Status",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "\nNegative\nPositive\nUnknown"
+		},
+		{
+			"fieldname": "art_status",
+			"fieldtype": "Select",
+			"label": "Maternal ART Status",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "\nAlready on ART before ANC\nStarted ART at ANC\nRefused ART\nN/A (Negative)"
+		},
+		{
+			"fieldname": "col_anc5",
+			"fieldtype": "Column Break",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "partner_hiv_status",
+			"fieldtype": "Select",
+			"label": "Partner HIV Status",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "\nNegative\nPositive\nUnknown / Not Tested"
+		},
+		{
+			"fieldname": "partner_art_status",
+			"fieldtype": "Select",
+			"label": "Partner ART Status",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "\nOn ART\nNot on ART\nN/A"
+		},
+		{
+			"fieldname": "ctx_given",
+			"fieldtype": "Check",
+			"label": "Cotrimoxazole Prophylaxis Given",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "sec_anc6",
+			"fieldtype": "Section Break",
+			"label": "ANC · Preventive Services & Supplementation",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "ifa_count",
+			"fieldtype": "Int",
+			"label": "IFA Tablets Issued",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "iptp_doses",
+			"fieldtype": "Select",
+			"label": "IPTp-SP Doses Given",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "\nIPTp 1\nIPTp 2\nIPTp 3\nIPTp 4\nIPTp 5+\nNone / Endemic Area Only"
+		},
+		{
+			"fieldname": "tt_dose",
+			"fieldtype": "Select",
+			"label": "Tetanus Toxoid (TT) Dose",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "\nTT1\nTT2\nTT3\nTT4\nTT5\nFully Immunized / N/A"
+		},
+		{
+			"fieldname": "col_anc6",
+			"fieldtype": "Column Break",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "llin_issued",
+			"fieldtype": "Check",
+			"label": "LLIN Issued",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "anc_dewormed",
+			"fieldtype": "Check",
+			"label": "Dewormed (2nd/3rd Trimester)",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "sec_anc7",
+			"fieldtype": "Section Break",
+			"label": "ANC · Complications, Referral & Remarks",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "complications",
+			"fieldtype": "Small Text",
+			"label": "Maternal Complications Identified",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "anc_referral",
+			"fieldtype": "Select",
+			"label": "Referral Out",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'",
+			"options": "\nReferred to High-Risk Clinic / Consultant\nReferred to Laboratory\nReferred to Tertiary / Higher Facility\nReferred to CCC (Comprehensive Care Centre)\nNone"
+		},
+		{
+			"fieldname": "col_anc7",
+			"fieldtype": "Column Break",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "ibp_discussed",
+			"fieldtype": "Check",
+			"label": "Individual Birth Plan (IBP) Discussed",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "anc_remarks",
+			"fieldtype": "Small Text",
+			"label": "Remarks / Defaulter / Delivery Outcome Notes",
+			"depends_on": "eval:doc.service_type=='ANC Attendance'"
+		},
+		{
+			"fieldname": "sec_fp1",
+			"fieldtype": "Section Break",
+			"label": "FP · Register & Client Type",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "fp_record",
+			"fieldtype": "Link",
+			"label": "FP Register Entry",
+			"depends_on": "eval:doc.service_type=='Family Planning'",
+			"options": "Clinic FP Record",
+			"read_only": 1
+		},
+		{
+			"fieldname": "fp_method_from",
+			"fieldtype": "Data",
+			"label": "Changing From (Method)",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "fp_method_to",
+			"fieldtype": "Data",
+			"label": "Changing To (Method)",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "col_fp1",
+			"fieldtype": "Column Break",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "fp_switch_reason",
+			"fieldtype": "Select",
+			"label": "Reason for Change of Method",
+			"depends_on": "eval:doc.service_type=='Family Planning'",
+			"options": "\nSide Effects\nWants a longer-acting method\nWants a shorter-acting method\nMethod failure\nPlanning a pregnancy\nPartner's preference\nMethod not available\nOther"
+		},
+		{
+			"fieldname": "fp_switch_notes",
+			"fieldtype": "Small Text",
+			"label": "Change of Method Notes",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "fp_side_effects",
+			"fieldtype": "Small Text",
+			"label": "Side Effects / Complications Reported",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "sec_fp2",
+			"fieldtype": "Section Break",
+			"label": "FP · Clinical Assessment & Screening",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "cervical_screening",
+			"fieldtype": "Select",
+			"label": "Cervical Cancer Screening",
+			"depends_on": "eval:doc.service_type=='Family Planning'",
+			"options": "\n1 = Screened VIA/VILI (Negative)\n2 = Screened VIA/VILI (Positive)\n3 = HPV Test (Negative)\n4 = HPV Test (Positive)\n5 = Pap Smear Done\n6 = Not Screened / Referred"
+		},
+		{
+			"fieldname": "sec_fp3",
+			"fieldtype": "Section Break",
+			"label": "FP · Method Dispensed / Issued",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "coc_cycles",
+			"fieldtype": "Int",
+			"label": "COC Cycles",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "pop_cycles",
+			"fieldtype": "Int",
+			"label": "POP Cycles",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "ecp_doses",
+			"fieldtype": "Int",
+			"label": "ECP Doses",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "dmpa_im_given",
+			"fieldtype": "Check",
+			"label": "DMPA-IM Given",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "dmpa_sc_given",
+			"fieldtype": "Select",
+			"label": "DMPA-SC",
+			"depends_on": "eval:doc.service_type=='Family Planning'",
+			"options": "\nGiven at Clinic\nIssued for Self-Injection"
+		},
+		{
+			"fieldname": "dmpa_sc_doses",
+			"fieldtype": "Int",
+			"label": "DMPA-SC Self-Injection Doses Issued",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "col_fp3",
+			"fieldtype": "Column Break",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "implant1_action",
+			"fieldtype": "Select",
+			"label": "1-Rod Implant (Implanon NXT)",
+			"depends_on": "eval:doc.service_type=='Family Planning'",
+			"options": "\nInserted\nRemoved\nReplaced\nNone"
+		},
+		{
+			"fieldname": "implant2_action",
+			"fieldtype": "Select",
+			"label": "2-Rod Implant (Jadelle / Levoplant)",
+			"depends_on": "eval:doc.service_type=='Family Planning'",
+			"options": "\nInserted\nRemoved\nReplaced\nNone"
+		},
+		{
+			"fieldname": "iucd_copper_action",
+			"fieldtype": "Select",
+			"label": "Copper T IUCD",
+			"depends_on": "eval:doc.service_type=='Family Planning'",
+			"options": "\nInserted\nRemoved\nReplaced\nNone"
+		},
+		{
+			"fieldname": "iucd_hormonal_action",
+			"fieldtype": "Select",
+			"label": "Hormonal IUCD (LNG-IUS)",
+			"depends_on": "eval:doc.service_type=='Family Planning'",
+			"options": "\nInserted\nRemoved\nReplaced\nNone"
+		},
+		{
+			"fieldname": "male_condoms",
+			"fieldtype": "Int",
+			"label": "Male Condoms Issued",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "female_condoms",
+			"fieldtype": "Int",
+			"label": "Female Condoms Issued",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "btl_status",
+			"fieldtype": "Select",
+			"label": "Tubal Ligation (BTL)",
+			"depends_on": "eval:doc.service_type=='Family Planning'",
+			"options": "\nDone at Facility\nReferred Out"
+		},
+		{
+			"fieldname": "vasectomy_status",
+			"fieldtype": "Select",
+			"label": "Vasectomy",
+			"depends_on": "eval:doc.service_type=='Family Planning'",
+			"options": "\nDone at Facility\nReferred Out"
+		},
+		{
+			"fieldname": "sdm_given",
+			"fieldtype": "Check",
+			"label": "CycleBeads / Standard Days Method",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "lam_educated",
+			"fieldtype": "Check",
+			"label": "LAM Educated",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "fp_methods_provided",
+			"fieldtype": "Small Text",
+			"label": "Methods Provided This Visit",
+			"depends_on": "eval:doc.service_type=='Family Planning'",
+			"read_only": 1
+		},
+		{
+			"fieldname": "sec_fp4",
+			"fieldtype": "Section Break",
+			"label": "FP · HIV Integration & Other Services",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "fp_hiv_result",
+			"fieldtype": "Select",
+			"label": "Client HIV Test Result",
+			"depends_on": "eval:doc.service_type=='Family Planning'",
+			"options": "\nTested Negative\nTested Positive\nAlready Known Positive\nDeclined / Not Tested"
+		},
+		{
+			"fieldname": "fp_partner_hiv",
+			"fieldtype": "Select",
+			"label": "Partner HIV Status",
+			"depends_on": "eval:doc.service_type=='Family Planning'",
+			"options": "\nTested Negative\nTested Positive\nUnknown / Not Tested"
+		},
+		{
+			"fieldname": "fp_dual_protection",
+			"fieldtype": "Check",
+			"label": "Condoms Provided for HIV/STI Prevention (Dual Protection)",
+			"depends_on": "eval:doc.service_type=='Family Planning'"
+		},
+		{
+			"fieldname": "sec_pn1",
+			"fieldtype": "Section Break",
+			"label": "PNC · Register & Delivery",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "pnc_record",
+			"fieldtype": "Link",
+			"label": "PNC Register Entry",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "Clinic PNC Record",
+			"read_only": 1
+		},
+		{
+			"fieldname": "delivery_time",
+			"fieldtype": "Time",
+			"label": "Time of Delivery",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "delivery_place",
+			"fieldtype": "Select",
+			"label": "Place of Delivery",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\n1 = Health Facility (This Facility)\n2 = Health Facility (Other Facility)\n3 = Home / En Route\n4 = Other"
+		},
+		{
+			"fieldname": "col_pn1",
+			"fieldtype": "Column Break",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "delivery_mode",
+			"fieldtype": "Select",
+			"label": "Mode of Delivery",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\n1 = SVD (Spontaneous Vaginal Delivery)\n2 = Vacuum Extraction / Instrumental\n3 = Elective Cesarean Section\n4 = Emergency Cesarean Section"
+		},
+		{
+			"fieldname": "delivery_outcome",
+			"fieldtype": "Select",
+			"label": "Delivery Outcome",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\nLive Birth\nFresh Stillbirth (FSB)\nMacerated Stillbirth (MSB)"
+		},
+		{
+			"fieldname": "sec_pn3",
+			"fieldtype": "Section Break",
+			"label": "PNC · Visit Timing",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "mother_pnc_timing",
+			"fieldtype": "Select",
+			"label": "Mother PNC Visit Timing",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\n1 = Within 24 Hours (Before discharge)\n2 = 48 Hours to 72 Hours (Day 2-3)\n3 = 7 Days to 14 Days (1-2 Weeks)\n4 = 6 Weeks (42 Days)\n5 = > 6 Weeks"
+		},
+		{
+			"fieldname": "baby_pnc_timing",
+			"fieldtype": "Select",
+			"label": "Baby PNC Visit Timing",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\n1 = Within 24 Hours\n2 = 48 Hours to 72 Hours\n3 = 7 Days to 14 Days\n4 = 6 Weeks\n5 = > 6 Weeks"
+		},
+		{
+			"fieldname": "sec_pn4",
+			"fieldtype": "Section Break",
+			"label": "PNC · Vital Signs",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "pulse_bpm",
+			"fieldtype": "Int",
+			"label": "Pulse Rate (bpm)",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "temp_c",
+			"fieldtype": "Float",
+			"label": "Body Temperature (°C)",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "resp_rate",
+			"fieldtype": "Int",
+			"label": "Respiratory Rate (breaths/min)",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "col_pn4",
+			"fieldtype": "Column Break",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "infant_temp_c",
+			"fieldtype": "Float",
+			"label": "Infant Temperature (°C)",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "infant_weight_kg",
+			"fieldtype": "Float",
+			"label": "Infant Weight (kg)",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"precision": "2"
+		},
+		{
+			"fieldname": "sec_pn5",
+			"fieldtype": "Section Break",
+			"label": "PNC · Examinations",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "maternal_condition",
+			"fieldtype": "Select",
+			"label": "General Condition",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\nSatisfactory\nPallor\nJaundice\nLethargic / Ill"
+		},
+		{
+			"fieldname": "breast_exam",
+			"fieldtype": "Select",
+			"label": "Breast Examination",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\nNormal / Soft\nEngorged\nMastitis / Abscess\nCracked / Sore Nipples"
+		},
+		{
+			"fieldname": "uterine_involution",
+			"fieldtype": "Select",
+			"label": "Uterine Involution",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\nNormal / Well Involuted (Not palpable by 2 weeks)\nSub-involuted / Tender\nHigh / Soft"
+		},
+		{
+			"fieldname": "lochia_exam",
+			"fieldtype": "Select",
+			"label": "Lochia / Vaginal Discharge",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\nNormal (Rubra/Serosa/Alba)\nFoul Smelling (Sepsis suspected)\nExcessive / Postpartum Hemorrhage (PPH)"
+		},
+		{
+			"fieldname": "wound_exam",
+			"fieldtype": "Select",
+			"label": "Perineum / Wound",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\nIntact / Healed\nEpisiotomy / Laceration Intact\nInfected / Dehisced Wound\nC-Section Incision Clean & Intact\nC-Section Incision Infected"
+		},
+		{
+			"fieldname": "col_pn5",
+			"fieldtype": "Column Break",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "cord_condition",
+			"fieldtype": "Select",
+			"label": "Umbilical Cord",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\nClean & Dry\nRedness / Oozing / Septic\nOff"
+		},
+		{
+			"fieldname": "infant_feeding",
+			"fieldtype": "Select",
+			"label": "Infant Feeding",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\nExclusive Breastfeeding (EBF)\nReplacement Feeding\nMixed Feeding"
+		},
+		{
+			"fieldname": "infant_jaundice",
+			"fieldtype": "Select",
+			"label": "Infant Jaundice / Sclera",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\nAbsent\nMild / Physiological\nSevere / Pathological"
+		},
+		{
+			"fieldname": "infant_danger_signs",
+			"fieldtype": "Small Text",
+			"label": "Infant Danger Signs Screened",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "sec_pn6",
+			"fieldtype": "Section Break",
+			"label": "PNC · HAART & Infant Prophylaxis",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "mat_hiv_initial",
+			"fieldtype": "Select",
+			"label": "Known HIV Status at PNC Entry",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\nPositive\nNegative\nUnknown"
+		},
+		{
+			"fieldname": "mat_hiv_retest",
+			"fieldtype": "Select",
+			"label": "HIV Retesting at PNC",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\nTested Negative\nTested Positive\nDeclined / Not Done\nN/A (Already Positive)"
+		},
+		{
+			"fieldname": "maternal_haart",
+			"fieldtype": "Select",
+			"label": "Maternal HAART Status",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\n1 = Already on HAART before PNC\n2 = Started HAART during PNC visit\n3 = Not on HAART\n4 = N/A (Negative)"
+		},
+		{
+			"fieldname": "col_pn6",
+			"fieldtype": "Column Break",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "infant_arv",
+			"fieldtype": "Select",
+			"label": "Infant ARV Prophylaxis",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\n1 = Nevirapine (NVP) Syrup given\n2 = NVP + AZT Dual Prophylaxis given\n3 = Refused / Not Given\n4 = N/A (HIV Negative Mother)"
+		},
+		{
+			"fieldname": "infant_ctx",
+			"fieldtype": "Check",
+			"label": "Infant Cotrimoxazole Started (6 weeks, HEI)",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "eid_pcr",
+			"fieldtype": "Select",
+			"label": "Infant DNA-PCR Sample",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\n1 = Initial PCR at 6 Weeks Taken\n2 = Repeat PCR Taken\n3 = Not Done / Not Applicable"
+		},
+		{
+			"fieldname": "sec_pn7",
+			"fieldtype": "Section Break",
+			"label": "PNC · Partner HIV Status & Cervical Screening",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "pnc_partner_hiv",
+			"fieldtype": "Select",
+			"label": "Partner HIV Status",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\n1 = Partner Tested Negative\n2 = Partner Tested Positive\n3 = Partner Status Unknown / Not Tested"
+		},
+		{
+			"fieldname": "partner_tested_pnc",
+			"fieldtype": "Check",
+			"label": "Partner Tested at This PNC Visit",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "hiv_disclosure",
+			"fieldtype": "Select",
+			"label": "HIV Disclosure Status",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\nDisclosed to Partner\nNot Disclosed\nN/A"
+		},
+		{
+			"fieldname": "col_pn7",
+			"fieldtype": "Column Break",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "pnc_cervical",
+			"fieldtype": "Select",
+			"label": "Cervical Cancer Screening",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\n1 = Screened VIA/VILI (Negative)\n2 = Screened VIA/VILI (Positive)\n3 = HPV Test Done (Negative)\n4 = HPV Test Done (Positive)\n5 = Pap Smear Done\n6 = Eligible but Deferred (e.g. <6 weeks post-delivery)\n7 = Already Screened within 1-3 years\n8 = Not Screened"
+		},
+		{
+			"fieldname": "cervical_treatment",
+			"fieldtype": "Select",
+			"label": "Cervical Cancer Treatment / Referral",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\n1 = Cryotherapy / LEEP Done\n2 = Referred for Gynecological Management\n3 = N/A"
+		},
+		{
+			"fieldname": "sec_pn9",
+			"fieldtype": "Section Break",
+			"label": "PNC · Postnatal Family Planning",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "pnc_fp_counselling",
+			"fieldtype": "Check",
+			"label": "Postnatal FP Counselling Done",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "pnc_fp_method",
+			"fieldtype": "Select",
+			"label": "Postnatal FP Method Received",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'",
+			"options": "\n1 = Combined Oral Contraceptive (COC)\n2 = Progestin-Only Pill (POP / Microlut - Safe for breastfeeding)\n3 = Injectable (DMPA / Depo-Provera / Sayana Press)\n4 = Implant (Implanon / Jadelle)\n5 = Postpartum IUCD (PPIUCD)\n6 = Condoms Only\n7 = Voluntary Surgical Contraception (BTL / Vasectomy)\n8 = Natural / LAM (Lactational Amenorrhea Method)\n9 = Declined / None Received at this Visit"
+		},
+		{
+			"fieldname": "pnc_fp_date",
+			"fieldtype": "Date",
+			"label": "Date FP Method Dispensed",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "sec_pn10",
+			"fieldtype": "Section Break",
+			"label": "PNC · Supplementation & Complications",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "mother_vit_a",
+			"fieldtype": "Check",
+			"label": "Vitamin A Given (200,000 IU)",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "deworming_mother",
+			"fieldtype": "Check",
+			"label": "Deworming Issued",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "maternal_complications",
+			"fieldtype": "Small Text",
+			"label": "Maternal Complications Identified",
+			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		}
+	],
+	"links": [],
+	"modified": "2026-10-07 11:27:40.561670",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Attendance",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"role": "System Manager",
+			"read": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1
+		},
+		{
+			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Doctor",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Lab Technician",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Pharmacist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		}
+	],
+	"sort_field": "attendance_date",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1,
+	"autoname": "ATT-.YYYY.-.#####",
+	"naming_rule": "Expression (old style)",
+	"title_field": "patient_name",
+	"search_fields": "patient_name,service_type,clinic_unit"
+}

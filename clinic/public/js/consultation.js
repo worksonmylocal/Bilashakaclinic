@@ -1,6 +1,6 @@
 /* Doctor / consultation page: queue and the single-screen patient workspace */
 (async function () {
-    const { call, $, $$, esc, num, timeOf, dateOf, wait, typeTag, pill, ageSex, empty, toast, kpis, hbars, chart, modal, field, read, suggest, banner, masters, COLORS } = Desk;
+    const { call, $, $$, esc, money, num, timeOf, dateOf, wait, typeTag, pill, ageSex, empty, toast, kpis, hbars, chart, modal, field, read, suggest, banner, masters, COLORS } = Desk;
 
     await Desk.shell({
         page: "consultation",
@@ -9,7 +9,7 @@
         sub: "Patients sent from triage, results back from the lab, and everything you need to treat them",
         tools: `<button class="iconbtn" id="refresh" title="Refresh">${Desk.REFRESH_ICON}</button>`,
     });
-    Desk.tabs((tab) => tab === "insights" && loadInsights());
+    Desk.tabs((tab) => { if (tab === "insights") loadInsights(); else if (tab === "month") loadMonth(); });
     $("#refresh").addEventListener("click", () => { loadAll(); toast("Refreshed"); });
 
     const M = await masters();
@@ -23,6 +23,7 @@
         renderQueues(dash);
         renderCompleted(dash.completed);
         if ($("#tab-insights").classList.contains("on")) loadInsights();
+        if ($("#tab-month").classList.contains("on")) loadMonth();
     }
 
     function renderKpis(k) {
@@ -77,6 +78,22 @@
             ${rows.map((r) => `<tr><td>${timeOf(r.consultation_date)}</td><td><b style="color:var(--ink)">${esc(r.patient_name)}</b><br><span class="printnote">${esc(ageSex(r))}</span></td>
             <td>${typeTag(r.patient_type)}</td><td>${esc(r.diagnoses || "—")}</td><td class="num">${r.sick_leave_days || "—"}</td>
             <td>${r.refer_out ? pill("Referred out", "warn") : pill("Treated", "good")}</td></tr>`).join("")}</table>` : empty("No completed consultations yet today.");
+    }
+
+    async function loadMonth() {
+        const d = await call("consultation.seen_month");
+        const s = d.summary;
+        $("#month-meta").textContent = d.month;
+        kpis($("#month-kpis"), [
+            { label: "Seen This Month", value: s.total, cls: "good", unit: d.month },
+            { label: "Employees / Community", value: `${s.employees} <span style="font-size:14px;color:var(--ink-mute)">/ ${s.community}</span>`, unit: "Patients treated" },
+            { label: "Referred Out", value: s.referred, cls: s.referred ? "warn" : "", unit: "To other facilities" },
+            { label: "Sick-off Days", value: s.sick_days, unit: `${s.work_related} work-related cases` },
+        ]);
+        $("#seen-month").innerHTML = d.rows.length ? `<table class="dtable"><tr><th>Date</th><th>Patient</th><th>Type</th><th>Diagnosis</th><th class="num">Sick-off</th><th>Outcome</th></tr>
+            ${d.rows.map((r) => `<tr><td>${esc(dateOf(r.consultation_date).slice(5))} ${timeOf(r.consultation_date)}</td><td><b style="color:var(--ink)">${esc(r.patient_name)}</b><br><span class="printnote">${esc(ageSex(r))}</span></td>
+            <td>${typeTag(r.patient_type)}</td><td>${esc(r.diagnoses || "—")}</td><td class="num">${r.sick_leave_days || "—"}</td>
+            <td>${r.refer_out ? pill("Referred out", "warn") : pill("Treated", "good")}</td></tr>`).join("")}</table>` : empty("No completed consultations yet this month.");
     }
 
     async function loadInsights() {
@@ -157,7 +174,7 @@
             <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px;gap:16px;flex-wrap:wrap">
                 <div><div class="pagehead__eyebrow">Consultation · ${esc(c.name)}</div>
                 <h1 class="pagehead__title" style="font-size:30px">${esc(p.full_name)}</h1></div>
-                <div style="display:flex;gap:10px;align-items:center">${pill(v.status, "info")}
+                <div style="display:flex;gap:10px;align-items:center">${ws.bill ? `<span class="tag tag--dest" title="Charges so far for this visit">Bill so far: ${money(ws.bill.total)}</span>` : ""}${pill(v.status, "info")}
                     <button class="btn" id="back">← Back to queue</button></div>
             </div>
             ${banner(p, { visit: v.name })}
@@ -169,6 +186,7 @@
                     ${t && t.chief_complaint ? `<span class="meta">Complaint: ${esc(t.chief_complaint)}</span>` : ""}</div>
                 ${t ? `<div class="vitals">${vitals}</div>${t.alerts ? `<div class="liveinfo" style="margin:12px 0 0">⚠ ${esc(t.alerts.replace(/\n/g, "; "))}</div>` : ""}${t.triage_notes ? `<div class="printnote" style="margin-top:10px">Nurse: ${esc(t.triage_notes)}</div>` : ""}` : empty("No triage recorded for this visit.")}
             </div>
+            ${tbBar(c.tb_screening, locked)}
             <div class="ws">
                 <div class="card" id="ws-form">
                     <div class="subtabs" id="subtabs">
@@ -262,7 +280,40 @@
         bindWorkspace(root, locked, isEmp);
     }
 
+    const unsentTest = () => (state.lab || []).some((r) => !r.lab_test);
+    const TB_OPTIONS = [[1, "Presumed TB"], [2, "No Signs"], [3, "On TB Treatment"], [4, "Not Done"]];
+    function tbBar(current, locked) {
+        const code = current ? Number(String(current)[0]) : 0;
+        return `<div class="tbbar ${code ? "" : "required"}" id="tbbar">
+            <div class="tbbar__head"><h3>TB Screening <span style="color:var(--bad)">*</span></h3>
+                <span>${code === 1 && unsentTest() ? '<b style="color:var(--bad)">Sputum test is in your lab requests: press Send to Lab</b>' : code ? "Recorded" : "Required for every patient before the consultation can be closed"}</span></div>
+            <div class="tbbar__opts">${TB_OPTIONS.map(([n, label]) => `<button class="tbopt ${code === n ? "on" : ""} ${n === 1 ? "alert" : ""}" data-tb="${n}" ${locked ? "disabled" : ""}>
+                <span class="tbopt__n">${n}</span>${label}</button>`).join("")}</div>
+        </div>`;
+    }
+
+    async function chooseTb(code) {
+        const c = ws.consultation;
+        if (Number(String(c.tb_screening || "0")[0]) === code) return;
+        if (code === 1) {
+            const ok = await new Promise((resolve) => modal({
+                title: "Presumed TB",
+                body: `<p style="margin:0;color:var(--ink-3)">This adds an <b>urgent sputum test</b> to the lab requests. Press <b>Send to Lab</b> to send it, together with any other tests.</p>`,
+                foot: [{ label: "Cancel", onClick: (hh) => { resolve(false); hh.close(); } },
+                       { label: "Presumed TB — add test request", cls: "btn--primary", onClick: (hh) => { resolve(true); hh.close(); } }],
+                onClose: () => resolve(false),
+            }));
+            if (!ok) return;
+        }
+        await save(false); // keep anything typed so far
+        const r = await call("consultation.set_tb_screening", { name: c.name, code });
+        toast(code === 1 ? "Presumed TB recorded. Sputum test added to the lab requests: press Send to Lab." : "TB screening recorded");
+        renderWorkspace(await call("consultation.workspace", { visit: ws.visit.name }));
+        if (code === 1) { const tab = $(".subtab[data-p=invest]"); if (tab) tab.click(); }
+    }
+
     function bindWorkspace(root, locked, isEmp) {
+        $$("[data-tb]", root).forEach((b) => b.addEventListener("click", () => chooseTb(Number(b.dataset.tb))));
         $$(".subtab", root).forEach((b) => b.addEventListener("click", () => {
             $$(".subtab", root).forEach((x) => x.classList.toggle("on", x === b));
             $$(".subpanel", root).forEach((x) => x.classList.toggle("on", x.id === "sp-" + b.dataset.p));
@@ -439,6 +490,13 @@
     }
 
     // ---- actions
+    function needTb() {
+        if (ws.consultation.tb_screening) return false;
+        toast("Record the TB screening (1–4) first", "warn");
+        const bar = $("#tbbar"); if (bar) bar.scrollIntoView({ behavior: "smooth", block: "center" });
+        return true;
+    }
+
     function refreshActions() {
         const box = $("#actions");
         if (locked()) { box.innerHTML = ""; return; }
@@ -451,10 +509,12 @@
         $("#a-lab")?.addEventListener("click", () => act("send_to_lab", "Sent to the lab"));
         $("#a-rx")?.addEventListener("click", () => {
             if (state.lab.some((r) => !r.lab_test)) return toast("Send the new lab requests first, or remove them.", "warn");
+            if (needTb()) return;
             act("send_to_pharmacy", "Sent to the pharmacy");
         });
         $("#a-done")?.addEventListener("click", () => {
             if (state.lab.some((r) => !r.lab_test)) return toast("Send the new lab requests first, or remove them.", "warn");
+            if (needTb()) return;
             act("complete", "Consultation completed");
         });
     }

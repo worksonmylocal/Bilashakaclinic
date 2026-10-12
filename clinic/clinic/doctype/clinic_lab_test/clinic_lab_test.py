@@ -3,6 +3,7 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import getdate, now_datetime, nowdate
 
+from clinic import billing
 from clinic.clinic.doctype.clinic_visit.clinic_visit import CLOSED_STATUSES, set_visit_status
 
 POSITIVE = {"positive", "reactive", "present", "seen", "detected"}
@@ -36,6 +37,7 @@ class ClinicLabTest(Document):
 		self.validate_status()
 
 	def on_update(self):
+		billing.sync_lab_charge(self)
 		self.sync_visit_status()
 
 	def validate_visit(self):
@@ -109,7 +111,7 @@ class ClinicLabTest(Document):
 						)
 					)
 				row.value = value = match
-			if value.lower() in POSITIVE:
+			if value.lower() in POSITIVE or value.lower().startswith("positive"):
 				return "Positive"
 			if value.lower() in NEGATIVE:
 				return "Negative"
@@ -131,16 +133,17 @@ class ClinicLabTest(Document):
 
 	def sync_visit_status(self):
 		visit = frappe.db.get_value(
-			"Clinic Visit", self.visit, ["status", "visit_purpose", "consultation"], as_dict=True
+			"Clinic Visit", self.visit, ["status", "visit_purpose", "consultation", "attendance"], as_dict=True
 		)
 		if not visit or visit.status in CLOSED_STATUSES:
 			return
 		pending = frappe.db.count("Clinic Lab Test", {"visit": self.visit, "status": ["in", PENDING]})
 		if pending:
 			set_visit_status(self.visit, "Waiting Lab")
-		elif not visit.consultation:
+		elif not (visit.consultation or visit.attendance):
 			set_visit_status(self.visit, "Completed")
 		else:
 			set_visit_status(self.visit, "Lab Results Ready")
-			if frappe.db.get_value("Clinic Consultation", visit.consultation, "status") == "Awaiting Lab":
-				frappe.db.set_value("Clinic Consultation", visit.consultation, "status", "Open")
+			for doctype, name in (("Clinic Consultation", visit.consultation), ("Clinic Attendance", visit.attendance)):
+				if name and frappe.db.get_value(doctype, name, "status") == "Awaiting Lab":
+					frappe.db.set_value(doctype, name, "status", "Open")

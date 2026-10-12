@@ -14,8 +14,11 @@ class ClinicTriage(Document):
 
 	def on_update(self):
 		frappe.db.set_value("Clinic Visit", self.visit, "triage", self.name)
-		if frappe.db.get_value("Clinic Visit", self.visit, "status") == "Waiting Triage":
-			set_visit_status(self.visit, "Waiting Consultation")
+		visit = frappe.db.get_value("Clinic Visit", self.visit, ["status", "service_point"], as_dict=True)
+		# Waiting Triage -> the doctor's queue or the queue of the clinic chosen at triage
+		if visit.status in ("Waiting Triage", "Waiting Consultation", "Waiting Clinic"):
+			going_to_doctor = (visit.service_point or "Consultation") == "Consultation"
+			set_visit_status(self.visit, "Waiting Consultation" if going_to_doctor else "Waiting Clinic")
 
 	def validate_visit(self):
 		if not self.is_new():

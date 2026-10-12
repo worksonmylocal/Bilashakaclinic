@@ -1,0 +1,289 @@
+{
+	"actions": [],
+	"creation": "2026-10-08 09:00:00.000000",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"intro_section",
+		"patient",
+		"anc_no",
+		"serial_no",
+		"column_1",
+		"registration_date",
+		"status",
+		"exit_notes",
+		"section_2",
+		"client_name",
+		"dob",
+		"age",
+		"column_3",
+		"phone",
+		"village",
+		"section_4",
+		"partner_name",
+		"column_5",
+		"partner_phone",
+		"section_6",
+		"gravida",
+		"parity",
+		"abortions",
+		"column_7",
+		"height_cm",
+		"lmp",
+		"edd",
+		"last_visit_date",
+		"visits_count"
+	],
+	"fields": [
+		{
+			"fieldname": "intro_section",
+			"fieldtype": "Section Break",
+			"label": "Registration"
+		},
+		{
+			"fieldname": "patient",
+			"fieldtype": "Link",
+			"label": "Client",
+			"options": "Clinic Patient",
+			"reqd": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "anc_no",
+			"fieldtype": "Data",
+			"label": "ANC No.",
+			"unique": 1,
+			"reqd": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"description": "The number already in the client's ANC booklet. Leave blank only to have one generated."
+		},
+		{
+			"fieldname": "serial_no",
+			"fieldtype": "Int",
+			"label": "Serial / Permanent Register No.",
+			"read_only": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "column_1",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "registration_date",
+			"fieldtype": "Date",
+			"label": "Registration Date",
+			"default": "Today",
+			"reqd": 1
+		},
+		{
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"label": "Status",
+			"options": "Active\nDelivered\nMiscarriage / Abortion\nTransferred Out\nInactive",
+			"default": "Active",
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "exit_notes",
+			"fieldtype": "Small Text",
+			"label": "Outcome / Exit Notes",
+			"depends_on": "eval:doc.status!='Active'"
+		},
+		{
+			"fieldname": "section_2",
+			"fieldtype": "Section Break",
+			"label": "Client"
+		},
+		{
+			"fieldname": "client_name",
+			"fieldtype": "Data",
+			"label": "Full Name",
+			"fetch_from": "patient.full_name",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "dob",
+			"fieldtype": "Date",
+			"label": "Date of Birth",
+			"fetch_from": "patient.date_of_birth",
+			"read_only": 1
+		},
+		{
+			"fieldname": "age",
+			"fieldtype": "Data",
+			"label": "Age",
+			"read_only": 1
+		},
+		{
+			"fieldname": "column_3",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "phone",
+			"fieldtype": "Data",
+			"label": "Client Phone Number"
+		},
+		{
+			"fieldname": "village",
+			"fieldtype": "Data",
+			"label": "Residence / Village / Estate"
+		},
+		{
+			"fieldname": "section_4",
+			"fieldtype": "Section Break",
+			"label": "Next of Kin / Partner"
+		},
+		{
+			"fieldname": "partner_name",
+			"fieldtype": "Data",
+			"label": "Next of Kin / Partner Name"
+		},
+		{
+			"fieldname": "column_5",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "partner_phone",
+			"fieldtype": "Data",
+			"label": "Next of Kin Phone Number"
+		},
+		{
+			"fieldname": "section_6",
+			"fieldtype": "Section Break",
+			"label": "Obstetric History (latest)"
+		},
+		{
+			"fieldname": "gravida",
+			"fieldtype": "Int",
+			"label": "Gravida"
+		},
+		{
+			"fieldname": "parity",
+			"fieldtype": "Int",
+			"label": "Parity"
+		},
+		{
+			"fieldname": "abortions",
+			"fieldtype": "Int",
+			"label": "Abortions / Miscarriages"
+		},
+		{
+			"fieldname": "column_7",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "height_cm",
+			"fieldtype": "Float",
+			"label": "Height (cm)",
+			"precision": "1"
+		},
+		{
+			"fieldname": "lmp",
+			"fieldtype": "Date",
+			"label": "LMP"
+		},
+		{
+			"fieldname": "edd",
+			"fieldtype": "Date",
+			"label": "EDD",
+			"read_only": 1
+		},
+		{
+			"fieldname": "last_visit_date",
+			"fieldtype": "Date",
+			"label": "Last ANC Visit",
+			"read_only": 1
+		},
+		{
+			"fieldname": "visits_count",
+			"fieldtype": "Int",
+			"label": "ANC Visits Here",
+			"read_only": 1
+		}
+	],
+	"links": [],
+	"modified": "2026-10-08 09:00:00.000000",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic ANC Record",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"role": "System Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1
+		},
+		{
+			"role": "Clinic Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1
+		},
+		{
+			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Doctor",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Receptionist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Pharmacist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		}
+	],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1,
+	"autoname": "ANCR-.#####",
+	"naming_rule": "Expression (old style)",
+	"title_field": "client_name",
+	"search_fields": "anc_no,client_name,phone,serial_no"
+}

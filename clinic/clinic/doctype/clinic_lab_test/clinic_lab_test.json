@@ -6,6 +6,7 @@
 	"field_order": [
 		"visit",
 		"consultation",
+		"attendance",
 		"patient",
 		"patient_name",
 		"patient_type",
@@ -56,6 +57,13 @@
 			"options": "Clinic Consultation",
 			"read_only": 1,
 			"search_index": 1
+		},
+		{
+			"fieldname": "attendance",
+			"fieldtype": "Link",
+			"label": "Attendance",
+			"options": "Clinic Attendance",
+			"read_only": 1
 		},
 		{
 			"fieldname": "patient",
@@ -271,7 +279,7 @@
 		}
 	],
 	"links": [],
-	"modified": "2026-09-29 19:48:54.750787",
+	"modified": "2026-09-30 12:56:20.873759",
 	"modified_by": "Administrator",
 	"module": "Clinic",
 	"name": "Clinic Lab Test",
@@ -330,7 +338,9 @@
 			"export": 1,
 			"print": 1,
 			"email": 1,
-			"share": 1
+			"share": 1,
+			"write": 1,
+			"create": 1
 		},
 		{
 			"role": "Clinic Receptionist",

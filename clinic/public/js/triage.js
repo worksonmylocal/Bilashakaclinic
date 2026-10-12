@@ -16,6 +16,20 @@
 
     let data;
 
+    // Where a patient can be sent after triage
+    const ICONS = {
+        doctor: '<path d="M6 3v6a4 4 0 0 0 8 0V3"/><path d="M10 13v2a5 5 0 0 0 10 0v-2"/><circle cx="20" cy="11" r="2"/>',
+        heart: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/>',
+        baby: '<circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/>',
+        lungs: '<path d="M12 3v9"/><path d="M12 12c-1 3-3 7-6 7s-3-4-2-8 3-6 5-6"/><path d="M12 12c1 3 3 7 6 7s3-4 2-8-3-6-5-6"/>',
+    };
+    const DEST = {
+        Consultation: { short: "Doctor", title: "Doctor", desc: "Consultation", icon: "doctor" },
+        "Antenatal Clinic": { short: "Antenatal", title: "Antenatal Clinic", desc: "Family planning · ANC attendances", icon: "heart" },
+        "MCH & Postnatal Clinic": { short: "MCH & PNC", title: "MCH & Postnatal", desc: "Child welfare (CWC) · postnatal", icon: "baby" },
+        "TB Clinic": { short: "TB Clinic", title: "TB Clinic", desc: "TB registration and follow-up", icon: "lungs" },
+    };
+
     // ------------------------------------------------------------ queue
     async function loadAll() {
         data = await call("triage.dashboard");
@@ -28,7 +42,7 @@
     function renderKpis(k) {
         kpis($("#kpis"), [
             { label: "Waiting for Triage", value: k.waiting, cls: k.waiting ? "warn" : "", unit: k.waiting ? `Longest wait ${Desk.duration(k.longest_wait)}` : "No one waiting" },
-            { label: "Sent to Doctor Today", value: k.triaged_today, cls: "good", unit: `Avg wait to triage ${Desk.duration(k.avg_wait)}` },
+            { label: "Sent Onward Today", value: k.triaged_today, cls: "good", unit: `Avg wait to triage ${Desk.duration(k.avg_wait)}` },
             { label: "Visits Today", value: k.visits_today, unit: `${Desk.split(k.employees_today, k.community_today)}` },
             { label: "Urgent / Emergency", value: k.urgent_today, cls: k.urgent_today ? "bad" : "", unit: "Triaged today" },
             { label: "Vital Sign Alerts", value: k.with_alerts, cls: k.with_alerts ? "warn" : "", unit: "Patients with abnormal vitals today" },
@@ -65,8 +79,8 @@
                     <span class="tag tag--${esc(r.triage_priority)}">${esc(r.triage_priority)}</span></div>
                 <div class="qcard__meta">${esc(r.visit)} · ${timeOf(r.triage_datetime)} · ${esc(r.chief_complaint || "")}</div>
                 ${r.alerts ? `<div class="qcard__note alert">⚠ ${esc(r.alerts.replace(/\n/g, "; "))}</div>` : ""}</div>
-                <div class="qcard__side">${pill(r.status, r.status === "Waiting Consultation" ? "warn" : "mute")}
-                    ${r.status === "Waiting Consultation" ? `<button class="btn btn--sm" data-triage="${esc(r.visit)}">Edit vitals</button>` : ""}</div></div>`).join("")
+                <div class="qcard__side"><span class="tag tag--dest">→ ${esc(DEST[r.service_point || "Consultation"].short)}</span>${pill(r.status, ["Waiting Consultation", "Waiting Clinic"].includes(r.status) ? "warn" : "mute")}
+                    ${["Waiting Consultation", "Waiting Clinic"].includes(r.status) ? `<button class="btn btn--sm" data-triage="${esc(r.visit)}">Edit vitals</button>` : ""}</div></div>`).join("")
             : empty("No patients sent through yet today.");
         $$("#recent [data-triage]").forEach((b) => b.addEventListener("click", () => openTriage(b.dataset.triage)));
     }
@@ -167,6 +181,7 @@
         const ex = ctx.existing || {};
         const prev = ctx.previous[0];
         const val = (k, fallback = "") => (ex[k] != null ? ex[k] : fallback);
+        const canRoute = ["Waiting Triage", "Waiting Consultation", "Waiting Clinic"].includes(ctx.visit.status);
         const h = modal({
             title: ex.name ? "Update vitals" : "Take vitals",
             sub: `${esc(ctx.visit.name)} · arrived ${timeOf(ctx.visit.visit_date)}${ctx.visit.visit_source !== "Walk-in" ? " · " + esc(ctx.visit.visit_source) : ""}`,
@@ -198,16 +213,40 @@
                 </div>`,
             foot: [
                 { label: "Cancel" },
-                { label: ex.name && ctx.visit.status !== "Waiting Triage" ? "Update vitals" : "Send to Consultation →", cls: "btn--primary", onClick: async (hh) => {
-                    const v = read(hh.body);
-                    if (!v.chief_complaint.trim()) return toast("Enter the chief complaint", "warn");
-                    const r = await call("triage.save_triage", { visit, data: v });
-                    toast(r.status === "Waiting Consultation" ? "Sent to consultation" : "Vitals updated");
-                    hh.close();
-                    loadAll();
-                } },
+                canRoute
+                    ? { label: "Send to  ▾", cls: "btn--primary", onClick: () => toggleMenu() }
+                    : { label: "Update vitals", cls: "btn--primary", onClick: (hh) => send(hh, ctx.visit.service_point || "Consultation") },
             ],
         });
+
+        // "Send to" menu: doctor or one of the clinics
+        function toggleMenu() {
+            const existing = $(".sendmenu", h.el);
+            if (existing) return existing.remove();
+            const current = ctx.visit.service_point || "Consultation";
+            const menu = document.createElement("div");
+            menu.className = "sendmenu";
+            menu.innerHTML = `<div class="sendmenu__head">Send patient to</div>` + Object.entries(DEST).map(([key, d]) => `
+                <button class="sendmenu__item ${key === current && ex.name ? "current" : ""}" data-dest="${esc(key)}">
+                    <span class="sendmenu__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[d.icon]}</svg></span>
+                    <span><b>${esc(d.title)}</b><small>${esc(d.desc)}</small></span>
+                    ${key === current && ex.name ? '<em>Current</em>' : ""}
+                </button>`).join("");
+            h.foot.appendChild(menu);
+            $$(".sendmenu__item", menu).forEach((b) => b.addEventListener("click", async () => {
+                const all = $$(".sendmenu__item", menu); all.forEach((x) => (x.disabled = true));
+                try { await send(h, b.dataset.dest); } catch (e) { all.forEach((x) => (x.disabled = false)); if (!e.handled) toast(e.message, "error"); }
+            }));
+        }
+
+        async function send(hh, dest) {
+            const v = read(hh.body);
+            if (!v.chief_complaint.trim()) { toast("Enter the chief complaint", "warn"); return; }
+            await call("triage.save_triage", { visit, data: v, send_to: dest });
+            toast(canRoute ? `Sent to ${DEST[dest].title}` : "Vitals updated");
+            hh.close();
+            loadAll();
+        }
 
         let manualPriority = !!ex.name;
         const prio = $("[data-f=triage_priority]", h.body);

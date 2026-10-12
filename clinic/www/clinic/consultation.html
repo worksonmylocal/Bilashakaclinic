@@ -19,6 +19,7 @@
     <div class="tabs">
       <button class="tab on" data-tab="queue">Queue</button>
       <button class="tab" data-tab="done">Seen Today</button>
+      <button class="tab" data-tab="month">Seen This Month</button>
       <button class="tab" data-tab="insights">Insights</button>
     </div>
     <div class="tabpanel on" id="tab-queue">
@@ -32,6 +33,10 @@
       </div>
     </div>
     <div class="tabpanel" id="tab-done"><div class="card"><div class="card__head"><h3>Consultations Completed Today</h3></div><div id="completed"><div class="skel"></div></div></div></div>
+    <div class="tabpanel" id="tab-month">
+      <div class="kpi-grid" id="month-kpis"></div>
+      <div class="card"><div class="card__head"><h3>Consultations Completed This Month</h3><span class="meta" id="month-meta"></span></div><div class="tscroll" id="seen-month"><div class="skel"></div></div></div>
+    </div>
     <div class="tabpanel" id="tab-insights">
       <div class="row-2-eq">
         <div class="card chart-wrap"><div class="card__head"><h3>Top Diagnoses — Last 30 Days</h3><div class="legend"><span><i style="background:#2c6bb3"></i>Employees</span><span><i style="background:#228883"></i>Community</span></div></div><canvas id="dx-chart" height="240"></canvas></div>

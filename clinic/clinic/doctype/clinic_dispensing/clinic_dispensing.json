@@ -6,6 +6,7 @@
 	"field_order": [
 		"visit",
 		"consultation",
+		"attendance",
 		"patient",
 		"patient_name",
 		"patient_type",
@@ -32,6 +33,13 @@
 			"fieldtype": "Link",
 			"label": "Consultation",
 			"options": "Clinic Consultation",
+			"read_only": 1
+		},
+		{
+			"fieldname": "attendance",
+			"fieldtype": "Link",
+			"label": "Attendance",
+			"options": "Clinic Attendance",
 			"read_only": 1
 		},
 		{
@@ -105,7 +113,7 @@
 		}
 	],
 	"links": [],
-	"modified": "2026-09-29 19:48:54.750787",
+	"modified": "2026-09-30 16:00:30.727868",
 	"modified_by": "Administrator",
 	"module": "Clinic",
 	"name": "Clinic Dispensing",
@@ -121,7 +129,9 @@
 			"export": 1,
 			"print": 1,
 			"email": 1,
-			"share": 1
+			"share": 1,
+			"submit": 1,
+			"cancel": 1
 		},
 		{
 			"role": "Clinic Manager",
@@ -168,7 +178,9 @@
 			"export": 1,
 			"print": 1,
 			"email": 1,
-			"share": 1
+			"share": 1,
+			"write": 1,
+			"create": 1
 		}
 	],
 	"sort_field": "creation",

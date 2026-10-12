@@ -2,8 +2,9 @@
 
 import frappe
 from frappe import _
-from frappe.utils import add_days, cint, nowdate
+from frappe.utils import add_days, cint, get_first_day, nowdate
 
+from clinic import billing
 from clinic.api.common import (
 	clean,
 	minutes_since,
@@ -36,7 +37,7 @@ def dashboard():
 			v.visit_source, v.status, v.consultation,
 			t.triage_priority AS priority, t.chief_complaint, t.alerts, t.triage_datetime AS since
 		FROM `tabClinic Visit` v LEFT JOIN `tabClinic Triage` t ON t.name = v.triage
-		WHERE v.status = %s
+		WHERE v.status = %s AND IFNULL(v.service_point, 'Consultation') = 'Consultation'
 		ORDER BY FIELD(t.triage_priority, 'Emergency', 'Urgent', 'Routine'), t.triage_datetime
 	"""
 	waiting = frappe.db.sql(queue_sql, "Waiting Consultation", as_dict=True)
@@ -60,7 +61,7 @@ def dashboard():
 
 	in_flight = frappe.get_all(
 		"Clinic Visit",
-		filters={"status": ["in", ["Waiting Lab", "Waiting Pharmacy"]], "consultation": ["is", "set"]},
+		filters={"status": ["in", ["Waiting Lab", "Waiting Pharmacy"]], "consultation": ["is", "set"], "attendance": ["is", "not set"]},
 		fields=["name as visit", "patient_name", "patient_type", "status", "sex", "age_years"],
 		order_by="modified asc",
 	)
@@ -226,6 +227,7 @@ def workspace(visit):
 			limit=6,
 		),
 		"doctor": user_name(frappe.session.user),
+		"bill": billing.summary(visit),
 	}
 
 
@@ -392,3 +394,48 @@ def add_drug(drug_name):
 	)
 	item.insert(ignore_permissions=True)
 	return {"name": item.name, "item_name": item.item_name, "stock_uom": item.stock_uom, "item_group": item.item_group}
+
+
+@frappe.whitelist()
+def seen_month():
+	"""Consultations completed since the first of this month."""
+	require("consultation")
+	first = get_first_day(nowdate())
+	rows = frappe.db.sql(
+		"""
+		SELECT c.name AS consultation, c.visit, c.patient_name, c.patient_type, c.sex, c.age_years,
+			c.consultation_date, c.refer_out, c.sick_leave_days, c.work_related,
+			(SELECT GROUP_CONCAT(d.diagnosis SEPARATOR ', ') FROM `tabClinic Consultation Diagnosis` d
+				WHERE d.parent = c.name) AS diagnoses
+		FROM `tabClinic Consultation` c
+		WHERE c.status = 'Completed' AND c.consultation_date >= %s
+		ORDER BY c.consultation_date DESC
+		""",
+		f"{first} 00:00:00",
+		as_dict=True,
+	)
+	return {
+		"month": frappe.utils.formatdate(first, "MMMM yyyy"),
+		"rows": rows,
+		"summary": {
+			"total": len(rows),
+			"employees": sum(1 for r in rows if r.patient_type == "Employee"),
+			"community": sum(1 for r in rows if r.patient_type == "Community Member"),
+			"referred": sum(1 for r in rows if r.refer_out),
+			"sick_days": sum(r.sick_leave_days or 0 for r in rows),
+			"work_related": sum(1 for r in rows if r.work_related),
+		},
+	}
+
+
+@frappe.whitelist()
+def set_tb_screening(name, code):
+	"""Mandatory TB screening: 1 Presumed TB, 2 No Signs, 3 On TB treatment, 4 Not Done."""
+	require("consultation")
+	doc = frappe.get_doc("Clinic Consultation", name)
+	doc.set_tb_screening(code)
+	return {
+		"tb_screening": doc.tb_screening,
+		"status": doc.status,
+		"visit_status": frappe.db.get_value("Clinic Visit", doc.visit, "status"),
+	}

@@ -1,0 +1,49 @@
+{
+	"actions": [],
+	"creation": "2026-09-30 15:49:23.181683",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"drug",
+		"drug_name",
+		"price"
+	],
+	"fields": [
+		{
+			"fieldname": "drug",
+			"fieldtype": "Link",
+			"label": "Drug",
+			"options": "Item",
+			"reqd": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "drug_name",
+			"fieldtype": "Data",
+			"label": "Drug Name",
+			"fetch_from": "drug.item_name",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "price",
+			"fieldtype": "Currency",
+			"label": "Price per Unit",
+			"reqd": 1,
+			"in_list_view": 1,
+			"description": "Charged on top of the consultation, for each unit dispensed"
+		}
+	],
+	"links": [],
+	"modified": "2026-09-30 15:49:23.181683",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Drug Price",
+	"owner": "Administrator",
+	"permissions": [],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"istable": 1,
+	"editable_grid": 1
+}

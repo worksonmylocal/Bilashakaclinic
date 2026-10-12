@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCH &amp; Postnatal · Northlake Medical Centre</title>
+<link rel="icon" type="image/svg+xml" href="/assets/clinic/images/northlake-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Poppins:wght@400;500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/clinic/css/clinic_desk.css?v={{ asset_version }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div id="topbar"></div>
+<div class="page">
+  <div class="pagehead" id="pagehead"></div>
+  <div id="view-queue">
+    <div class="kpi-grid" id="kpis"><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+    <div class="tabs">
+      <button class="tab on" data-tab="queue">Queue</button>
+      <button class="tab" data-tab="defaulters">Immunization Defaulters <span class="tab-badge" id="def-badge" style="display:none"></span></button>
+      <button class="tab" data-tab="done">Seen Today</button>
+      <button class="tab" data-tab="month">Seen This Month</button>
+      <button class="tab" data-tab="insights">Insights</button>
+    </div>
+    <div class="tabpanel on" id="tab-queue">
+      <div class="row-2-eq">
+        <div class="card"><div class="card__head"><h3>Waiting for the Clinic</h3><span class="meta" id="waiting-meta"></span></div><div class="queue" id="waiting"><div class="skel"></div></div></div>
+        <div>
+          <div class="card"><div class="card__head"><h3>Lab Results Ready — Back to You</h3><span class="meta" id="ready-meta"></span></div><div class="queue" id="ready"><div class="skel"></div></div></div>
+          <div class="card"><div class="card__head"><h3>My Open Attendances</h3></div><div class="queue" id="progress"><div class="skel"></div></div></div>
+          <div class="card"><div class="card__head"><h3>At Lab / Pharmacy</h3></div><div class="queue" id="flight"><div class="skel"></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="tabpanel" id="tab-defaulters">
+      <div class="card"><div class="card__head"><h3>Children With Missed Immunizations</h3><span class="meta" id="def-meta"></span></div>
+        <div class="printnote" style="margin:-8px 0 14px">Worked out from each child&rsquo;s card: a dose counts as missed once it is past its due date and grace period. Click a child for the guardian&rsquo;s contacts.</div>
+        <div class="queue" id="defaulters"><div class="skel"></div></div></div>
+      <div class="card"><div class="card__head"><h3>Due in the Next Fortnight</h3><span class="meta" id="soon-meta"></span></div><div id="due-soon"><div class="skel"></div></div></div>
+    </div>
+    <div class="tabpanel" id="tab-done"><div class="card"><div class="card__head"><h3>Attendances Completed Today</h3></div><div id="completed"><div class="skel"></div></div></div></div>
+    <div class="tabpanel" id="tab-month">
+      <div class="kpi-grid" id="month-kpis"></div>
+      <div class="card"><div class="card__head"><h3>Attendances Completed This Month</h3><span class="meta" id="month-meta"></span></div><div class="tscroll" id="seen-month"><div class="skel"></div></div></div>
+    </div>
+    <div class="tabpanel" id="tab-insights">
+      <div class="row-2-eq">
+        <div class="card chart-wrap"><div class="card__head"><h3>Attendances — Last 14 Days</h3><div class="legend"><span><i style="background:#2c6bb3"></i>Employees</span><span><i style="background:#228883"></i>Community</span></div></div><canvas id="day-chart" height="240"></canvas></div>
+        <div class="card"><div class="card__head"><h3>Services — Last 30 Days</h3></div><div id="services"><div class="skel"></div></div></div>
+      </div>
+      <div class="row-2-eq">
+        <div class="card"><div class="card__head"><h3>TB Screening Outcomes — Last 30 Days</h3><span class="meta">Codes 1–4</span></div><div id="tb-screen"><div class="skel"></div></div></div>
+        <div class="card"><div class="card__head"><h3 id="specific-title">Breakdown</h3></div><div id="specific"><div class="skel"></div></div></div>
+      </div>
+    </div>
+  </div>
+  <div id="view-ws" style="display:none"></div>
+</div>
+<script>window.CLINIC = { csrf: {{ csrf_token | tojson }}, user: {{ frappe.session.user | tojson }} };</script>
+<script src="/assets/clinic/js/clinic_desk.js?v={{ asset_version }}"></script>
+<script>window.UNIT = "mch";</script>
+<script src="/assets/clinic/js/cwc.js?v={{ asset_version }}"></script>
+<script src="/assets/clinic/js/pnc.js?v={{ asset_version }}"></script>
+<script src="/assets/clinic/js/clinic_unit.js?v={{ asset_version }}"></script>
+</body>
+</html>

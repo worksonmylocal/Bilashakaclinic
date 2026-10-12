@@ -1,9 +1,11 @@
 """Data and actions behind the Triage / front desk page."""
 
 import frappe
+from frappe import _
 from frappe.utils import add_days, nowdate
 
 from clinic.api.common import (
+	SEND_TO,
 	clean,
 	minutes_since,
 	patient_card,
@@ -37,7 +39,7 @@ def dashboard():
 	recent = frappe.db.sql(
 		"""
 		SELECT t.name AS triage, t.visit, t.patient, t.patient_name, t.patient_type, t.triage_priority,
-			t.chief_complaint, t.alerts, t.triage_datetime, v.status, v.sex, v.age_years,
+			t.chief_complaint, t.alerts, t.triage_datetime, v.status, v.sex, v.age_years, v.service_point,
 			TIMESTAMPDIFF(MINUTE, v.visit_date, t.triage_datetime) AS wait_minutes
 		FROM `tabClinic Triage` t JOIN `tabClinic Visit` v ON v.name = t.visit
 		WHERE t.triage_datetime >= %s
@@ -153,7 +155,7 @@ def get_triage_context(visit):
 		"Clinic Visit",
 		visit,
 		["name", "patient", "patient_name", "patient_type", "status", "visit_source", "visit_date",
-		 "reception_notes", "triage", "referring_facility", "referral_reason"],
+		 "reception_notes", "triage", "referring_facility", "referral_reason", "service_point"],
 		as_dict=True,
 	)
 	previous = frappe.get_all(
@@ -173,14 +175,18 @@ def get_triage_context(visit):
 
 
 @frappe.whitelist()
-def save_triage(visit, data):
-	"""Record (or update) vitals. Saving moves the visit to Waiting Consultation."""
+def save_triage(visit, data, send_to="Consultation"):
+	"""Record (or update) vitals and send the patient on: to the doctor or to a clinic queue."""
 	require("triage")
+	if send_to not in SEND_TO:
+		frappe.throw(_("Unknown destination {0}").format(send_to))
 	data = frappe.parse_json(data)
 	values = {f: to_number(data.get(f), integer=True) for f in VITAL_INT if f in data}
 	values.update({f: to_number(data.get(f)) for f in VITAL_FLOAT if f in data})
 	values.update({f: clean(data.get(f)) for f in VITAL_TEXT if f in data})
 
+	# The destination is set first so the triage record routes the visit into the right queue
+	frappe.db.set_value("Clinic Visit", visit, "service_point", send_to)
 	existing = frappe.db.get_value("Clinic Visit", visit, "triage")
 	if existing:
 		doc = frappe.get_doc("Clinic Triage", existing)
@@ -193,4 +199,5 @@ def save_triage(visit, data):
 		"alerts": doc.alerts,
 		"bmi": doc.bmi,
 		"status": frappe.db.get_value("Clinic Visit", visit, "status"),
+		"send_to": send_to,
 	}

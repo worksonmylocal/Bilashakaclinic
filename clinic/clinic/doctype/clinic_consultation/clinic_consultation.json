@@ -19,6 +19,9 @@
 		"section_3",
 		"triage",
 		"vitals_summary",
+		"section_1",
+		"tb_screening",
+		"tb_screening_code",
 		"tab_4",
 		"presenting_complaint",
 		"history_of_presenting_illness",
@@ -175,6 +178,25 @@
 			"fieldname": "vitals_summary",
 			"fieldtype": "Small Text",
 			"label": "Vitals Summary",
+			"read_only": 1
+		},
+		{
+			"fieldname": "section_1",
+			"fieldtype": "Section Break",
+			"label": "TB Screening"
+		},
+		{
+			"fieldname": "tb_screening",
+			"fieldtype": "Select",
+			"label": "TB Screening",
+			"options": "\n1 - Presumed TB\n2 - No Signs\n3 - On TB Treatment\n4 - Not Done",
+			"read_only": 1,
+			"description": "Every patient must be screened. Set from the TB screening bar."
+		},
+		{
+			"fieldname": "tb_screening_code",
+			"fieldtype": "Int",
+			"label": "TB Screening Code",
 			"read_only": 1
 		},
 		{
@@ -433,7 +455,7 @@
 		}
 	],
 	"links": [],
-	"modified": "2026-09-29 19:48:54.750787",
+	"modified": "2026-09-30 12:53:25.795598",
 	"modified_by": "Administrator",
 	"module": "Clinic",
 	"name": "Clinic Consultation",

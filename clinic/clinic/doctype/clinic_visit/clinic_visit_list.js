@@ -4,6 +4,8 @@ frappe.listview_settings["Clinic Visit"] = {
 		const colours = {
 			"Waiting Triage": "orange",
 			"Waiting Consultation": "yellow",
+            "Waiting Clinic": "yellow",
+            "In Clinic": "blue",
 			"In Consultation": "blue",
 			"Waiting Lab": "purple",
 			"Lab Results Ready": "cyan",

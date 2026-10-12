@@ -1,0 +1,175 @@
+{
+	"actions": [],
+	"creation": "2026-09-30 15:49:23.181683",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"employer_name",
+		"uses_employee_records",
+		"column_1",
+		"requires_sick_sheet",
+		"billed_at_clinic",
+		"section_2",
+		"contact_person",
+		"phone",
+		"column_3",
+		"email",
+		"address",
+		"notes"
+	],
+	"fields": [
+		{
+			"fieldname": "employer_name",
+			"fieldtype": "Data",
+			"label": "Employer Name",
+			"reqd": 1,
+			"unique": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "uses_employee_records",
+			"fieldtype": "Check",
+			"label": "Staff are in the Employee list",
+			"description": "Tick for the farm that owns this system: its staff are picked from the Employee records."
+		},
+		{
+			"fieldname": "column_1",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "requires_sick_sheet",
+			"fieldtype": "Check",
+			"label": "Requires Sick Sheet",
+			"default": "1",
+			"in_list_view": 1,
+			"description": "A sick sheet is printed for this employer's staff at the pharmacy."
+		},
+		{
+			"fieldname": "billed_at_clinic",
+			"fieldtype": "Check",
+			"label": "Invoice the Employer (Pay Later)",
+			"default": "1",
+			"in_list_view": 1,
+			"description": "Staff get an invoice to take back to the farm, which pays later. Untick and the staff pay cash at the pharmacy like everyone else."
+		},
+		{
+			"fieldname": "section_2",
+			"fieldtype": "Section Break",
+			"label": "Contact"
+		},
+		{
+			"fieldname": "contact_person",
+			"fieldtype": "Data",
+			"label": "Contact Person"
+		},
+		{
+			"fieldname": "phone",
+			"fieldtype": "Data",
+			"label": "Phone"
+		},
+		{
+			"fieldname": "column_3",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "email",
+			"fieldtype": "Data",
+			"label": "Email",
+			"options": "Email"
+		},
+		{
+			"fieldname": "address",
+			"fieldtype": "Small Text",
+			"label": "Billing Address"
+		},
+		{
+			"fieldname": "notes",
+			"fieldtype": "Small Text",
+			"label": "Notes"
+		}
+	],
+	"links": [],
+	"modified": "2026-09-30 16:23:08.483480",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Employer",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"role": "System Manager",
+			"read": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1
+		},
+		{
+			"role": "Clinic Receptionist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Doctor",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Lab Technician",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Pharmacist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		}
+	],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1,
+	"autoname": "field:employer_name",
+	"naming_rule": "By fieldname",
+	"search_fields": "employer_name"
+}

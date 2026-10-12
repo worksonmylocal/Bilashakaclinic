@@ -1,0 +1,346 @@
+{
+	"actions": [],
+	"creation": "2026-10-07 10:40:21.515935",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"intro_section",
+		"patient",
+		"cwc_no",
+		"serial_no",
+		"column_1",
+		"registration_date",
+		"status",
+		"exit_reason",
+		"section_2",
+		"child_name",
+		"dob",
+		"age",
+		"column_3",
+		"sex",
+		"village",
+		"section_4",
+		"caregiver_name",
+		"caregiver_relationship",
+		"column_5",
+		"caregiver_phone",
+		"alt_phone",
+		"section_6",
+		"delivery_place",
+		"delivery_facility",
+		"column_7",
+		"birth_weight_kg",
+		"birth_notes",
+		"section_8",
+		"immunization_summary",
+		"next_due_vaccine",
+		"column_9",
+		"next_due_date",
+		"is_defaulter",
+		"overdue_count",
+		"section_10",
+		"immunizations"
+	],
+	"fields": [
+		{
+			"fieldname": "intro_section",
+			"fieldtype": "Section Break",
+			"label": "Registration"
+		},
+		{
+			"fieldname": "patient",
+			"fieldtype": "Link",
+			"label": "Patient",
+			"options": "Clinic Patient",
+			"reqd": 1,
+			"unique": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "cwc_no",
+			"fieldtype": "Data",
+			"label": "CWC No.",
+			"unique": 1,
+			"reqd": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"description": "The number already on the child's card. Leave blank only to have one generated."
+		},
+		{
+			"fieldname": "serial_no",
+			"fieldtype": "Int",
+			"label": "Serial / Permanent Register No.",
+			"read_only": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "column_1",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "registration_date",
+			"fieldtype": "Date",
+			"label": "Registration Date",
+			"default": "Today",
+			"reqd": 1
+		},
+		{
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"label": "Status",
+			"options": "Active\nTransferred Out\nCompleted\nDeceased\nInactive",
+			"default": "Active",
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "exit_reason",
+			"fieldtype": "Small Text",
+			"label": "Exit Reason",
+			"depends_on": "eval:doc.status!='Active'"
+		},
+		{
+			"fieldname": "section_2",
+			"fieldtype": "Section Break",
+			"label": "Child"
+		},
+		{
+			"fieldname": "child_name",
+			"fieldtype": "Data",
+			"label": "Child Name",
+			"fetch_from": "patient.full_name",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "dob",
+			"fieldtype": "Date",
+			"label": "Date of Birth",
+			"fetch_from": "patient.date_of_birth",
+			"read_only": 1
+		},
+		{
+			"fieldname": "age",
+			"fieldtype": "Data",
+			"label": "Age",
+			"read_only": 1
+		},
+		{
+			"fieldname": "column_3",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "sex",
+			"fieldtype": "Link",
+			"label": "Sex",
+			"options": "Gender",
+			"fetch_from": "patient.sex",
+			"read_only": 1
+		},
+		{
+			"fieldname": "village",
+			"fieldtype": "Data",
+			"label": "Residence / Village / Landmark"
+		},
+		{
+			"fieldname": "section_4",
+			"fieldtype": "Section Break",
+			"label": "Parent / Guardian"
+		},
+		{
+			"fieldname": "caregiver_name",
+			"fieldtype": "Data",
+			"label": "Parent / Guardian Name",
+			"reqd": 1
+		},
+		{
+			"fieldname": "caregiver_relationship",
+			"fieldtype": "Select",
+			"label": "Caregiver Relationship",
+			"options": "Mother\nFather\nGrandparent\nGuardian\nOther",
+			"default": "Mother"
+		},
+		{
+			"fieldname": "column_5",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "caregiver_phone",
+			"fieldtype": "Data",
+			"label": "Contact Phone Number",
+			"reqd": 1
+		},
+		{
+			"fieldname": "alt_phone",
+			"fieldtype": "Data",
+			"label": "Alternative Phone"
+		},
+		{
+			"fieldname": "section_6",
+			"fieldtype": "Section Break",
+			"label": "Birth Attendance & Weight",
+			"description": "Recorded once. It carries over to every later visit."
+		},
+		{
+			"fieldname": "delivery_place",
+			"fieldtype": "Select",
+			"label": "Place of Delivery",
+			"options": "\nHealth Facility\nHome\nOther"
+		},
+		{
+			"fieldname": "delivery_facility",
+			"fieldtype": "Data",
+			"label": "Facility / Place",
+			"depends_on": "eval:doc.delivery_place"
+		},
+		{
+			"fieldname": "column_7",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "birth_weight_kg",
+			"fieldtype": "Float",
+			"label": "Birth Weight (kg)",
+			"precision": "2"
+		},
+		{
+			"fieldname": "birth_notes",
+			"fieldtype": "Small Text",
+			"label": "Birth Notes"
+		},
+		{
+			"fieldname": "section_8",
+			"fieldtype": "Section Break",
+			"label": "Immunization Card"
+		},
+		{
+			"fieldname": "immunization_summary",
+			"fieldtype": "Small Text",
+			"label": "Immunization Summary",
+			"read_only": 1
+		},
+		{
+			"fieldname": "next_due_vaccine",
+			"fieldtype": "Data",
+			"label": "Next Due Vaccine",
+			"read_only": 1,
+			"in_list_view": 1
+		},
+		{
+			"fieldname": "column_9",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "next_due_date",
+			"fieldtype": "Date",
+			"label": "Next Due Date",
+			"read_only": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "is_defaulter",
+			"fieldtype": "Check",
+			"label": "Immunization Defaulter",
+			"read_only": 1,
+			"in_standard_filter": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "overdue_count",
+			"fieldtype": "Int",
+			"label": "Doses Overdue",
+			"read_only": 1
+		},
+		{
+			"fieldname": "section_10",
+			"fieldtype": "Section Break"
+		},
+		{
+			"fieldname": "immunizations",
+			"fieldtype": "Table",
+			"label": "Doses",
+			"options": "Clinic Immunization Dose"
+		}
+	],
+	"links": [],
+	"modified": "2026-10-07 10:40:21.515935",
+	"modified_by": "Administrator",
+	"module": "Clinic",
+	"name": "Clinic Child Record",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"role": "System Manager",
+			"read": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Manager",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1
+		},
+		{
+			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Doctor",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1,
+			"write": 1,
+			"create": 1
+		},
+		{
+			"role": "Clinic Receptionist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Pharmacist",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		}
+	],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1,
+	"autoname": "CWC-.#####",
+	"naming_rule": "Expression (old style)",
+	"title_field": "child_name",
+	"search_fields": "cwc_no,child_name,caregiver_phone,serial_no"
+}

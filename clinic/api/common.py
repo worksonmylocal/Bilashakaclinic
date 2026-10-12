@@ -12,7 +12,18 @@ PAGE_ROLES = {
 	"consultation": ["Clinic Doctor"],
 	"lab": ["Clinic Lab Technician"],
 	"pharmacy": ["Clinic Pharmacist"],
+	"antenatal": ["Clinic Nurse", "Clinic Doctor"],
+	"mch": ["Clinic Nurse", "Clinic Doctor"],
+	"tb": ["Clinic Nurse", "Clinic Doctor"],
 }
+
+# Clinics a patient can be sent to after triage (in addition to the doctor)
+UNITS = {
+	"antenatal": {"label": "Antenatal Clinic", "services": ["Family Planning", "ANC Attendance"]},
+	"mch": {"label": "MCH & Postnatal Clinic", "services": ["Postnatal Attendance", "CWC Attendance"]},
+	"tb": {"label": "TB Clinic", "services": ["TB Registration", "TB Follow-up"]},
+}
+SEND_TO = ["Consultation"] + [u["label"] for u in UNITS.values()]
 ADMIN_ROLES = ["Clinic Manager", "System Manager"]
 ALL_CLINIC_ROLES = sorted({r for roles in PAGE_ROLES.values() for r in roles} | set(ADMIN_ROLES))
 
@@ -24,12 +35,20 @@ PATIENT_FIELDS = [
 	"date_of_birth",
 	"national_id",
 	"phone",
+	"next_of_kin",
+	"next_of_kin_relationship",
+	"next_of_kin_phone",
 	"department",
 	"employee",
 	"village",
 	"allergies",
 	"chronic_conditions",
 	"blood_group",
+	"employer",
+	"staff_no",
+	"section",
+	"requires_sick_sheet",
+	"billed_at_clinic",
 ]
 ACTIVE_VISIT = ["not in", ["Completed", "Cancelled"]]
 
@@ -138,6 +157,11 @@ def masters():
 			fields=["name", "category", "performed_where", "requires_consent", "sample_type"],
 			order_by="category asc, name asc",
 		),
+		"employers": frappe.get_all(
+			"Clinic Employer",
+			fields=["name", "uses_employee_records", "requires_sick_sheet", "billed_at_clinic"],
+			order_by="uses_employee_records desc, name asc",
+		),
 		"departments": frappe.get_all("Department", filters={"is_group": 0}, pluck="name", order_by="name"),
 		"genders": frappe.get_all("Gender", pluck="name", order_by="name"),
 	}
@@ -157,6 +181,7 @@ def search_patients(q="", patient_type=None, limit=15):
 			["phone", "like", like],
 			["name", "like", like],
 			["employee", "like", like],
+			["staff_no", "like", like],
 		]
 	patients = frappe.get_all(
 		"Clinic Patient",
@@ -198,7 +223,7 @@ def register_patient(data):
 	require_any_clinic_role()
 	data = frappe.parse_json(data)
 	fields = [
-		"patient_type", "employee", "full_name", "sex", "date_of_birth", "national_id", "phone",
+		"patient_type", "employer", "employee", "staff_no", "section", "full_name", "sex", "date_of_birth", "national_id", "phone",
 		"village", "next_of_kin", "next_of_kin_relationship", "next_of_kin_phone",
 		"blood_group", "allergies", "chronic_conditions",
 	]

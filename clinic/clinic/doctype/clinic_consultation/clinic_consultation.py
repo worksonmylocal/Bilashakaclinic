@@ -1,9 +1,18 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from frappe.utils import getdate, nowdate
+from frappe.utils import cint, getdate, nowdate
 
 from clinic.clinic.doctype.clinic_visit.clinic_visit import CLOSED_STATUSES, set_visit_status
+from clinic import billing
+from clinic.encounter import check_tb_test_sent, request_tb_test
+
+TB_SCREENING = {
+	1: "1 - Presumed TB",
+	2: "2 - No Signs",
+	3: "3 - On TB Treatment",
+	4: "4 - Not Done",
+}
 
 PENDING_LAB_STATUSES = ["Requested", "Sample Collected"]
 
@@ -22,10 +31,12 @@ class ClinicConsultation(Document):
 		self.validate_referral_and_follow_up()
 		self.validate_employee_fields()
 		self.validate_prescriptions()
+		self.tb_screening_code = cint((self.tb_screening or "0")[:1])
 
 	def after_insert(self):
 		frappe.db.set_value("Clinic Visit", self.visit, "consultation", self.name)
 		set_visit_status(self.visit, "In Consultation")
+		billing.add_consultation_fee(self)
 
 	# ------------------------------------------------------------ validation
 	def validate_visit(self):
@@ -97,6 +108,18 @@ class ClinicConsultation(Document):
 
 	# ------------------------------------------------------------ actions
 	@frappe.whitelist()
+	def set_tb_screening(self, code):
+		"""Record the mandatory TB screening. 'Presumed TB' raises the sputum test straight away."""
+		self.check_permission("write")
+		code = cint(code)
+		if code not in TB_SCREENING:
+			frappe.throw(_("Choose one of the four TB screening options"))
+		self.tb_screening = TB_SCREENING[code]
+		if code == 1:
+			request_tb_test(self)
+		self.save()
+
+	@frappe.whitelist()
 	def send_to_lab(self):
 		self.check_permission("write")
 		new_requests = [row for row in self.lab_requests if not row.lab_test]
@@ -161,6 +184,9 @@ class ClinicConsultation(Document):
 		self.finalise("Completed")
 
 	def validate_ready_to_close(self):
+		if not self.tb_screening:
+			frappe.throw(_("Record the TB screening (1-4) before closing the consultation"))
+		check_tb_test_sent(self)
 		if not self.diagnoses:
 			frappe.throw(_("Add at least one diagnosis before closing the consultation"))
 		pending = frappe.db.count(

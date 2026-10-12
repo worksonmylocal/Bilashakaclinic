@@ -10,7 +10,7 @@
         tools: `<button class="btn btn--primary" id="walk-in">＋ Walk-in / referred request</button>
                 <button class="iconbtn" id="refresh" title="Refresh">${Desk.REFRESH_ICON}</button>`,
     });
-    Desk.tabs((tab) => tab === "insights" && loadInsights());
+    Desk.tabs((tab) => { if (tab === "insights") loadInsights(); else if (tab === "month") loadMonth(); });
     $("#refresh").addEventListener("click", () => { loadAll(); toast("Refreshed"); });
     $("#walk-in").addEventListener("click", walkIn);
 
@@ -37,6 +37,7 @@
         const badge = $("#ext-badge");
         badge.style.display = k.external_out ? "" : "none"; badge.textContent = k.external_out;
         if ($("#tab-insights").classList.contains("on")) loadInsights();
+        if ($("#tab-month").classList.contains("on")) loadMonth();
     }
 
     function renderFilters() {
@@ -91,10 +92,36 @@
         $$("#resulted [data-open]").forEach((b) => b.addEventListener("click", () => openTest(b.dataset.open)));
     }
 
+    async function loadMonth() {
+        const d = await call("lab.month_results");
+        const s = d.summary;
+        $("#month-meta").textContent = d.month;
+        kpis($("#month-kpis"), [
+            { label: "Resulted This Month", value: s.total, cls: "good", unit: d.month },
+            { label: "Positive", value: s.positive, cls: s.positive ? "bad" : "", unit: `${s.abnormal} abnormal` },
+            { label: "Employees / Community", value: `${s.employees} <span style="font-size:14px;color:var(--ink-mute)">/ ${s.community}</span>`, unit: "Patients tested" },
+            { label: "From External Labs", value: s.external, cls: "info", unit: "Reports received" },
+        ]);
+        $("#resulted-month").innerHTML = d.rows.length ? `<table class="dtable"><tr><th>Date</th><th>Test</th><th>Patient</th><th>Result</th><th>By</th><th></th></tr>
+            ${d.rows.map((r) => `<tr><td>${esc(Desk.dateOf(r.resulted_on).slice(5))} ${timeOf(r.resulted_on)}</td><td><b style="color:var(--ink)">${esc(r.test_type)}</b></td>
+                <td>${esc(r.patient_name)} ${typeTag(r.patient_type)}</td>
+                <td>${r.interpretation ? pill(r.interpretation, ["Positive", "Abnormal"].includes(r.interpretation) ? "bad" : "good") : "—"}${referredPill(r)}</td>
+                <td>${esc(r.technician_name || "")}</td>
+                <td class="num">${r.lab_only ? `<a class="btn btn--sm" target="_blank" href="${reportUrl(r.visit)}">Print report</a> ` : ""}<button class="btn btn--link btn--sm" data-open="${esc(r.name)}">View</button></td></tr>`).join("")}</table>`
+            : empty("No results released yet this month.");
+        $$("#resulted-month [data-open]").forEach((b) => b.addEventListener("click", () => openTest(b.dataset.open)));
+    }
+
     async function loadInsights() {
         const d = await call("lab.insights");
         chart("cat-chart", { type: "bar", data: { labels: d.by_category.map((r) => r.label), datasets: Desk.stackedDatasets(d.by_category) }, options: { ...Desk.stackedOptions, plugins: { legend: { display: false } } } });
         chart("day-chart", { type: "line", data: { labels: d.by_day.map((r) => r.day.slice(5)), datasets: [{ label: "Tests", data: d.by_day.map((r) => Number(r.tests)), borderColor: COLORS.ink, backgroundColor: "rgba(10,10,10,0.06)", fill: true, tension: 0.35, pointRadius: 3 }] }, options: { plugins: { legend: { display: false } } } });
+        $("#top-month-meta").textContent = `${d.top_month.reduce((n, r) => n + Number(r.total), 0)} tests requested this month`;
+        hbars($("#top-month"), d.top_month, {
+            valueKey: "total",
+            wide: true,
+            format: (v, r) => `${v} <span style="color:var(--ink-mute)">(${r.employees} emp · ${r.community} com${Number(r.positive) ? " · " + r.positive + " pos" : ""})</span>`,
+        });
         const el = $("#positivity");
         el.innerHTML = d.positivity.length ? `<table class="dtable"><tr><th>Test</th><th class="num">Resulted</th><th class="num">Positive</th><th class="num">Employees +</th><th class="num">Community +</th><th style="width:30%">Positivity</th></tr>
             ${d.positivity.map((r) => { const pct = r.resulted ? Math.round(r.positive * 100 / r.resulted) : 0;
@@ -117,7 +144,7 @@
         }
         if (row.result_type === "Qualitative") {
             const v = value.toLowerCase();
-            if (POSITIVE.includes(v)) return "Positive";
+            if (POSITIVE.includes(v) || v.startsWith("positive")) return "Positive";
             if (NEGATIVE.includes(v)) return "Negative";
             if (value.startsWith("+")) return "Abnormal";
         }

@@ -2,7 +2,7 @@
 
 import frappe
 from frappe import _
-from frappe.utils import add_days, cint, nowdate
+from frappe.utils import add_days, cint, get_first_day, nowdate
 
 from clinic.api.common import (
 	clean,
@@ -157,7 +157,22 @@ def insights():
 		add_days(nowdate(), -29),
 		as_dict=True,
 	)
+	top_month = frappe.db.sql(
+		"""
+		SELECT test_type AS label, category, COUNT(*) AS total,
+			SUM(status = 'Resulted') AS resulted,
+			SUM(interpretation = 'Positive') AS positive,
+			SUM(patient_type = 'Employee') AS employees,
+			SUM(patient_type = 'Community Member') AS community
+		FROM `tabClinic Lab Test`
+		WHERE status != 'Cancelled' AND DATE(requested_on) >= %s
+		GROUP BY test_type, category ORDER BY total DESC, test_type LIMIT 10
+		""",
+		get_first_day(nowdate()),
+		as_dict=True,
+	)
 	return {
+		"top_month": top_month,
 		"by_category": by_category,
 		"by_day": [{**row, "day": str(row.day)} for row in by_day],
 		"positivity": positivity,
@@ -294,3 +309,34 @@ def report(visit):
         "printed_by": user_name(frappe.session.user),
         "printed_on": frappe.utils.now_datetime(),
     }
+
+
+@frappe.whitelist()
+def month_results():
+	"""Everything resulted since the first of this month."""
+	require("lab")
+	first = get_first_day(nowdate())
+	rows = frappe.get_all(
+		"Clinic Lab Test",
+		filters={"status": "Resulted", "resulted_on": [">=", f"{first} 00:00:00"]},
+		fields=["name", "test_type", "category", "patient_name", "patient_type", "interpretation",
+			"resulted_on", "technician", "performed_where", "visit"],
+		order_by="resulted_on desc",
+	)
+	referred = _lab_only_visits({r.visit for r in rows})
+	for row in rows:
+		row.technician_name = user_name(row.technician)
+		row.lab_only = row.visit in referred
+		row.referred_by = referred.get(row.visit)
+	return {
+		"month": frappe.utils.formatdate(first, "MMMM yyyy"),
+		"rows": rows,
+		"summary": {
+			"total": len(rows),
+			"positive": sum(1 for r in rows if r.interpretation == "Positive"),
+			"abnormal": sum(1 for r in rows if r.interpretation == "Abnormal"),
+			"employees": sum(1 for r in rows if r.patient_type == "Employee"),
+			"community": sum(1 for r in rows if r.patient_type == "Community Member"),
+			"external": sum(1 for r in rows if r.performed_where == "External"),
+		},
+	}
