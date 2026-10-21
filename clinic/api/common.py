@@ -8,13 +8,13 @@ from clinic.utils import age_text
 
 # Which roles may open which page. Managers and system managers may open all of them.
 PAGE_ROLES = {
-	"triage": ["Clinic Receptionist", "Clinic Nurse"],
+	"triage": ["Clinic Receptionist", "Clinic Nurse", "Clinic Doctor"],
 	"consultation": ["Clinic Doctor"],
 	"lab": ["Clinic Lab Technician"],
 	"pharmacy": ["Clinic Pharmacist"],
-	"antenatal": ["Clinic Nurse", "Clinic Doctor"],
-	"mch": ["Clinic Nurse", "Clinic Doctor"],
-	"tb": ["Clinic Nurse", "Clinic Doctor"],
+	"antenatal": ["Clinic Doctor"],
+	"mch": ["Clinic Doctor"],
+	"tb": ["Clinic Doctor"],
 }
 
 # Clinics a patient can be sent to after triage (in addition to the doctor)
