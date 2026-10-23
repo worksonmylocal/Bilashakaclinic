@@ -1,5 +1,6 @@
 import frappe
 
+from clinic import price_data
 from clinic.seed_data import DIAGNOSES, LAB_TEST_TYPES, VACCINE_SCHEDULE
 
 ROLES = [
@@ -19,6 +20,58 @@ def ensure_roles():
 			frappe.get_doc({"doctype": "Role", "role_name": role, "desk_access": 1}).insert(
 				ignore_permissions=True
 			)
+
+
+DRUG_GROUP = "Clinic Drugs"
+
+
+def ensure_drug_group():
+	"""The Item Group holding the clinic's medicines, so prescribing never offers the farm's other stock."""
+	if not frappe.db.exists("Item Group", DRUG_GROUP):
+		frappe.get_doc(
+			{"doctype": "Item Group", "item_group_name": DRUG_GROUP, "parent_item_group": "All Item Groups", "is_group": 0}
+		).insert(ignore_permissions=True)
+	return DRUG_GROUP
+
+
+def load_price_lists():
+	"""Replace the drug, lab and procedure price lists and the clinic visit fees with the printed price lists."""
+	group = ensure_drug_group()
+	failed = []
+	pricing = frappe.get_single("Clinic Pricing")
+
+	pricing.set("drug_prices", [])
+	for drug, strength, dose, price in price_data.DRUGS:
+		name = price_data.item_name(drug, strength)
+		try:
+			if not frappe.db.exists("Item", name):
+				frappe.get_doc(
+					{"doctype": "Item", "item_code": name, "item_name": name, "item_group": group, "stock_uom": "Nos", "is_stock_item": 1}
+				).insert(ignore_permissions=True)
+		except Exception as e:  # one bad item must not stop the rest, or the update
+			failed.append(f"{name}: {e}")
+			continue
+		pricing.append("drug_prices", {"drug": name, "drug_name": name, "strength": strength, "course_qty": price_data.course_qty(strength, dose), "price": price})
+
+	for test in price_data.NEW_LAB_TESTS:
+		if not frappe.db.exists("Clinic Lab Test Type", test["test_name"]):
+			frappe.get_doc({"doctype": "Clinic Lab Test Type", **test}).insert(ignore_permissions=True)
+	pricing.set("lab_prices", [])
+	for test_type, price in price_data.LAB_PRICES.items():
+		if frappe.db.exists("Clinic Lab Test Type", test_type):
+			pricing.append("lab_prices", {"test_type": test_type, "price": price})
+		else:
+			failed.append(f"lab test type missing: {test_type}")
+
+	pricing.set("procedure_prices", [])
+	for procedure, price, note in price_data.PROCEDURES:
+		pricing.append("procedure_prices", {"procedure": procedure, "price": price, "note": note})
+	pricing.update(price_data.VISIT_FEES)
+	pricing.consultation_price = pricing.consultation_price or 350
+	pricing.save(ignore_permissions=True)
+	if failed:
+		frappe.log_error("\n".join(failed), "Clinic price list load")
+	return failed
 
 
 def seed_lab_test_types():

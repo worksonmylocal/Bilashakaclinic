@@ -149,6 +149,7 @@ def receipt(bill):
 		],
 		"totals": {
 			"consultation": flt(doc.consultation_total),
+			"procedures": flt(doc.procedure_total),
 			"lab": flt(doc.lab_total),
 			"drugs": flt(doc.drug_total),
 			"total": flt(doc.total),

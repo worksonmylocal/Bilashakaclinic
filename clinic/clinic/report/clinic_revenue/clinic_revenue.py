@@ -17,6 +17,7 @@ def execute(filters=None):
 		{"label": _("Receipts"), "fieldname": "receipts", "fieldtype": "Int", "width": 90},
 		{"label": _("Consultations"), "fieldname": "consultation", "fieldtype": "Currency", "width": 130},
 		{"label": _("Lab Tests"), "fieldname": "lab", "fieldtype": "Currency", "width": 120},
+		{"label": _("Procedures"), "fieldname": "procedures", "fieldtype": "Currency", "width": 120},
 		{"label": _("Drugs"), "fieldname": "drugs", "fieldtype": "Currency", "width": 120},
 		{"label": _("Total Collected"), "fieldname": "total", "fieldtype": "Currency", "width": 150},
 	]
@@ -26,7 +27,7 @@ def execute(filters=None):
 	data = frappe.db.sql(
 		f"""
 		SELECT {expr} AS period, COUNT(*) AS receipts, SUM(b.consultation_total) AS consultation,
-			SUM(b.lab_total) AS lab, SUM(b.drug_total) AS drugs, SUM(b.total) AS total
+			SUM(b.procedure_total) AS procedures, SUM(b.lab_total) AS lab, SUM(b.drug_total) AS drugs, SUM(b.total) AS total
 		FROM `tabClinic Bill` b
 		WHERE b.status = 'Paid' AND DATE(b.paid_on) BETWEEN %(from_date)s AND %(to_date)s {conditions}
 		GROUP BY period ORDER BY period

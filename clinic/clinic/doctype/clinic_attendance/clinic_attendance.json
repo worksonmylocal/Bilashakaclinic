@@ -250,7 +250,8 @@
 		"follow_up_required",
 		"follow_up_date",
 		"follow_up_reason",
-		"appointment"
+		"appointment",
+		"procedures"
 	],
 	"fields": [
 		{
@@ -1797,6 +1798,12 @@
 			"fieldtype": "Small Text",
 			"label": "Maternal Complications Identified",
 			"depends_on": "eval:doc.service_type=='Postnatal Attendance'"
+		},
+		{
+			"fieldname": "procedures",
+			"fieldtype": "Table",
+			"label": "Procedures Done",
+			"options": "Clinic Procedure Done"
 		}
 	],
 	"links": [],

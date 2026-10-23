@@ -238,6 +238,7 @@
         state = {
             lab: (a.lab_requests || []).map((r) => ({ ...r })),
             rx: (a.prescriptions || []).map((r) => ({ ...r })),
+            proc: (a.procedures || []).map((r) => ({ procedure: r.procedure, qty: r.qty })),
         };
         dirty = false;
         $("#view-queue").style.display = "none";
@@ -301,6 +302,7 @@
                         <div id="rx-allergy"></div>
                         ${isLocked ? "" : `<div class="field"><input class="input" id="rx-add" placeholder="Search a medicine to prescribe…"></div>`}
                         <div id="rx-rows"></div>
+                        <div id="proc-box"></div>
                     </div>
                     <div class="subpanel" id="sp-ref">
                         ${isAnc ? '<div class="printnote" style="margin-bottom:12px">Referrals out are recorded in section 7 of the ANC form.</div>' : `${field("refer_out", "Refer to another facility", { type: "checkbox", value: a.refer_out })}
@@ -401,6 +403,7 @@
             $("#ro-gestation_weeks").value = Math.max(Math.floor((Date.now() - d.getTime()) / (7 * 86400000)), 0);
         });
         renderLab(); renderRx(); renderLabResults(); renderTimeline(ws.history); refreshActions();
+        Desk.procedurePicker($("#proc-box", root), state.proc, { locked: isLocked, onChange: () => (dirty = true) });
         $("#save", root).addEventListener("click", () => save(true));
         if (!isLocked) {
             if (referOut) Desk.facilityField($("[data-f=referral_facility]", root));
@@ -411,7 +414,7 @@
             });
             suggest($("#rx-add"), {
                 fetch: (q) => call("consultation.search_drugs", { q }, { quiet: true }).catch(() => []),
-                render: (i) => ({ main: i.item_name, sub: i.stock_uom }),
+                render: (i) => ({ main: i.item_name, sub: [i.strength, Number(i.price) ? `KSh ${i.price}${Number(i.course_qty) > 1 ? " per course of " + i.course_qty : ""}` : "no price set"].filter(Boolean).join(" · ") }),
                 onPick: (i) => { addRx(i); $("#rx-add").value = ""; },
             });
         }
@@ -475,7 +478,8 @@
 
     // ---- prescriptions
     function addRx(item) {
-        state.rx.push({ drug: item.name, drug_name: item.item_name, dose: "", route: "Oral", frequency: "", duration_days: "", quantity: "", instructions: "" });
+        const course = Number(item.course_qty) > 1 ? Number(item.course_qty) : "";
+        state.rx.push({ drug: item.name, drug_name: item.item_name, dose: item.strength || "", route: "Oral", frequency: "", duration_days: "", quantity: course, instructions: "", _qtyTouched: !!course });
         dirty = true; renderRx(); refreshActions();
     }
     function autoQty(i) {
@@ -547,6 +551,7 @@
         if ($("#fp-form")) Object.assign(data, FP.multiValues($("#fp-form")));
         if ($("#pnc-form")) Object.assign(data, PNC.multiValues($("#pnc-form")));
         data.lab_requests = state.lab.map(({ test_type, urgency, clinical_notes, lab_test }) => ({ test_type, urgency, clinical_notes, lab_test }));
+        data.procedures = state.proc.map(({ procedure, qty }) => ({ procedure, qty }));
         data.prescriptions = state.rx.map(({ drug, dose, route, frequency, duration_days, quantity, instructions }) => ({ drug, dose, route, frequency, duration_days, quantity, instructions }));
         return data;
     }

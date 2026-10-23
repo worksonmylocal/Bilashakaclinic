@@ -176,6 +176,7 @@ def get_dispensing(name):
 	data.update(billable=True, billing_mode=t["billing_mode"], sick_sheet=t["sick_sheet"], employer=t["employer"])
 	data["bill"] = billing.summary(doc.visit)
 	data["prices"] = billing.drug_prices()
+	data["courses"] = {drug: {"price": price, "course_qty": course} for drug, (price, course) in billing.drug_courses().items()}
 	return data
 
 

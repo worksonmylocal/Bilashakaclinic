@@ -5,6 +5,14 @@
 	"engine": "InnoDB",
 	"field_order": [
 		"consultation_price",
+		"section_visit_fees",
+		"mch_first_visit",
+		"mch_revisit",
+		"column_visit_fees",
+		"anc_first_visit",
+		"anc_revisit",
+		"section_procedures",
+		"procedure_prices",
 		"section_5",
 		"lab_prices",
 		"section_6",
@@ -18,6 +26,47 @@
 			"default": "350",
 			"reqd": 1,
 			"description": "Charged once per visit when the patient sees the doctor"
+		},
+		{
+			"fieldname": "section_visit_fees",
+			"fieldtype": "Section Break",
+			"label": "Clinic Visit Fees"
+		},
+		{
+			"fieldname": "mch_first_visit",
+			"fieldtype": "Currency",
+			"label": "MCH Clinic: First Visit"
+		},
+		{
+			"fieldname": "mch_revisit",
+			"fieldtype": "Currency",
+			"label": "MCH Clinic: Revisit",
+			"description": "0 = free"
+		},
+		{
+			"fieldname": "column_visit_fees",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "anc_first_visit",
+			"fieldtype": "Currency",
+			"label": "Antenatal Clinic: First Visit"
+		},
+		{
+			"fieldname": "anc_revisit",
+			"fieldtype": "Currency",
+			"label": "Antenatal Clinic: Revisit"
+		},
+		{
+			"fieldname": "section_procedures",
+			"fieldtype": "Section Break",
+			"label": "Procedure Prices"
+		},
+		{
+			"fieldname": "procedure_prices",
+			"fieldtype": "Table",
+			"label": "Procedures",
+			"options": "Clinic Procedure Price"
 		},
 		{
 			"fieldname": "section_5",

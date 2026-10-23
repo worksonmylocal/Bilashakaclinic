@@ -18,6 +18,7 @@
 		"section_8",
 		"items",
 		"consultation_total",
+		"procedure_total",
 		"lab_total",
 		"drug_total",
 		"column_9",
@@ -139,6 +140,12 @@
 			"fieldname": "consultation_total",
 			"fieldtype": "Currency",
 			"label": "Consultation Total",
+			"read_only": 1
+		},
+		{
+			"fieldname": "procedure_total",
+			"fieldtype": "Currency",
+			"label": "Procedure Total",
 			"read_only": 1
 		},
 		{

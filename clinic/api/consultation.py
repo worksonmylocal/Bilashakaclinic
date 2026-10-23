@@ -5,12 +5,14 @@ from frappe import _
 from frappe.utils import add_days, cint, get_first_day, nowdate
 
 from clinic import billing
+from clinic.setup import ensure_drug_group
 from clinic.api.common import (
 	clean,
 	minutes_since,
 	patient_card,
 	pick,
 	require,
+	require_any,
 	to_number,
 	today_start,
 	user_name,
@@ -293,6 +295,11 @@ def _apply(doc, data):
 		doc.set("diagnoses", [
 			pick(row, ["diagnosis", "diagnosis_type", "notes"]) for row in data["diagnoses"] if row.get("diagnosis")
 		])
+	if "procedures" in data:
+		doc.set("procedures", [
+			{"procedure": row["procedure"], "qty": cint(row.get("qty")) or 1, "notes": clean(row.get("notes"))}
+			for row in data["procedures"] if row.get("procedure")
+		])
 	if "prescriptions" in data:
 		doc.set("prescriptions", [
 			{
@@ -347,16 +354,28 @@ def action(name, action, data=None):
 
 @frappe.whitelist()
 def search_drugs(q=""):
-	require("consultation")
+	"""The clinic's own medicines (not the farm's other stock), with strength and price when set."""
+	require_any("consultation", "antenatal", "mch", "tb")
 	like = f"%{(q or '').strip()}%"
-	return frappe.get_all(
+	items = frappe.get_all(
 		"Item",
-		filters={"disabled": 0},
+		filters={"disabled": 0, "item_group": ensure_drug_group()},
 		or_filters=[["item_name", "like", like], ["item_code", "like", like]],
 		fields=["name", "item_name", "stock_uom", "item_group"],
 		order_by="item_name asc",
 		limit=15,
 	)
+	info = billing.drug_info()
+	for item in items:
+		item.update(info.get(item.name) or {"price": 0, "course_qty": 1, "strength": None})
+	return items
+
+
+@frappe.whitelist()
+def procedure_list():
+	"""Procedures the clinic charges for, with their prices."""
+	require_any("consultation", "antenatal", "mch", "tb")
+	return [{"procedure": r.procedure, "price": r.price, "note": r.note} for r in frappe.get_single("Clinic Pricing").procedure_prices]
 
 
 @frappe.whitelist()
@@ -377,10 +396,7 @@ def add_drug(drug_name):
 	existing = frappe.db.get_value("Item", {"item_name": drug_name}, "name")
 	if existing:
 		return frappe.db.get_value("Item", existing, ["name", "item_name", "stock_uom", "item_group"], as_dict=True)
-	group = next(
-		(g for g in ("Drug", "Medicine", "Pharmaceutical", "Consumable") if frappe.db.exists("Item Group", g)),
-		frappe.db.get_value("Item Group", {"is_group": 0}),
-	)
+	group = ensure_drug_group()
 	item = frappe.get_doc(
 		{
 			"doctype": "Item",
@@ -388,7 +404,7 @@ def add_drug(drug_name):
 			"item_name": drug_name,
 			"item_group": group,
 			"stock_uom": "Nos",
-			"is_stock_item": 0,
+			"is_stock_item": 1,
 			"description": "Added from the clinic consultation screen",
 		}
 	)

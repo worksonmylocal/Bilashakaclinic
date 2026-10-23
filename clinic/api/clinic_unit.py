@@ -325,6 +325,11 @@ def _apply(doc, data):
 			doc.set(field, cint(data[field]))
 	if "service_type" in data and data["service_type"] in UNITS[{v["label"]: k for k, v in UNITS.items()}[doc.clinic_unit]]["services"]:
 		doc.service_type = data["service_type"]
+	if "procedures" in data:
+		doc.set("procedures", [
+			{"procedure": row["procedure"], "qty": cint(row.get("qty")) or 1, "notes": clean(row.get("notes"))}
+			for row in data["procedures"] if row.get("procedure")
+		])
 	if "prescriptions" in data:
 		doc.set("prescriptions", [
 			{

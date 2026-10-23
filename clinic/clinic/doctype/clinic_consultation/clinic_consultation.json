@@ -67,7 +67,8 @@
 		"section_17",
 		"sick_leave_days",
 		"column_18",
-		"light_duty_days"
+		"light_duty_days",
+		"procedures"
 	],
 	"fields": [
 		{
@@ -452,6 +453,12 @@
 			"fieldtype": "Int",
 			"label": "Light Duty Days",
 			"description": "Days on light duty / restricted work"
+		},
+		{
+			"fieldname": "procedures",
+			"fieldtype": "Table",
+			"label": "Procedures Done",
+			"options": "Clinic Procedure Done"
 		}
 	],
 	"links": [],

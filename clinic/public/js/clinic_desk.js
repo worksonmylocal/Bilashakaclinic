@@ -243,6 +243,35 @@ window.Desk = (function () {
         }, 5000);
     }
 
+    // ---------------------------------------------------------------- charged procedures (shared by the doctor and clinic desks)
+    let procedureCache = null;
+    /** A picker for the procedures done at this visit. `rows` is edited in place; onChange fires after each edit. */
+    async function procedurePicker(el, rows, { locked, onChange }) {
+        if (!procedureCache) procedureCache = await call("consultation.procedure_list", {}, { quiet: true }).catch(() => []);
+        const list = procedureCache;
+        const price = (name) => (list.find((p) => p.procedure === name) || {}).price;
+        const draw = () => {
+            el.innerHTML = `<div class="subhead">Procedures done (charged)</div>
+                ${locked ? "" : `<div class="field" style="display:flex;gap:8px"><select class="input" id="proc-pick" style="flex:1"><option value="">Add a procedure…</option>
+                    ${list.map((p) => `<option value="${esc(p.procedure)}">${esc(p.procedure)} — ${Number(p.price) ? "KSh " + num(p.price) : "free"}</option>`).join("")}</select></div>`}
+                ${rows.length ? `<table class="rtable"><tr><th>Procedure</th><th class="num" style="width:90px">Qty</th><th class="num" style="width:110px">Charge</th><th style="width:40px"></th></tr>
+                    ${rows.map((r, i) => `<tr><td>${esc(r.procedure)}</td><td class="num">${locked ? esc(r.qty) : `<input type="number" min="1" data-pq="${i}" value="${esc(r.qty || 1)}" style="width:70px">`}</td>
+                        <td class="num">${Number(price(r.procedure)) ? "KSh " + num(price(r.procedure) * (r.qty || 1)) : "free"}</td>
+                        <td>${locked ? "" : `<button class="iconx" data-pdel="${i}" title="Remove">×</button>`}</td></tr>`).join("")}</table>`
+                    : '<div class="printnote">No procedures recorded.</div>'}`;
+            const pick = $("#proc-pick", el);
+            if (pick) pick.addEventListener("change", () => {
+                if (!pick.value) return;
+                const existing = rows.find((r) => r.procedure === pick.value);
+                if (existing) existing.qty = Number(existing.qty || 1) + 1; else rows.push({ procedure: pick.value, qty: 1 });
+                onChange(); draw();
+            });
+            $$("[data-pq]", el).forEach((i) => i.addEventListener("input", () => { rows[Number(i.dataset.pq)].qty = Math.max(1, Number(i.value) || 1); onChange(); }));
+            $$("[data-pdel]", el).forEach((b) => b.addEventListener("click", () => { rows.splice(Number(b.dataset.pdel), 1); onChange(); draw(); }));
+        };
+        draw();
+    }
+
     // ---------------------------------------------------------------- shell
     async function shell({ page, eyebrow, title, sub, tools = "" }) {
         const who = await call("common.whoami", {}, { quiet: true }).catch(() => ({ pages: [page], full_name: cfg.user, user: cfg.user }));
@@ -669,5 +698,5 @@ window.Desk = (function () {
 
     return { call, esc, $, $$, num, initials, timeOf, dateOf, duration, wait, waitClass, typeTag, pill, ageSex, empty, split, money,
         toast, shell, tabs, poll, kpis, hbars, chart, stackedDatasets, stackedOptions, COLORS, modal, field, read, suggest,
-        banner, masters, facilityField, pickPatient, REFRESH_ICON, cfg };
+        banner, masters, facilityField, procedurePicker, pickPatient, REFRESH_ICON, cfg };
 })();

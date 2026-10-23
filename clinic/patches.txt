@@ -14,3 +14,4 @@ clinic.patches.billing_v2
 clinic.patches.seed_vaccine_schedule
 clinic.patches.refresh_child_dates
 clinic.patches.add_specialty_nurse_role
+clinic.patches.load_price_lists
