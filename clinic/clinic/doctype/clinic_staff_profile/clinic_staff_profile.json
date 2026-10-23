@@ -9,7 +9,8 @@
 		"designation",
 		"column_4",
 		"registration_no",
-		"signature"
+		"signature",
+		"lock_pin"
 	],
 	"fields": [
 		{
@@ -53,6 +54,12 @@
 			"fieldtype": "Attach Image",
 			"label": "Signature",
 			"description": "Optional. Printed above the signature line."
+		},
+		{
+			"fieldname": "lock_pin",
+			"fieldtype": "Password",
+			"label": "Screen Lock PIN",
+			"description": "4 digits. Asked for when the screen has been idle for 15 minutes. Only the user and a manager need to know it."
 		}
 	],
 	"links": [],
@@ -97,6 +104,15 @@
 		},
 		{
 			"role": "Clinic Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
+			"role": "Clinic Specialty Nurse",
 			"read": 1,
 			"report": 1,
 			"export": 1,

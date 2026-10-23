@@ -506,6 +506,15 @@
 			"share": 1
 		},
 		{
+			"role": "Clinic Specialty Nurse",
+			"read": 1,
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 1,
+			"share": 1
+		},
+		{
 			"role": "Clinic Lab Technician",
 			"read": 1,
 			"report": 1,

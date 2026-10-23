@@ -12,9 +12,9 @@ PAGE_ROLES = {
 	"consultation": ["Clinic Doctor"],
 	"lab": ["Clinic Lab Technician"],
 	"pharmacy": ["Clinic Pharmacist"],
-	"antenatal": ["Clinic Doctor"],
-	"mch": ["Clinic Doctor"],
-	"tb": ["Clinic Doctor"],
+	"antenatal": ["Clinic Doctor", "Clinic Specialty Nurse"],
+	"mch": ["Clinic Doctor", "Clinic Specialty Nurse"],
+	"tb": ["Clinic Doctor", "Clinic Specialty Nurse"],
 }
 
 # Clinics a patient can be sent to after triage (in addition to the doctor)

@@ -6,6 +6,7 @@ ROLES = [
 	"Clinic Receptionist",
 	"Clinic Nurse",
 	"Clinic Doctor",
+	"Clinic Specialty Nurse",
 	"Clinic Lab Technician",
 	"Clinic Pharmacist",
 	"Clinic Manager",

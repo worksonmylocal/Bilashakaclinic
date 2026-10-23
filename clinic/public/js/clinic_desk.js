@@ -97,6 +97,152 @@ window.Desk = (function () {
         return data.message;
     }
 
+    // ---------------------------------------------------------------- idle screen lock
+    const IDLE_MS = 15 * 60 * 1000;
+    const LOGO = "/assets/clinic/images/northlake-mark.svg";
+    // drifting hospital icons: cross, heart, pill, syringe, stethoscope, drop
+    const ICONS = [
+        '<svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z"/></svg>',
+        '<svg viewBox="0 0 24 24"><path d="M12 21s-8-5.3-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.7-8 11-8 11z"/></svg>',
+        '<svg viewBox="0 0 24 24"><path d="M4.2 13.8 13.8 4.2a4.2 4.2 0 0 1 6 6l-9.6 9.6a4.2 4.2 0 0 1-6-6zM9 9l6 6" fill-rule="evenodd"/></svg>',
+        '<svg viewBox="0 0 24 24"><path d="M19 2l3 3-2 2-1-1-3 3 1 1-8 8-3 1-2 2-2-2 2-2 1-3 8-8 1 1 3-3-1-1z"/></svg>',
+        '<svg viewBox="0 0 24 24"><path d="M12 2s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg>',
+        '<svg viewBox="0 0 24 24"><path d="M6 3v6a4 4 0 0 0 8 0V3h-2v6a2 2 0 0 1-4 0V3zm4 12.5V16a4 4 0 0 0 8 0v-1.1a3 3 0 1 0-2 0V16a2 2 0 0 1-4 0v-.5z"/></svg>',
+    ];
+    let lockEl = null;
+
+    function lockMarkup(name) {
+        const floaters = Array.from({ length: 22 }, (_, i) => {
+            const size = 22 + ((i * 17) % 34), left = (i * 37) % 100, delay = -((i * 1.7) % 18), dur = 14 + ((i * 5) % 12);
+            return `<i class="fl fl--${i % 5}" style="left:${left}%;width:${size}px;height:${size}px;animation-duration:${dur}s;animation-delay:${delay}s">${ICONS[i % ICONS.length]}</i>`;
+        }).join("");
+        return `<div class="lk__bg"></div><div class="lk__floaters" aria-hidden="true">${floaters}</div>
+            <svg class="lk__ecg" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
+                <path class="lk__ecg-base" d="M0 60 H300 l20 -8 20 8 H430 l15 -50 25 100 20 -85 15 35 H700 l20 -10 20 10 H1200"/>
+                <path class="lk__ecg-live" d="M0 60 H300 l20 -8 20 8 H430 l15 -50 25 100 20 -85 15 35 H700 l20 -10 20 10 H1200"/>
+            </svg>
+            <div class="lk__card">
+                <div class="lk__logo"><span class="lk__ring"></span><span class="lk__ring lk__ring--2"></span><img src="${LOGO}" alt=""></div>
+                <h2 class="lk__name">${esc(name)}</h2>
+                <p class="lk__msg">This page has been inactive</p>
+                <p class="lk__sub">Your screen is locked to protect patient information. Enter your 4-digit PIN to continue.</p>
+                <div class="lk__pin" id="lk-pin" role="group" aria-label="4-digit PIN">
+                    ${[0, 1, 2, 3].map((i) => `<input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="off" aria-label="PIN digit ${i + 1}" data-i="${i}">`).join("")}
+                </div>
+                <div class="lk__err" id="lk-err" role="alert"></div>
+                <a class="lk__out" href="/api/method/logout" id="lk-out">Not you? Sign out</a>
+            </div>`;
+    }
+
+    function showLock(name) {
+        if (lockEl) return;
+        lockEl = document.createElement("div");
+        lockEl.id = "idle-lock";
+        lockEl.className = "lk";
+        lockEl.setAttribute("role", "dialog");
+        lockEl.setAttribute("aria-modal", "true");
+        lockEl.setAttribute("aria-label", "Screen locked");
+        lockEl.innerHTML = lockMarkup(name);
+        document.body.appendChild(lockEl);
+        document.body.classList.add("lk-on");
+        Array.from(document.body.children).forEach((c) => { if (c !== lockEl && c.tagName !== "SCRIPT") c.setAttribute("inert", ""); });
+        const boxes = Array.from(lockEl.querySelectorAll("[data-i]"));
+        const err = lockEl.querySelector("#lk-err");
+        const pin = () => boxes.map((b) => b.value).join("");
+        let busy = false;
+        const reset = (message) => {
+            err.textContent = message || "";
+            lockEl.querySelector("#lk-pin").classList.remove("shake"); void lockEl.offsetWidth;
+            if (message) lockEl.querySelector("#lk-pin").classList.add("shake");
+            boxes.forEach((b) => (b.value = ""));
+            boxes[0].focus();
+        };
+        const submit = async () => {
+            if (busy || pin().length !== 4) return;
+            busy = true;
+            try {
+                await call("lock.unlock", { pin: pin() }, { quiet: true });
+                hideLock(true);
+            } catch (e) {
+                reset(e.message || "Wrong PIN");
+            } finally { busy = false; }
+        };
+        boxes.forEach((b, i) => {
+            b.addEventListener("input", () => {
+                b.value = b.value.replace(/\D/g, "").slice(-1);
+                if (b.value && i < 3) boxes[i + 1].focus();
+                submit();
+            });
+            b.addEventListener("keydown", (e) => {
+                if (e.key === "Backspace" && !b.value && i > 0) { boxes[i - 1].focus(); boxes[i - 1].value = ""; }
+                if (e.key === "Enter") submit();
+            });
+            b.addEventListener("paste", (e) => {
+                const digits = (e.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 4);
+                if (!digits) return;
+                e.preventDefault();
+                digits.split("").forEach((d, k) => (boxes[k].value = d));
+                (boxes[digits.length - 1] || boxes[3]).focus();
+                submit();
+            });
+        });
+        // keep the keyboard inside the lock: nothing behind it can be reached
+        lockEl.addEventListener("keydown", (e) => { if (e.key === "Escape") e.preventDefault(); });
+        lockEl.addEventListener("focusout", () => setTimeout(() => { if (lockEl && !lockEl.contains(document.activeElement)) boxes[boxes.findIndex((b) => !b.value) === -1 ? 3 : boxes.findIndex((b) => !b.value)].focus(); }, 0));
+        lockEl.querySelector("#lk-out").addEventListener("click", async (e) => {
+            e.preventDefault();
+            try { await fetch("/api/method/logout", { method: "POST", headers: { "X-Frappe-CSRF-Token": cfg.csrf }, credentials: "same-origin" }); } catch (x) { /* go to login anyway */ }
+            location.href = "/login";
+        });
+        boxes[0].focus();
+    }
+
+    function hideLock(announce) {
+        if (!lockEl) return;
+        lockEl.remove();
+        lockEl = null;
+        document.body.classList.remove("lk-on");
+        Array.from(document.body.children).forEach((c) => c.removeAttribute("inert"));
+        try { localStorage.setItem("clinic.lastActive", String(Date.now())); if (announce) localStorage.setItem("clinic.unlocked", String(Date.now())); } catch (e) { /* storage blocked */ }
+    }
+
+    /** Starts the inactivity watch. A user without a PIN is never locked (nothing could unlock them). */
+    async function idleLock() {
+        const st = await call("lock.status", {}, { quiet: true }).catch(() => null);
+        if (!st || !st.has_pin) return;
+        const profile = await call("common.clinic_profile", {}, { quiet: true }).catch(() => ({}));
+        const name = (profile && profile.clinic_name) || "Northlake Medical Centre";
+        const store = {
+            get: (k) => { try { return Number(localStorage.getItem(k)) || 0; } catch (e) { return 0; } },
+            set: (k, v) => { try { localStorage.setItem(k, String(v)); } catch (e) { /* storage blocked */ } },
+        };
+        let last = Date.now();
+        const touch = () => {
+            const now = Date.now();
+            if (lockEl || now - last < 1000) return;   // write at most once a second
+            last = now;
+            store.set("clinic.lastActive", now);
+        };
+        ["mousemove", "mousedown", "click", "keydown", "wheel", "scroll", "touchstart", "pointerdown"].forEach((ev) =>
+            window.addEventListener(ev, touch, { capture: true, passive: true }));
+        store.set("clinic.lastActive", Date.now());
+        const engage = (announce) => {
+            if (lockEl) return;
+            showLock(name);
+            if (announce) { call("lock.lock", {}, { quiet: true }).catch(() => {}); store.set("clinic.locked", Date.now()); }
+        };
+        // another tab locked or unlocked this user
+        window.addEventListener("storage", (e) => {
+            if (e.key === "clinic.locked" && e.newValue) engage(false);
+            if (e.key === "clinic.unlocked" && e.newValue) hideLock(false);
+        });
+        if (st.locked) engage(false);   // a refresh must not skip the PIN
+        setInterval(() => {
+            if (lockEl) return;
+            if (Date.now() - Math.max(store.get("clinic.lastActive"), last) >= IDLE_MS) engage(true);
+        }, 5000);
+    }
+
     // ---------------------------------------------------------------- shell
     async function shell({ page, eyebrow, title, sub, tools = "" }) {
         const who = await call("common.whoami", {}, { quiet: true }).catch(() => ({ pages: [page], full_name: cfg.user, user: cfg.user }));
@@ -121,6 +267,7 @@ window.Desk = (function () {
                 <p class="pagehead__sub">${esc(sub)}</p>
             </div>
             <div class="pagehead__tools">${tools}</div>`;
+        idleLock();
         return who;
     }
 
