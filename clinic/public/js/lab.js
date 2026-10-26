@@ -76,7 +76,7 @@
             ${dash.external.map((r) => `<tr><td><b style="color:var(--ink)">${esc(r.test_type)}</b><br><span class="printnote">${esc(r.category)}</span></td>
                 <td>${esc(r.patient_name)} ${typeTag(r.patient_type)}</td><td>${esc(r.external_facility || "—")}</td>
                 <td>${pill(r.days_out ? r.days_out + " d ago" : "Today", r.days_out >= 3 ? "bad" : "mute")}</td>
-                <td class="num"><button class="btn btn--signal btn--sm" data-open="${esc(r.name)}">Receive result</button></td></tr>`).join("")}</table>`
+                <td class="num"><a class="btn btn--sm" target="_blank" href="/clinic/referral?test=${encodeURIComponent(r.name)}" title="Letter to send with the sample">Referral letter</a> <button class="btn btn--signal btn--sm" data-open="${esc(r.name)}">Receive result</button></td></tr>`).join("")}</table>`
             : empty("Nothing is out at an external facility.");
         $$("#external [data-open]").forEach((b) => b.addEventListener("click", () => openTest(b.dataset.open)));
     }
@@ -210,6 +210,7 @@
                 { label: "Cancel test", cls: "btn--danger", onClick: async (hh) => { if (!confirm("Cancel this test?")) return; await submit(hh, "cancel"); } },
                 ...(t.status === "Requested" ? [{ label: "Collect sample", onClick: (hh) => submit(hh, "collect", true) }] : []),
                 { label: "Save", onClick: (hh) => submit(hh, "save", true) },
+                ...(external && t.external_facility ? [{ label: "Referral letter", onClick: () => { window.open("/clinic/referral?test=" + encodeURIComponent(t.name), "_blank"); } }] : []),
                 ...(external && t.status !== "Sent to External" ? [{ label: "Send to external facility", cls: "btn--signal", onClick: (hh) => submit(hh, "send_external") }] : []),
                 { label: t.lab_only ? "Release results" : "Submit results → Doctor", cls: "btn--primary", onClick: (hh) => submit(hh, "result") },
             ],

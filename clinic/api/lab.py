@@ -232,6 +232,34 @@ def save_test(name, data, action="save"):
 
 
 @frappe.whitelist()
+def referral_letter(name):
+    """Everything needed to print the referral letter that goes with a sample sent to an external laboratory."""
+    require_any("lab", "consultation")
+    test = frappe.get_doc("Clinic Lab Test", name)
+    if test.performed_where != "External":
+        frappe.throw(_("{0} is done in this laboratory, so it has no referral letter").format(test.test_type))
+    if not test.external_facility:
+        frappe.throw(_("Choose the external facility the test is sent to first"))
+    visit = frappe.get_doc("Clinic Visit", test.visit)
+    complaint = frappe.db.get_value("Clinic Triage", visit.triage, "chief_complaint") if visit.triage else None
+    visit.add_comment("Info", _("Referral letter for {0} opened by {1}").format(test.test_type, user_name(frappe.session.user)))
+    return {
+        "clinic": clinic_profile(),
+        "patient": patient_card(test.patient),
+        "visit": {"name": visit.name, "visit_date": visit.visit_date, "referral_reason": visit.referral_reason},
+        "test": {
+            "name": test.name, "test_type": test.test_type, "category": test.category, "sample_type": test.sample_type,
+            "urgency": test.urgency, "clinical_notes": test.clinical_notes, "external_facility": test.external_facility,
+            "sample_collected_on": test.sample_collected_on, "sent_on": test.sent_on, "requested_on": test.requested_on,
+            "status": test.status, "complaint": complaint,
+        },
+        "requested_by": user_name(test.requested_by),
+        "printed_by": user_name(frappe.session.user),
+        "printed_on": frappe.utils.now_datetime(),
+    }
+
+
+@frappe.whitelist()
 def create_walk_in(patient, tests, referring_facility=None, referring_clinician=None, referral_reason=None):
 	"""Lab-only visit for a patient sent in for tests (e.g. by another clinic) or a walk-in."""
 	require("lab")
