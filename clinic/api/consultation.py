@@ -19,7 +19,7 @@ from clinic.api.common import (
 )
 
 TEXT_FIELDS = [
-	"presenting_complaint", "history_of_presenting_illness", "review_of_systems", "past_medical_history",
+	"impression", "presenting_complaint", "history_of_presenting_illness", "review_of_systems", "past_medical_history",
 	"current_medication", "drug_allergies", "family_history", "social_history", "occupational_history",
 	"general_examination", "systemic_examination", "investigations_notes", "management_plan",
 	"procedures_done", "patient_advice", "referral_facility", "referral_urgency", "referral_reason",
@@ -241,7 +241,7 @@ def patient_history(patient, exclude_visit=None, limit=12):
 	consultations = frappe.get_all(
 		"Clinic Consultation",
 		filters=filters,
-		fields=["name", "visit", "consultation_date", "doctor", "presenting_complaint", "management_plan",
+		fields=["name", "visit", "consultation_date", "doctor", "presenting_complaint", "impression", "management_plan",
 				"refer_out", "referral_facility", "sick_leave_days", "work_related", "status"],
 		order_by="consultation_date desc",
 		limit=limit,

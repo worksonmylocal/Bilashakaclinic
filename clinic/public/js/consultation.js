@@ -229,6 +229,7 @@
                     <div class="subpanel" id="sp-dx">
                         ${locked ? "" : `<div class="field"><input class="input" id="dx-add" placeholder="Search or add a diagnosis…"></div>`}
                         <div id="dx-rows"></div>
+                        ${field("impression", "Impression", { type: "textarea", rows: 3, value: c.impression, placeholder: "Your own impression of the diagnosis, e.g. while lab results are pending or the sample is at an external laboratory", help: "Can stand in for a diagnosis until the results are back." })}
                         ${isEmp ? field("work_related", "Work-related condition / injury on duty", { type: "checkbox", value: c.work_related }) : ""}
                     </div>
                     <div class="subpanel" id="sp-mgmt">
@@ -481,7 +482,7 @@
         const el = $("#timeline");
         el.innerHTML = rows.length ? rows.map((h, i) => `<div class="tl" data-tl="${i}">
             <div class="tl__date">${esc(dateOf(h.consultation_date))} · ${esc(h.doctor_name || "")}</div>
-            <div class="tl__dx">${h.diagnoses.length ? h.diagnoses.map((d) => esc(d.diagnosis)).join(", ") : "<i>No diagnosis</i>"}</div>
+            <div class="tl__dx">${h.diagnoses.length ? h.diagnoses.map((d) => esc(d.diagnosis)).join(", ") : h.impression ? `<i>Impression:</i> ${esc(h.impression)}` : "<i>No diagnosis</i>"}</div>
             <div class="printnote">${esc(h.presenting_complaint || "")}</div>
             <div class="tl__detail">
                 ${h.management_plan ? `<div><b>Management:</b> ${esc(h.management_plan)}</div>` : ""}

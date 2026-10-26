@@ -187,8 +187,8 @@ class ClinicConsultation(Document):
 		if not self.tb_screening:
 			frappe.throw(_("Record the TB screening (1-4) before closing the consultation"))
 		check_tb_test_sent(self)
-		if not self.diagnoses:
-			frappe.throw(_("Add at least one diagnosis before closing the consultation"))
+		if not self.diagnoses and not (self.impression or "").strip():
+			frappe.throw(_("Add a diagnosis, or write your impression, before closing the consultation"))
 		pending = frappe.db.count(
 			"Clinic Lab Test", {"visit": self.visit, "status": ["in", PENDING_LAB_STATUSES]}
 		)

@@ -43,6 +43,7 @@
 		"lab_requests",
 		"section_10",
 		"diagnoses",
+		"impression",
 		"work_related",
 		"tab_11",
 		"management_plan",
@@ -308,6 +309,12 @@
 			"fieldtype": "Table",
 			"label": "Diagnoses",
 			"options": "Clinic Consultation Diagnosis"
+		},
+		{
+			"fieldname": "impression",
+			"fieldtype": "Small Text",
+			"label": "Impression",
+			"description": "The doctor's own impression of the diagnosis, for example while lab results are pending or sent to an external laboratory."
 		},
 		{
 			"fieldname": "work_related",
