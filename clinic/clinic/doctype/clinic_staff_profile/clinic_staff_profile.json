@@ -10,7 +10,8 @@
 		"column_4",
 		"registration_no",
 		"signature",
-		"lock_pin"
+		"lock_pin",
+		"lock_after_minutes"
 	],
 	"fields": [
 		{
@@ -60,6 +61,12 @@
 			"fieldtype": "Password",
 			"label": "Screen Lock PIN",
 			"description": "4 digits. Asked for when the screen has been idle for 15 minutes. Only the user and a manager need to know it."
+		},
+		{
+			"fieldname": "lock_after_minutes",
+			"fieldtype": "Int",
+			"label": "Lock Screen After (minutes)",
+			"description": "Leave empty to use the clinic default in Clinic Settings. Handy for testing the lock on your own account."
 		}
 	],
 	"links": [],

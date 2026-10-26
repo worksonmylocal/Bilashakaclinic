@@ -11,7 +11,8 @@
     const [first, ...rest] = String(c.clinic_name || "").split(" ");
     const sub = [rest.join(" "), c.branch].filter(Boolean).join(" · ");
     const contact = [c.address && esc(c.address).replace(/\n/g, "<br>"), c.po_box && esc(c.po_box),
-        [c.phone, c.alt_phone].filter(Boolean).length && "Tel: " + [c.phone, c.alt_phone].filter(Boolean).map(esc).join(" / "), c.email && esc(c.email)].filter(Boolean).join("<br>");
+        [c.phone, c.alt_phone].filter(Boolean).length && "Tel: " + [c.phone, c.alt_phone].filter(Boolean).map(esc).join(" / "), c.email && esc(c.email),
+        c.website && esc(c.website), c.licence_no && `<b>Reg. No.</b> ${esc(c.licence_no)}`].filter(Boolean).join("<br>");
     document.title = `Receipt ${d.receipt_no}`;
     document.getElementById("sheet-wrap").innerHTML = `
     <article class="sheet receipt">

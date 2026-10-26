@@ -15,3 +15,4 @@ clinic.patches.seed_vaccine_schedule
 clinic.patches.refresh_child_dates
 clinic.patches.add_specialty_nurse_role
 clinic.patches.load_price_lists
+clinic.patches.fill_clinic_header

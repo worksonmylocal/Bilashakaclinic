@@ -98,7 +98,7 @@ window.Desk = (function () {
     }
 
     // ---------------------------------------------------------------- idle screen lock
-    const IDLE_MS = 15 * 60 * 1000;
+    const DEFAULT_IDLE_MS = 15 * 60 * 1000;
     const LOGO = "/assets/clinic/images/northlake-mark.svg";
     // drifting hospital icons: cross, heart, pill, syringe, stethoscope, drop
     const ICONS = [
@@ -210,6 +210,7 @@ window.Desk = (function () {
     async function idleLock() {
         const st = await call("lock.status", {}, { quiet: true }).catch(() => null);
         if (!st || !st.has_pin) return;
+        const IDLE_MS = (Number(st.minutes) > 0 ? Number(st.minutes) * 60 * 1000 : DEFAULT_IDLE_MS);
         const profile = await call("common.clinic_profile", {}, { quiet: true }).catch(() => ({}));
         const name = (profile && profile.clinic_name) || "Northlake Medical Centre";
         const store = {

@@ -269,13 +269,22 @@ def add_facility(facility_name, facility_type="Clinic"):
 	return facility_name
 
 
+# what the printed documents say when Clinic Settings has not been filled in (or saved) yet
+HEADER_DEFAULTS = {
+    "clinic_name": "Northlake Medical Centre",
+    "branch": "ROCCO",
+    "po_box": "P.O. Box 2040 - 20117",
+    "address": "Naivasha",
+}
+
+
 @frappe.whitelist()
 def clinic_profile():
     """Clinic name and contact details for printed documents (edited in Clinic Settings)."""
     require_any_clinic_role()
     settings = frappe.get_cached_doc("Clinic Settings")
     return {
-        field: settings.get(field)
+        field: settings.get(field) or HEADER_DEFAULTS.get(field)
         for field in (
             "clinic_name", "branch", "tagline", "licence_no", "website", "address", "po_box", "phone",
             "alt_phone", "email", "lab_incharge", "lab_incharge_title", "report_footer_note",

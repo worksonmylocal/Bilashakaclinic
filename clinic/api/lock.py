@@ -26,6 +26,13 @@ def _pin(user):
 	return get_decrypted_password("Clinic Staff Profile", name, "lock_pin", raise_exception=False) or None
 
 
+def _minutes(user):
+	"""How long the screen may sit idle: the user's own setting, else the clinic's, else 15."""
+	own = frappe.db.get_value("Clinic Staff Profile", {"user": user}, "lock_after_minutes")
+	default = frappe.db.get_single_value("Clinic Settings", "idle_lock_minutes")
+	return min(max(int(own or default or 15), 1), 240)
+
+
 def _key(kind, user):
 	return f"clinic_{kind}:{user}"
 
@@ -35,7 +42,11 @@ def status():
 	"""Whether this user has a PIN, and whether their screen is currently locked."""
 	_require_user()
 	has_pin = bool(_pin(frappe.session.user))
-	return {"has_pin": has_pin, "locked": bool(has_pin and frappe.cache.get_value(_key("lock", frappe.session.user)))}
+	return {
+		"has_pin": has_pin,
+		"locked": bool(has_pin and frappe.cache.get_value(_key("lock", frappe.session.user))),
+		"minutes": _minutes(frappe.session.user),
+	}
 
 
 @frappe.whitelist()
