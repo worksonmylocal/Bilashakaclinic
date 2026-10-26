@@ -219,10 +219,15 @@
             ],
         });
 
-        // "Send to" menu: doctor or one of the clinics
+        // "Send to" menu: doctor or one of the clinics. It closes on a click anywhere outside it.
+        let closeOutside = null;
+        function closeMenu() {
+            const menu = $(".sendmenu", h.el);
+            if (menu) menu.remove();
+            if (closeOutside) { document.removeEventListener("mousedown", closeOutside, true); closeOutside = null; }
+        }
         function toggleMenu() {
-            const existing = $(".sendmenu", h.el);
-            if (existing) return existing.remove();
+            if ($(".sendmenu", h.el)) return closeMenu();
             const current = ctx.visit.service_point || "Consultation";
             const menu = document.createElement("div");
             menu.className = "sendmenu";
@@ -233,19 +238,32 @@
                     ${key === current && ex.name ? '<em>Current</em>' : ""}
                 </button>`).join("");
             h.foot.appendChild(menu);
+            // a click outside the menu closes it; the Send to button itself toggles it
+            closeOutside = (e) => { if (!menu.isConnected) { document.removeEventListener("mousedown", closeOutside, true); return; } if (!menu.contains(e.target) && !e.target.closest(".modal__foot")) closeMenu(); };
+            document.addEventListener("mousedown", closeOutside, true);
             $$(".sendmenu__item", menu).forEach((b) => b.addEventListener("click", async () => {
                 const all = $$(".sendmenu__item", menu); all.forEach((x) => (x.disabled = true));
-                try { await send(h, b.dataset.dest); } catch (e) { all.forEach((x) => (x.disabled = false)); if (!e.handled) toast(e.message, "error"); }
+                try {
+                    const sent = await send(h, b.dataset.dest);
+                    if (!sent) all.forEach((x) => (x.disabled = false));
+                } catch (e) { all.forEach((x) => (x.disabled = false)); if (!e.handled) toast(e.message, "error"); }
             }));
         }
 
         async function send(hh, dest) {
             const v = read(hh.body);
-            if (!v.chief_complaint.trim()) { toast("Enter the chief complaint", "warn"); return; }
+            if (!v.chief_complaint.trim()) {
+                closeMenu();   // the menu would otherwise sit over the field that needs filling
+                toast("Enter the chief complaint first", "warn");
+                const box = $("[data-f=chief_complaint]", hh.body);
+                if (box) { box.focus(); box.scrollIntoView({ block: "center", behavior: "smooth" }); }
+                return false;
+            }
             await call("triage.save_triage", { visit, data: v, send_to: dest });
             toast(canRoute ? `Sent to ${DEST[dest].title}` : "Vitals updated");
             hh.close();
             loadAll();
+            return true;
         }
 
         let manualPriority = !!ex.name;
