@@ -259,7 +259,8 @@
 			"print": 1,
 			"email": 1,
 			"share": 1,
-			"write": 1
+			"write": 1,
+			"create": 1
 		},
 		{
 			"role": "Clinic Receptionist",
