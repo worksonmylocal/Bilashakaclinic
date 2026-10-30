@@ -179,6 +179,16 @@
 		"mother_vit_a",
 		"deworming_mother",
 		"maternal_complications",
+		"sec_hts",
+		"hts_test_type",
+		"hts_test1_result",
+		"hts_test2_result",
+		"hts_final_result",
+		"col_hts",
+		"couple_status",
+		"post_test_counselling",
+		"prevention_services",
+		"hts_remarks",
 		"exclusive_breastfeeding",
 		"section_12",
 		"cwc_visit_type",
@@ -313,7 +323,7 @@
 			"fieldname": "clinic_unit",
 			"fieldtype": "Select",
 			"label": "Clinic Unit",
-			"options": "Antenatal Clinic\nMCH & Postnatal Clinic\nTB Clinic",
+			"options": "Antenatal Clinic\nMCH & Postnatal Clinic\nTB Clinic\nHTS Clinic",
 			"reqd": 1,
 			"in_list_view": 1,
 			"in_standard_filter": 1,
@@ -323,7 +333,7 @@
 			"fieldname": "service_type",
 			"fieldtype": "Select",
 			"label": "Service Type",
-			"options": "Family Planning\nANC Attendance\nPostnatal Attendance\nCWC Attendance\nTB Registration\nTB Follow-up",
+			"options": "Family Planning\nANC Attendance\nPostnatal Attendance\nCWC Attendance\nTB Registration\nTB Follow-up\nHTS Attendance",
 			"reqd": 1,
 			"in_list_view": 1,
 			"in_standard_filter": 1,
@@ -1804,6 +1814,71 @@
 			"fieldtype": "Table",
 			"label": "Procedures Done",
 			"options": "Clinic Procedure Done"
+		},
+		{
+			"fieldname": "sec_hts",
+			"fieldtype": "Section Break",
+			"label": "HTS · HIV Testing, Counselling & Prevention",
+			"depends_on": "eval:doc.service_type=='HTS Attendance'"
+		},
+		{
+			"fieldname": "hts_test_type",
+			"fieldtype": "Select",
+			"label": "Test Type",
+			"depends_on": "eval:doc.service_type=='HTS Attendance'",
+			"options": "\nInitial test\nRepeat test\nRetesting"
+		},
+		{
+			"fieldname": "hts_test1_result",
+			"fieldtype": "Select",
+			"label": "Test 1: Determine (screening)",
+			"depends_on": "eval:doc.service_type=='HTS Attendance'",
+			"options": "\nReactive\nNon-reactive"
+		},
+		{
+			"fieldname": "hts_test2_result",
+			"fieldtype": "Select",
+			"label": "Test 2: Confirmatory",
+			"depends_on": "eval:doc.service_type=='HTS Attendance'",
+			"options": "\nReactive\nNon-reactive"
+		},
+		{
+			"fieldname": "hts_final_result",
+			"fieldtype": "Select",
+			"label": "HIV Test Outcome",
+			"depends_on": "eval:doc.service_type=='HTS Attendance'",
+			"options": "\nNegative\nPositive\nInconclusive",
+			"read_only": 1
+		},
+		{
+			"fieldname": "col_hts",
+			"fieldtype": "Column Break",
+			"depends_on": "eval:doc.service_type=='HTS Attendance'"
+		},
+		{
+			"fieldname": "couple_status",
+			"fieldtype": "Select",
+			"label": "Couple Testing & Discordancy Status",
+			"depends_on": "eval:doc.service_type=='HTS Attendance'",
+			"options": "\nN = Tested as couple and concordant\nY = Tested as couple and discordant (One positive, one negative)\nN/A = Individual Testing"
+		},
+		{
+			"fieldname": "post_test_counselling",
+			"fieldtype": "Check",
+			"label": "Post-Test Counselling Provided",
+			"depends_on": "eval:doc.service_type=='HTS Attendance'"
+		},
+		{
+			"fieldname": "prevention_services",
+			"fieldtype": "Small Text",
+			"label": "Prevention Services Offered (if Negative)",
+			"depends_on": "eval:doc.service_type=='HTS Attendance'"
+		},
+		{
+			"fieldname": "hts_remarks",
+			"fieldtype": "Small Text",
+			"label": "Remarks",
+			"depends_on": "eval:doc.service_type=='HTS Attendance'"
 		}
 	],
 	"links": [],
@@ -1887,6 +1962,17 @@
 			"print": 1,
 			"email": 1,
 			"share": 1
+		},
+		{
+			"role": "HTS Officer",
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 0,
+			"share": 0,
+			"read": 1,
+			"write": 1,
+			"create": 1
 		}
 	],
 	"sort_field": "attendance_date",

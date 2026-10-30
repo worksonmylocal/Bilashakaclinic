@@ -5,6 +5,7 @@ from frappe import _
 from frappe.utils import add_days, flt, getdate, now_datetime
 
 from clinic import billing
+from clinic.referrals import referral_for_visit
 from clinic.api.common import clinic_profile, patient_card, require_any, user_name
 
 SIGNING_DESIGNATIONS = ("Doctor", "Clinical Officer")
@@ -195,3 +196,52 @@ def invoice(bill):
 		"issued_by": user_name(doc.owner),
 		"printed_on": now_datetime(),
 	}
+
+
+@frappe.whitelist()
+def patient_referral(visit):
+	"""Everything for the letter that goes with a patient referred to another facility."""
+	require_any("pharmacy", "consultation")
+	ref = referral_for_visit(visit)
+	if not ref:
+		frappe.throw(_("This patient has not been referred to another facility"))
+	v = frappe.get_doc("Clinic Visit", visit)
+	triage = frappe.db.get_value(
+		"Clinic Triage", v.triage,
+		["bp_systolic", "bp_diastolic", "pulse_rate", "temperature", "spo2", "respiratory_rate", "weight_kg", "height_cm", "chief_complaint"],
+		as_dict=True,
+	) if v.triage else None
+	data = {
+		"clinic": clinic_profile(), "patient": patient_card(v.patient), "visit": {"name": v.name, "visit_date": v.visit_date},
+		"referral": ref, "triage": triage, "printed_by": user_name(frappe.session.user), "printed_on": now_datetime(),
+		"diagnoses": [], "prescriptions": [], "labs": [], "summary": {},
+	}
+	if ref["source"] == "Clinic Consultation":
+		c = frappe.get_doc("Clinic Consultation", ref["name"])
+		clinician = c.doctor
+		data["diagnoses"] = [{"diagnosis": d.diagnosis, "type": d.diagnosis_type} for d in c.diagnoses]
+		data["prescriptions"] = [{"drug": r.drug_name or r.drug, "dose": r.dose, "frequency": r.frequency, "days": r.duration_days} for r in c.prescriptions]
+		data["summary"] = {
+			"complaint": c.presenting_complaint, "history": c.history_of_presenting_illness, "impression": c.impression,
+			"management": c.management_plan, "procedures": c.procedures_done, "allergies": c.drug_allergies, "examination": c.general_examination,
+		}
+		labs = frappe.get_all("Clinic Lab Test", filters={"visit": visit, "status": ["!=", "Cancelled"]}, fields=["name", "test_type", "status", "interpretation"])
+		for t in labs:
+			t["results"] = [
+				f"{r.parameter}: {r.value} {r.unit or ''}".strip()
+				for r in frappe.get_all("Clinic Lab Test Result Item", filters={"parent": t.name}, fields=["parameter", "value", "unit"], order_by="idx asc")
+				if (r.value or "").strip()
+			]
+		data["labs"] = labs
+	else:
+		a = frappe.get_doc("Clinic Attendance", ref["name"])
+		clinician = a.clinician
+		extra = {}
+		if a.service_type == "ANC Attendance":
+			extra = {"gestation": a.gestation_weeks, "edd": a.edd, "gravida": a.gravida, "parity": a.parity, "complications": a.complications, "anc_referral": a.anc_referral}
+		data["summary"] = {"service": a.service_type, "complaint": triage.chief_complaint if triage else None, "impression": a.assessment_notes,
+			"management": a.management_plan, **extra}
+		data["prescriptions"] = [{"drug": r.drug_name or r.drug, "dose": r.dose, "frequency": r.frequency, "days": r.duration_days} for r in a.prescriptions]
+	data["clinician"] = _signer(clinician)
+	v.add_comment("Info", _("Referral letter opened by {0}").format(user_name(frappe.session.user)))
+	return data

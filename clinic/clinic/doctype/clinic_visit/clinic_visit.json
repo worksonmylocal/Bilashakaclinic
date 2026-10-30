@@ -156,7 +156,7 @@
 			"fieldname": "service_point",
 			"fieldtype": "Select",
 			"label": "Sent To",
-			"options": "Consultation\nAntenatal Clinic\nMCH & Postnatal Clinic\nTB Clinic",
+			"options": "Consultation\nAntenatal Clinic\nMCH & Postnatal Clinic\nTB Clinic\nHTS Clinic",
 			"default": "Consultation",
 			"in_standard_filter": 1,
 			"description": "Where triage sent the patient"
@@ -346,6 +346,17 @@
 			"print": 1,
 			"email": 1,
 			"share": 1
+		},
+		{
+			"role": "HTS Officer",
+			"report": 1,
+			"export": 1,
+			"print": 1,
+			"email": 0,
+			"share": 0,
+			"read": 1,
+			"write": 1,
+			"create": 1
 		}
 	],
 	"sort_field": "visit_date",

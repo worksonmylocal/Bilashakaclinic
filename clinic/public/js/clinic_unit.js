@@ -13,6 +13,8 @@
         "ANC Attendance": [],
         // Postnatal attendance is drawn by pnc.js (register sections 1-10)
         "Postnatal Attendance": [],
+        // HIV testing is drawn by hts.js
+        "HTS Attendance": [],
         // CWC attendance is drawn by cwc.js (register sections 1-4)
         "CWC Attendance": [],
     };
@@ -31,17 +33,24 @@
         antenatal: { title: "Antenatal Clinic", tag: "Family Planning & Antenatal", sub: "Family planning (FP) and antenatal clinic attendances", tiles: { "Family Planning": "Family Planning", "ANC Attendance": "ANC Attendances" } },
         mch: { title: "MCH & Postnatal", tag: "Mother & Child Health", sub: "Child welfare clinic (CWC) and postnatal attendances", tiles: { "Postnatal Attendance": "Postnatal", "CWC Attendance": "CWC Attendances" } },
         tb: { title: "TB Clinic", tag: "Tuberculosis Clinic", sub: "TB registration, follow-up and treatment monitoring", tiles: { "TB Registration": "New Registrations", "TB Follow-up": "Follow-ups" } },
+        hts: { title: "HTS Clinic", tag: "HIV Testing Services", sub: "Walk-in HIV testing, counselling and prevention", tiles: { "HTS Attendance": "HTS Clients" } },
     }[UNIT];
+    const isHts = UNIT === "hts";
 
     await Desk.shell({
         page: UNIT,
         eyebrow: "Northlake Medical Centre · " + CFG.tag,
         title: CFG.title,
         sub: CFG.sub,
-        tools: `<button class="iconbtn" id="refresh" title="Refresh">${Desk.REFRESH_ICON}</button>`,
+        tools: `${isHts ? '<button class="btn btn--primary" id="hts-new">+ New HTS client</button> ' : ""}<button class="iconbtn" id="refresh" title="Refresh">${Desk.REFRESH_ICON}</button>`,
     });
     Desk.tabs((tab) => { if (tab === "insights") loadInsights(); else if (tab === "month") loadMonth(); else if (tab === "defaulters") loadDefaulters(); });
     $("#refresh").addEventListener("click", () => { loadAll(); toast("Refreshed"); });
+    // clients walk straight into the HTS clinic: find or register them here, then open their attendance
+    if (isHts) $("#hts-new").addEventListener("click", () => Desk.pickPatient({
+        title: "Find or register the client",
+        onPick: async (p) => { const r = await call("hts.start_client", { patient: p.name }); toast(r.resumed ? "Continuing the open attendance" : "HTS attendance opened"); openVisit(r.visit); },
+    }));
     const api = (method, args = {}) => call("clinic_unit." + method, { unit: UNIT, ...args });
 
     const M = await masters();
@@ -59,6 +68,16 @@
 
     function renderKpis(d) {
         const k = d.kpis, names = Object.keys(CFG.tiles);
+        if (isHts) {
+            const h = d.hts || { positive: 0, negative: 0, inconclusive: 0 };
+            return kpis($("#kpis"), [
+                { label: "Open Attendances", value: k.in_progress, cls: k.in_progress ? "warn" : "", unit: "Clients being attended" },
+                { label: "Seen Today", value: k.seen_today, cls: "good", unit: split(k.employees_today, k.community_today) },
+                { label: "Tested Negative", value: h.negative, cls: "good", unit: "Today" },
+                { label: "Tested Positive", value: h.positive, cls: h.positive ? "bad" : "", unit: "Today" },
+                { label: "Inconclusive", value: h.inconclusive, cls: h.inconclusive ? "warn" : "", unit: "Needs retesting" },
+            ]);
+        }
         kpis($("#kpis"), [
             { label: "Waiting for the Clinic", value: k.waiting, cls: k.waiting ? "warn" : "", unit: k.emergency ? `${k.emergency} urgent / emergency` : k.waiting ? `Longest wait ${Desk.duration(k.longest_wait)}` : "Queue is clear" },
             { label: "Lab Results Ready", value: k.results_ready, cls: k.results_ready ? "info" : "", unit: "Awaiting your review" },
@@ -152,6 +171,11 @@
 
     async function loadInsights() {
         const d = await api("insights");
+        if (isHts) {   // the second chart shows the HIV test outcomes, not TB screening
+            const card = $("#tb-screen").closest(".card");
+            card.querySelector("h3").textContent = "HIV Test Outcomes — Last 30 Days";
+            const meta = card.querySelector(".meta"); if (meta) meta.textContent = "";
+        }
         chart("day-chart", { type: "bar", data: { labels: d.by_day.map((r) => r.day.slice(5)), datasets: Desk.stackedDatasets(d.by_day) }, options: { ...Desk.stackedOptions, plugins: { legend: { display: false } } } });
         hbars($("#services"), d.services);
         hbars($("#tb-screen"), d.tb_screening, { cls: (r) => (r.label.startsWith("1") && r.value ? "bad" : "") });
@@ -235,6 +259,7 @@
         const isAnc = a.service_type === "ANC Attendance" && window.ANC;
         const isFp = a.service_type === "Family Planning" && window.FP;
         const isPnc = a.service_type === "Postnatal Attendance" && window.PNC;
+        const isHtsForm = a.service_type === "HTS Attendance" && window.HTS;
         state = {
             lab: (a.lab_requests || []).map((r) => ({ ...r })),
             rx: (a.prescriptions || []).map((r) => ({ ...r })),
@@ -255,6 +280,13 @@
             vitalTile("BMI", tl.bmi, tl.bmi_category || "", tl.bmi >= 30 ? "warn" : ""),
         ].join("") : "";
 
+        const followHtml = `<div class="subhead" style="${isHts ? "margin-top:0" : "display:none"}">Book the next appointment</div>
+            ${field("follow_up_required", "Book a follow-up appointment", { type: "checkbox", value: a.follow_up_required })}
+            <div id="fu-box" style="display:${a.follow_up_required ? "block" : "none"}">
+                <div class="grid-2">${field("follow_up_date", "Date", { type: "date", value: a.follow_up_date, attrs: a.appointment ? "disabled" : "" })}
+                ${field("follow_up_reason", "Reason", { value: a.follow_up_reason })}</div>
+                ${a.appointment ? `<div class="printnote">Appointment ${esc(a.appointment)} has been booked.</div>` : ""}
+            </div>`;
         root.innerHTML = `
             <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px;gap:16px;flex-wrap:wrap">
                 <div><div class="pagehead__eyebrow">${esc(CFG.title)} · ${esc(a.name)}</div><h1 class="pagehead__title" style="font-size:30px">${esc(p.full_name)}</h1></div>
@@ -264,20 +296,20 @@
             ${v.visit_source === "Referral In" ? `<div class="liveinfo" style="background:var(--info-bg);color:var(--info)">${referralLine(v)}${v.referral_letter ? ` · <a href="${esc(v.referral_letter)}" target="_blank" style="text-decoration:underline">referral letter</a>` : ""}</div>` : ""}
             ${isLocked ? '<div class="liveinfo ok">This attendance is completed and read-only.</div>' : ""}
             ${a.status === "Awaiting Lab" ? '<div class="liveinfo" style="background:var(--info-bg);color:var(--info)">Waiting for lab results. You can keep working on this attendance meanwhile.</div>' : ""}
-            <div class="card" style="padding:20px 24px">
+            <div class="card" style="padding:20px 24px;${isHts ? "display:none" : ""}">
                 <div class="card__head" style="margin-bottom:14px"><h3>Triage${t ? ` · ${timeOf(t.triage_datetime)}` : ""} ${t ? `<span class="tag tag--${esc(t.triage_priority)}">${esc(t.triage_priority)}</span>` : ""}</h3>
                     ${t && t.chief_complaint ? `<span class="meta">Complaint: ${esc(t.chief_complaint)}</span>` : ""}</div>
                 ${t ? `<div class="vitals">${vitals}</div>${t.alerts ? `<div class="liveinfo" style="margin:12px 0 0">⚠ ${esc(t.alerts.replace(/\n/g, "; "))}</div>` : ""}` : empty("No triage recorded for this visit.")}
             </div>
-            ${tbBar(a.tb_screening, isLocked)}
+            ${isHts ? "" : tbBar(a.tb_screening, isLocked)}
             <div class="ws">
                 <div class="card" id="ws-form">
                     <div class="subtabs" id="subtabs">
                         <button class="subtab on" data-p="assess">${esc(a.service_type)}</button>
                         ${isCwc ? '<button class="subtab" data-p="imm">Immunizations</button>' : ""}
-                        <button class="subtab" data-p="invest">Investigations <span class="dotc" id="c-lab" style="display:none"></span></button>
-                        <button class="subtab" data-p="rx">Prescription <span class="dotc" id="c-rx" style="display:none"></span></button>
-                        <button class="subtab" data-p="ref">Referral &amp; Follow-up</button>
+                        ${isHts ? "" : `<button class="subtab" data-p="invest">Investigations <span class="dotc" id="c-lab" style="display:none"></span></button>
+                        <button class="subtab" data-p="rx">Prescription <span class="dotc" id="c-rx" style="display:none"></span></button>`}
+                        <button class="subtab" data-p="ref">${isHts ? "Appointment &amp; Referral" : "Referral &amp; Follow-up"}</button>
                     </div>
                     <fieldset id="fs" style="border:0;padding:0;margin:0;min-width:0" ${isLocked ? "disabled" : ""}>
                     <div class="subpanel on" id="sp-assess">
@@ -285,11 +317,12 @@
                         ${isPnc ? '<div class="subhead" style="margin-top:0">1 · Mother registration &amp; demographics</div><div id="pnc-head"></div><div id="pnc-form"></div>' : ""}
                         ${isFp ? '<div class="subhead" style="margin-top:0">1 · Client registration &amp; demographics</div><div id="fp-head"></div><div id="fp-form"></div>' : ""}
                         ${isAnc ? '<div class="subhead" style="margin-top:0">1 · Client registration &amp; demographics</div><div id="anc-head"></div><div id="anc-form"></div>' : ""}
+                        ${isHtsForm ? '<div id="hts-form"></div>' : ""}
                         ${serviceForm(a)}
-                        <div class="subhead">Assessment &amp; plan</div>
+                        ${isHts ? "" : `<div class="subhead">Assessment &amp; plan</div>
                         ${field("assessment_notes", "Assessment / findings", { type: "textarea", rows: 4, value: a.assessment_notes })}
                         ${field("management_plan", "Management plan", { type: "textarea", rows: 4, value: a.management_plan })}
-                        ${field("patient_advice", "Advice given", { type: "textarea", rows: 2, value: a.patient_advice })}
+                        ${field("patient_advice", "Advice given", { type: "textarea", rows: 2, value: a.patient_advice })}`}
                     </div>
                     ${isCwc ? '<div class="subpanel" id="sp-imm"><div id="cwc-card-panel"></div></div>' : ""}
                     <div class="subpanel" id="sp-invest">
@@ -305,18 +338,15 @@
                         <div id="proc-box"></div>
                     </div>
                     <div class="subpanel" id="sp-ref">
+                        ${isHts ? followHtml : ""}
+                        ${isHts ? '<div class="subhead">Referral</div>' : ""}
                         ${isAnc ? '<div class="printnote" style="margin-bottom:12px">Referrals out are recorded in section 7 of the ANC form.</div>' : `${field("refer_out", "Refer to another facility", { type: "checkbox", value: a.refer_out })}
                         <div id="ref-box" style="display:${a.refer_out ? "block" : "none"}">
                             <div class="grid-2">${field("referral_facility", "Facility", { value: a.referral_facility, placeholder: "Type to search or add" })}
                             ${field("referral_reason", "Reason for referral", { type: "textarea", rows: 2, value: a.referral_reason })}</div>
-                        </div>
-                        <div class="subhead">Follow-up</div>`}
-                        ${field("follow_up_required", "Book a follow-up appointment", { type: "checkbox", value: a.follow_up_required })}
-                        <div id="fu-box" style="display:${a.follow_up_required ? "block" : "none"}">
-                            <div class="grid-2">${field("follow_up_date", "Date", { type: "date", value: a.follow_up_date, attrs: a.appointment ? "disabled" : "" })}
-                            ${field("follow_up_reason", "Reason", { value: a.follow_up_reason })}</div>
-                            ${a.appointment ? `<div class="printnote">Appointment ${esc(a.appointment)} has been booked.</div>` : ""}
-                        </div>
+                        </div>`}
+                        ${isHts ? "" : '<div class="subhead">Follow-up</div>'}
+                        ${isHts ? "" : followHtml}
                     </div>
                     </fieldset>
                 </div>
@@ -331,6 +361,7 @@
         if (isAnc) renderAnc(isLocked);
         if (isFp) renderFp(isLocked);
         if (isPnc) renderPnc(isLocked);
+        if (isHtsForm) HTS.renderForm($("#hts-form"), ws.attendance, { locked: isLocked });
     }
 
     function cwcKind() {
@@ -463,7 +494,7 @@
         }).join("") : empty("No tests requested.");
         $$("[data-lab]", el).forEach((inp) => inp.addEventListener("input", () => (state.lab[inp.dataset.lab][inp.dataset.k] = inp.value)));
         $$("[data-lab-del]", el).forEach((b) => b.addEventListener("click", () => { state.lab.splice(Number(b.dataset.labDel), 1); dirty = true; renderLab(); refreshActions(); }));
-        const n = state.lab.length; $("#c-lab").style.display = n ? "" : "none"; $("#c-lab").textContent = n;
+        const n = state.lab.length, badge = $("#c-lab"); if (badge) { badge.style.display = n ? "" : "none"; badge.textContent = n; }
     }
     function renderLabResults() {
         const el = $("#lab-results");
@@ -508,7 +539,7 @@
             if (k === "frequency" || k === "duration_days") autoQty(i);
         }));
         $$("[data-rx-del]", el).forEach((b) => b.addEventListener("click", () => { state.rx.splice(Number(b.dataset.rxDel), 1); dirty = true; renderRx(); refreshActions(); }));
-        const n = state.rx.length; $("#c-rx").style.display = n ? "" : "none"; $("#c-rx").textContent = n;
+        const n = state.rx.length, badge = $("#c-rx"); if (badge) { badge.style.display = n ? "" : "none"; badge.textContent = n; }
     }
 
     function renderTimeline(rows) {
@@ -522,7 +553,7 @@
 
     // ---- actions
     function needTb() {
-        if (ws.attendance.tb_screening) return false;
+        if (isHts || ws.attendance.tb_screening) return false;   // the HIV testing clinic does no TB screening
         toast("Record the TB screening (1–4) first", "warn");
         const bar = $("#tbbar"); if (bar) bar.scrollIntoView({ behavior: "smooth", block: "center" });
         return true;
@@ -530,6 +561,11 @@
     function refreshActions() {
         const box = $("#actions");
         if (locked()) { box.innerHTML = ""; return; }
+        if (isHts) {
+            box.innerHTML = '<button class="btn btn--primary" id="a-done">Complete ✓</button>';
+            $("#a-done").addEventListener("click", () => act("complete", "Attendance completed"));
+            return;
+        }
         const unsent = state.lab.some((r) => !r.lab_test), hasRx = state.rx.length > 0;
         const highRisk = window.ANC && $("[data-f=anc_referral]")?.value === ANC.HIGH_RISK;   // she goes to the doctor, not home
         box.innerHTML = `
@@ -550,6 +586,7 @@
         if ($("#anc-form")) Object.assign(data, ANC.multiValues($("#anc-form")));
         if ($("#fp-form")) Object.assign(data, FP.multiValues($("#fp-form")));
         if ($("#pnc-form")) Object.assign(data, PNC.multiValues($("#pnc-form")));
+        if ($("#hts-form")) Object.assign(data, HTS.multiValues($("#hts-form")));
         data.lab_requests = state.lab.map(({ test_type, urgency, clinical_notes, lab_test }) => ({ test_type, urgency, clinical_notes, lab_test }));
         data.procedures = state.proc.map(({ procedure, qty }) => ({ procedure, qty }));
         data.prescriptions = state.rx.map(({ drug, dose, route, frequency, duration_days, quantity, instructions }) => ({ drug, dose, route, frequency, duration_days, quantity, instructions }));

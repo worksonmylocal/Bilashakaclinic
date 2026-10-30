@@ -11,6 +11,7 @@ ROLES = [
 	"Clinic Lab Technician",
 	"Clinic Pharmacist",
 	"Clinic Manager",
+	"HTS Officer",
 ]
 
 

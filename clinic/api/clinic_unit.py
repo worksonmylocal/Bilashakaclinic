@@ -36,7 +36,8 @@ TEXT_FIELDS = [
 	"maternal_condition", "breast_exam", "uterine_involution", "lochia_exam", "wound_exam", "cord_condition",
 	"infant_feeding", "infant_jaundice", "infant_danger_signs", "mat_hiv_initial", "mat_hiv_retest", "maternal_haart",
 	"infant_arv", "eid_pcr", "pnc_partner_hiv", "hiv_disclosure", "pnc_cervical", "cervical_treatment", "pnc_fp_method",
-	"maternal_complications",
+	"maternal_complications", "hts_test_type", "hts_test1_result", "hts_test2_result", "couple_status", "prevention_services",
+	"hts_remarks",
 ]
 DATE_FIELDS = ["pnc_fp_date", "fp_next_visit", "lmp", "anc_next_visit", "delivery_date", "treatment_start_date", "follow_up_date"]
 INT_FIELDS = ["anc_visit_number", "gravida", "parity", "fetal_heart_rate", "postnatal_visit_no", "abortions",
@@ -47,7 +48,7 @@ CHECK_FIELDS = [
 	"fp_counselled", "iron_folate_given", "ipt_given", "tt_given", "exclusive_breastfeeding", "vitamin_a_given",
 	"deworming_given", "refer_out", "follow_up_required", "mnp_given", "dewormed", "disability_identified",
 	"syphilis_treatment", "ctx_given", "llin_issued", "anc_dewormed", "ibp_discussed", "dmpa_im_given", "sdm_given",
-	"lam_educated", "fp_dual_protection", "infant_ctx", "partner_tested_pnc", "pnc_fp_counselling", "mother_vit_a",
+	"lam_educated", "fp_dual_protection", "post_test_counselling", "infant_ctx", "partner_tested_pnc", "pnc_fp_counselling", "mother_vit_a",
 	"deworming_mother",
 ]
 TB_LABELS = {1: "Presumed TB", 2: "No signs", 3: "On TB treatment", 4: "Not done"}
@@ -55,6 +56,7 @@ SPECIFIC = {
 	"antenatal": ("Family planning methods — last 30 days", "fp_method"),
 	"mch": ("Child growth status — last 30 days", "growth_status"),
 	"tb": ("Adherence — last 30 days", "adherence"),
+	"hts": ("HIV test outcomes — last 30 days", "hts_final_result"),
 }
 
 
@@ -62,6 +64,17 @@ def _label(unit):
 	if unit not in UNITS:
 		frappe.throw(_("Unknown clinic {0}").format(unit))
 	return UNITS[unit]["label"]
+
+
+def _hts_stats(label, start):
+	rows = dict(
+		frappe.db.sql(
+			"""SELECT IFNULL(hts_final_result, 'Pending'), COUNT(*) FROM `tabClinic Attendance`
+			WHERE clinic_unit = %s AND attendance_date >= %s GROUP BY hts_final_result""",
+			(label, start),
+		)
+	)
+	return {"positive": rows.get("Positive", 0), "negative": rows.get("Negative", 0), "inconclusive": rows.get("Inconclusive", 0)}
 
 
 @frappe.whitelist()
@@ -142,6 +155,7 @@ def dashboard(unit):
 		"label": label,
 		"services": UNITS[unit]["services"],
 		"cwc": cwc.stats() if unit == "mch" else None,
+		"hts": _hts_stats(label, start) if unit == "hts" else None,
 		"kpis": {
 			"waiting": len(waiting),
 			"emergency": sum(1 for r in waiting if r.priority in ("Emergency", "Urgent")),
@@ -205,7 +219,12 @@ def insights(unit):
 	return {
 		"by_day": [{**r, "day": str(r.day)} for r in by_day],
 		"services": services,
-		"tb_screening": [{"label": f"{c} - {TB_LABELS[c]}", "value": screening.get(c, 0)} for c in (1, 2, 3, 4)],
+		# the HIV clinic does no TB screening: its second chart shows the test outcomes instead
+		"tb_screening": (
+			[{"label": r, "value": next((x.value for x in specific if x.label == r), 0)} for r in ("Negative", "Positive", "Inconclusive")]
+			if unit == "hts"
+			else [{"label": f"{c} - {TB_LABELS[c]}", "value": screening.get(c, 0)} for c in (1, 2, 3, 4)]
+		),
 		"specific_title": title,
 		"specific": specific,
 	}
@@ -268,7 +287,11 @@ def workspace(unit, visit):
 		)
 	history = frappe.get_all(
 		"Clinic Attendance",
-		filters={"patient": visit_doc.patient, "visit": ["!=", visit], "status": "Completed"},
+		filters={
+			"patient": visit_doc.patient, "visit": ["!=", visit], "status": "Completed",
+			# HIV testing records are only ever shown inside the HTS clinic
+			"service_type": ["=", "HTS Attendance"] if unit == "hts" else ["!=", "HTS Attendance"],
+		},
 		fields=["name", "attendance_date", "clinic_unit", "service_type", "anc_visit_number", "postnatal_visit_no",
 				"tb_screening", "assessment_notes", "growth_status", "fp_method", "adherence", "clinician"],
 		order_by="attendance_date desc",

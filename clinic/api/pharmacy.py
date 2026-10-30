@@ -7,6 +7,7 @@ from frappe import _
 from frappe.utils import flt
 
 from clinic import billing
+from clinic.referrals import referral_for_visit
 from clinic.api.common import clean, minutes_since, patient_card, require, to_number, today_start, user_name
 
 
@@ -37,6 +38,7 @@ def dashboard():
 		bill = billing.summary(row.visit)
 		row.bill_total = bill["total"] if bill else 0
 		row.billing_mode = bill["billing_mode"] if bill else billing.terms(row.visit)["billing_mode"]
+		row.referral = (referral_for_visit(row.visit) or {}).get("facility") or None
 
 	# Billed patients who finished with the doctor/lab but have nothing to dispense still pay here
 	payment_only = frappe.db.sql(
@@ -53,6 +55,7 @@ def dashboard():
 	for row in payment_only:
 		row.wait_minutes = minutes_since(row.since)
 		row.total = billing.summary(row.visit)["total"]
+		row.referral = (referral_for_visit(row.visit) or {}).get("facility") or None
 
 	dispensed = frappe.db.sql(
 		"""
@@ -76,6 +79,7 @@ def dashboard():
 		row.pharmacist_name = user_name(row.pharmacist)
 		row.bill = paid.get(row.visit)
 		row.sick_sheet = row.visit in needs_sheet
+		row.referral = (referral_for_visit(row.visit) or {}).get("facility") or None
 
 	stats = frappe.db.sql(
 		"""
@@ -175,6 +179,7 @@ def get_dispensing(name):
 	t = billing.terms(doc.visit)
 	data.update(billable=True, billing_mode=t["billing_mode"], sick_sheet=t["sick_sheet"], employer=t["employer"])
 	data["bill"] = billing.summary(doc.visit)
+	data["referral"] = referral_for_visit(doc.visit)
 	data["prices"] = billing.drug_prices()
 	data["courses"] = {drug: {"price": price, "course_qty": course} for drug, (price, course) in billing.drug_courses().items()}
 	return data
@@ -218,6 +223,7 @@ def dispense(name, items, notes=None, submit=1, payment=None):
 		"bill": settled.name if settled else None,
 		"document": ("invoice" if settled.status == "Invoiced" else "receipt") if settled else None,
 		"sick_sheet": billing.terms(doc.visit)["sick_sheet"],
+		"referral": bool(referral_for_visit(doc.visit)),
 	}
 
 
@@ -233,6 +239,7 @@ def get_payment(visit):
 		"billing_mode": t["billing_mode"],
 		"sick_sheet": t["sick_sheet"],
 		"bill": billing.summary(visit),
+		"referral": referral_for_visit(visit),
 	}
 
 
@@ -251,6 +258,7 @@ def take_payment(visit, payment):
 	bill = billing.pay(visit, mode, amount, reference)
 	_close_visit(visit)
 	return {"bill": bill.name, "document": "receipt", "visit": visit, "sick_sheet": billing.terms(visit)["sick_sheet"],
+		"referral": bool(referral_for_visit(visit)),
 		"visit_status": frappe.db.get_value("Clinic Visit", visit, "status")}
 
 
@@ -261,4 +269,5 @@ def issue_invoice(visit):
 	bill = billing.issue_invoice(visit)
 	_close_visit(visit)
 	return {"bill": bill.name, "document": "invoice", "visit": visit, "sick_sheet": billing.terms(visit)["sick_sheet"],
+		"referral": bool(referral_for_visit(visit)),
 		"visit_status": frappe.db.get_value("Clinic Visit", visit, "status")}

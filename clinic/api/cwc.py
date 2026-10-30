@@ -186,7 +186,7 @@ def defaulters(limit=None):
 		row.age = age_text(row.dob)
 		row.days_late = (today - getdate(row.oldest_due)).days
 		row.last_seen = frappe.db.get_value(
-			"Clinic Attendance", {"patient": row.patient, "status": "Completed"}, "attendance_date",
+			"Clinic Attendance", {"patient": row.patient, "status": "Completed", "service_type": ["!=", "HTS Attendance"]}, "attendance_date",
 			order_by="attendance_date desc",
 		)
 	if limit:

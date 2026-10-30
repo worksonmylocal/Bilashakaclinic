@@ -15,6 +15,8 @@ PAGE_ROLES = {
 	"antenatal": ["Clinic Doctor", "Clinic Specialty Nurse"],
 	"mch": ["Clinic Doctor", "Clinic Specialty Nurse"],
 	"tb": ["Clinic Doctor", "Clinic Specialty Nurse"],
+	# the HIV testing clinic is open to its own officer alone (managers can always open every page)
+	"hts": ["HTS Officer"],
 }
 
 # Clinics a patient can be sent to after triage (in addition to the doctor)
@@ -22,8 +24,10 @@ UNITS = {
 	"antenatal": {"label": "Antenatal Clinic", "services": ["Family Planning", "ANC Attendance"]},
 	"mch": {"label": "MCH & Postnatal Clinic", "services": ["Postnatal Attendance", "CWC Attendance"]},
 	"tb": {"label": "TB Clinic", "services": ["TB Registration", "TB Follow-up"]},
+	"hts": {"label": "HTS Clinic", "services": ["HTS Attendance"]},
 }
-SEND_TO = ["Consultation"] + [u["label"] for u in UNITS.values()]
+# patients walk into the HTS clinic directly, so triage never sends anyone there
+SEND_TO = ["Consultation"] + [u["label"] for k, u in UNITS.items() if k != "hts"]
 ADMIN_ROLES = ["Clinic Manager", "System Manager"]
 ALL_CLINIC_ROLES = sorted({r for roles in PAGE_ROLES.values() for r in roles} | set(ADMIN_ROLES))
 

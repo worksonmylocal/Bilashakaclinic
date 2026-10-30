@@ -152,6 +152,9 @@ required_apps = ["erpnext"]
 # 	}
 # }
 
+permission_query_conditions = {"Clinic Attendance": "clinic.permissions.attendance_query"}
+has_permission = {"Clinic Attendance": "clinic.permissions.attendance_has_permission"}
+
 # Scheduled Tasks
 # ---------------
 

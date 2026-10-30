@@ -15,6 +15,8 @@
     const receiptUrl = (bill) => `/clinic/receipt?bill=${encodeURIComponent(bill)}`;
     const invoiceUrl = (bill) => `/clinic/invoice?bill=${encodeURIComponent(bill)}`;
     const sheetUrl = (visit) => `/clinic/sicksheet?visit=${encodeURIComponent(visit)}`;
+    const letterUrl = (visit) => `/clinic/referral_letter?visit=${encodeURIComponent(visit)}`;
+    const letterBtn = (visit) => `<a class="btn btn--sm" target="_blank" href="${letterUrl(visit)}" title="Letter for the facility the patient is referred to">Referral letter</a> `;
     const MODES = ["Cash", "M-Pesa", "Bank / Card", "Other"];
     let dash;
 
@@ -41,15 +43,17 @@
                 <div><div class="qcard__name">${esc(r.patient_name)} ${typeTag(r.patient_type)}${r.employer ? " " + pill(r.employer, "mute") : ""}</div>
                 <div class="qcard__meta">${esc(r.visit)} · ${esc(ageSex(r))} · ${r.item_count} item(s) · ${esc(r.doctor_name || "—")}</div>
                 ${r.diagnoses ? `<div class="qcard__note">${esc(r.diagnoses)}</div>` : ""}
-                ${r.allergies ? `<div class="qcard__note alert">⚠ Allergy: ${esc(r.allergies)}</div>` : ""}</div>
-                <div class="qcard__side">${r.bill_total ? `<span class="tag tag--dest">${r.billing_mode === "Invoice" ? "Invoice " + money(r.bill_total) : money(r.bill_total) + " cash"}</span>` : ""}${wait(r.wait_minutes, 10, 25)}
+                ${r.allergies ? `<div class="qcard__note alert">⚠ Allergy: ${esc(r.allergies)}</div>` : ""}
+                ${r.referral ? `<div class="qcard__note" style="color:var(--info)">⇥ Referred to ${esc(r.referral)}: print the referral letter</div>` : ""}</div>
+                <div class="qcard__side">${r.referral ? letterBtn(r.visit) : ""}${r.bill_total ? `<span class="tag tag--dest">${r.billing_mode === "Invoice" ? "Invoice " + money(r.bill_total) : money(r.bill_total) + " cash"}</span>` : ""}${wait(r.wait_minutes, 10, 25)}
                     <button class="btn btn--primary btn--sm" data-open="${esc(r.name)}">Dispense</button></div></div>`);
         const pay = dash.payment_only.map((r) => `
             <div class="qcard"><div class="qcard__stripe Urgent"></div>
                 <div><div class="qcard__name">${esc(r.patient_name)} ${typeTag(r.patient_type)}${r.employer ? " " + pill(r.employer, "mute") : ""}</div>
                 <div class="qcard__meta">${esc(r.visit)} · ${esc(ageSex(r))} · nothing to dispense</div>
-                <div class="qcard__note">${r.billing_mode === "Invoice" ? "Invoice only — nothing to dispense" : "Payment only"}</div></div>
-                <div class="qcard__side"><span class="tag tag--dest">${r.billing_mode === "Invoice" ? "Invoice " + money(r.total) : money(r.total) + " cash"}</span>${wait(r.wait_minutes, 10, 25)}
+                <div class="qcard__note">${r.billing_mode === "Invoice" ? "Invoice only — nothing to dispense" : "Payment only"}</div>
+                ${r.referral ? `<div class="qcard__note" style="color:var(--info)">⇥ Referred to ${esc(r.referral)}: print the referral letter</div>` : ""}</div>
+                <div class="qcard__side">${r.referral ? letterBtn(r.visit) : ""}<span class="tag tag--dest">${r.billing_mode === "Invoice" ? "Invoice " + money(r.total) : money(r.total) + " cash"}</span>${wait(r.wait_minutes, 10, 25)}
                     <button class="btn btn--signal btn--sm" data-pay="${esc(r.visit)}">${r.billing_mode === "Invoice" ? "Issue invoice" : "Take payment"}</button></div></div>`);
         $("#queue").innerHTML = rx.length + pay.length ? rx.concat(pay).join("") : empty("No prescriptions or payments waiting.");
         $$("#queue [data-open]").forEach((b) => b.addEventListener("click", () => openDispensing(b.dataset.open)));
@@ -62,7 +66,7 @@
                 <td class="num">${r.item_count}</td>
                 <td>${r.bill ? `${money(r.bill.total)} ${r.bill.status === "Invoiced" ? pill("Invoiced", "info") : pill("Paid", "good")}<br><span class="printnote">${esc(r.bill.invoice_no || r.bill.receipt_no || "")}</span>` : "—"}</td>
                 <td>${esc(r.pharmacist_name || "")}</td>
-                <td class="num">${r.bill && r.bill.invoice_no ? `<a class="btn btn--sm" target="_blank" href="${invoiceUrl(r.bill.name)}">Invoice</a> ` : ""}${r.bill && r.bill.receipt_no ? `<a class="btn btn--sm" target="_blank" href="${receiptUrl(r.bill.name)}">Receipt</a> ` : ""}${r.sick_sheet ? `<a class="btn btn--sm" target="_blank" href="${sheetUrl(r.visit)}">Sick sheet</a> ` : ""}<button class="btn btn--link btn--sm" data-open="${esc(r.name)}">View</button></td></tr>`).join("")}</table>`
+                <td class="num">${r.bill && r.bill.invoice_no ? `<a class="btn btn--sm" target="_blank" href="${invoiceUrl(r.bill.name)}">Invoice</a> ` : ""}${r.bill && r.bill.receipt_no ? `<a class="btn btn--sm" target="_blank" href="${receiptUrl(r.bill.name)}">Receipt</a> ` : ""}${r.sick_sheet ? `<a class="btn btn--sm" target="_blank" href="${sheetUrl(r.visit)}">Sick sheet</a> ` : ""}${r.referral ? letterBtn(r.visit) : ""}<button class="btn btn--link btn--sm" data-open="${esc(r.name)}">View</button></td></tr>`).join("")}</table>`
             : empty("Nothing dispensed yet today.");
         $$("#dispensed [data-open]").forEach((b) => b.addEventListener("click", () => openDispensing(b.dataset.open)));
     }
@@ -101,7 +105,7 @@
     }
     const paymentValues = (root) => { const v = read(root); return { mode: v.pay_mode, amount: v.pay_amount, reference: v.pay_reference }; };
 
-    function printDialog({ patient, bill, document, visit, sickSheet }) {
+    function printDialog({ patient, bill, document, visit, sickSheet, referral }) {
         const invoice = document === "invoice";
         modal({
             title: invoice ? "Invoice issued" : bill ? "Payment received" : "Dispensed",
@@ -110,6 +114,7 @@
                 <p style="margin:0;color:var(--ink-3)">${invoice ? "Print the invoice (and sick sheet) for the employee to take back to the farm:" : "Print the documents for the patient:"}</p>`,
             foot: [
                 { label: "Close" },
+                ...(referral ? [{ label: "Print referral letter", cls: bill || sickSheet ? "" : "btn--primary", onClick: () => { window.open(letterUrl(visit), "_blank"); } }] : []),
                 ...(sickSheet ? [{ label: "Print sick sheet", cls: bill ? "" : "btn--primary", onClick: () => { window.open(sheetUrl(visit), "_blank"); } }] : []),
                 ...(bill ? [{ label: invoice ? "Print invoice" : "Print receipt", cls: "btn--primary", onClick: () => { window.open(invoice ? invoiceUrl(bill) : receiptUrl(bill), "_blank"); } }] : []),
             ],
@@ -148,8 +153,9 @@
                 ? [{ label: "Close" },
                    ...(d.bill && d.bill.invoice_no ? [{ label: "Print invoice", onClick: () => { window.open(invoiceUrl(d.bill.name), "_blank"); } }] : []),
                    ...(d.bill && d.bill.receipt_no ? [{ label: "Print receipt", onClick: () => { window.open(receiptUrl(d.bill.name), "_blank"); } }] : []),
+                   ...(d.referral ? [{ label: "Print referral letter", onClick: () => { window.open(letterUrl(d.visit), "_blank"); } }] : []),
                    ...(d.sick_sheet ? [{ label: "Print sick sheet", cls: "btn--primary", onClick: () => { window.open(sheetUrl(d.visit), "_blank"); } }] : [])]
-                : [{ label: "Close" }, { label: "Save", onClick: (hh) => submit(hh, 0) },
+                : [{ label: "Close" }, ...(d.referral ? [{ label: "Print referral letter", onClick: () => { window.open(letterUrl(d.visit), "_blank"); } }] : []), { label: "Save", onClick: (hh) => submit(hh, 0) },
                    { label: invoiceMode ? "Issue invoice & dispense ✓" : "Take payment & dispense ✓", cls: "btn--primary", onClick: (hh) => submit(hh, 1) }],
         });
         if (done) return;
@@ -198,7 +204,7 @@
             loadAll();
             if (!finalise) return toast("Saved");
             toast(r.document === "invoice" ? "Invoice issued and dispensed. Visit completed." : r.bill ? "Paid and dispensed. Visit completed." : "Dispensed. Visit completed.");
-            if (r.bill || r.sick_sheet) printDialog({ patient: p.full_name, bill: r.bill, document: r.document, visit: r.visit, sickSheet: r.sick_sheet });
+            if (r.bill || r.sick_sheet || r.referral) printDialog({ patient: p.full_name, bill: r.bill, document: r.document, visit: r.visit, sickSheet: r.sick_sheet, referral: r.referral });
         }
     }
 
@@ -213,7 +219,7 @@
             body: `${banner(d.patient_card)}${billPanel(d.bill ? d.bill.lines : [], total)}<div style="margin-top:16px">${invoiceMode
                 ? `<div class="liveinfo" style="background:var(--info-bg);color:var(--info)">Charged to <b>${esc(d.employer || "the employer")}</b> on an invoice. The employee takes it back to the farm, which pays later.</div>`
                 : paymentFields(total)}</div>`,
-            foot: [{ label: "Close" }, { label: invoiceMode ? "Issue invoice ✓" : "Take payment ✓", cls: "btn--primary", onClick: async (hh) => {
+            foot: [{ label: "Close" }, ...(d.referral ? [{ label: "Print referral letter", onClick: () => { window.open(letterUrl(visit), "_blank"); } }] : []), { label: invoiceMode ? "Issue invoice ✓" : "Take payment ✓", cls: "btn--primary", onClick: async (hh) => {
                 let r;
                 if (invoiceMode) r = await call("pharmacy.issue_invoice", { visit });
                 else {
@@ -222,7 +228,7 @@
                     r = await call("pharmacy.take_payment", { visit, payment: pv });
                 }
                 hh.close(); loadAll(); toast(invoiceMode ? "Invoice issued. Visit completed." : "Payment received. Visit completed.");
-                printDialog({ patient: d.patient_card.full_name, bill: r.bill, document: r.document, visit, sickSheet: r.sick_sheet });
+                printDialog({ patient: d.patient_card.full_name, bill: r.bill, document: r.document, visit, sickSheet: r.sick_sheet, referral: r.referral });
             } }],
         });
         if (!invoiceMode) bindPayment(h.body, () => total);

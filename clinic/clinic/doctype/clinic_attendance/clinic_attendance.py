@@ -17,6 +17,7 @@ UNIT_SERVICES = {
 	"Antenatal Clinic": ("Family Planning", "ANC Attendance"),
 	"MCH & Postnatal Clinic": ("Postnatal Attendance", "CWC Attendance"),
 	"TB Clinic": ("TB Registration", "TB Follow-up"),
+	"HTS Clinic": ("HTS Attendance",),
 }
 TB_SCREENING = {
 	1: "1 - Presumed TB",
@@ -66,6 +67,8 @@ class ClinicAttendance(Document):
 			self.set_fp_values()
 		elif self.service_type == "Postnatal Attendance":
 			self.set_pnc_values()
+		elif self.service_type == "HTS Attendance":
+			self.set_hts_values()
 		if self.follow_up_required and not self.appointment and getdate(self.follow_up_date) < getdate(nowdate()):
 			frappe.throw(_("Follow-up date cannot be in the past"))
 		for row in self.prescriptions:
@@ -508,6 +511,32 @@ class ClinicAttendance(Document):
 			if live and not self.infant_arv:
 				frappe.throw(_("The mother is HIV positive. Record the infant ARV prophylaxis."))
 
+	# ------------------------------------------------------------ HIV testing clinic
+	def set_hts_values(self):
+		"""The outcome follows the two tests; prevention services are offered to clients who test negative."""
+		t1, t2 = self.hts_test1_result, self.hts_test2_result
+		if t1 and t2:
+			self.hts_final_result = "Positive" if t1 == t2 == "Reactive" else "Negative" if t1 == t2 else "Inconclusive"
+		else:
+			self.hts_final_result = None
+		services = [s.strip() for s in (self.prevention_services or "").split(",") if s.strip()]
+		if "None" in services and len(services) > 1:
+			services = [s for s in services if s != "None"]  # a real service overrides "None"
+		self.prevention_services = ", ".join(services) if services and self.hts_final_result == "Negative" else None
+
+	def validate_hts_complete(self):
+		missing = [
+			label for field, label in (
+				("hts_test_type", _("Test type (initial, repeat or retesting)")),
+				("hts_test1_result", _("Test 1 (Determine) result")), ("hts_test2_result", _("Test 2 (confirmatory) result")),
+				("couple_status", _("Couple testing and discordancy status")),
+			) if not self.get(field)
+		]
+		if self.hts_final_result == "Negative" and not self.prevention_services:
+			missing.append(_("Prevention services offered (choose None if none)"))
+		if missing:
+			frappe.throw(_("Complete the HTS record before closing: {0}").format(", ".join(missing)))
+
 	def validate_cwc_complete(self):
 		if not self.child_record:
 			frappe.throw(_("Open the CWC register entry for this child first (CWC Attendance tab)."))
@@ -582,9 +611,12 @@ class ClinicAttendance(Document):
 			self.validate_fp_complete()
 		if self.service_type == "Postnatal Attendance" and complete_register:
 			self.validate_pnc_complete()
-		if not self.tb_screening:
-			frappe.throw(_("Record the TB screening (1-4) before closing this attendance"))
-		check_tb_test_sent(self)
+		if self.service_type == "HTS Attendance":
+			self.validate_hts_complete()  # the HIV testing clinic does no TB screening
+		else:
+			if not self.tb_screening:
+				frappe.throw(_("Record the TB screening (1-4) before closing this attendance"))
+			check_tb_test_sent(self)
 		pending = frappe.db.count("Clinic Lab Test", {"visit": self.visit, "status": ["in", PENDING_LAB]})
 		if pending:
 			frappe.throw(_("{0} lab test(s) are still awaiting results").format(pending))
