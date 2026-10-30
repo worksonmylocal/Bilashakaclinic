@@ -485,3 +485,33 @@ body.lk-on{overflow:hidden}
 .lk__out:hover{color:#fff}
 @media (prefers-reduced-motion:reduce){.lk__bg,.fl,.lk__ecg-live,.lk__ring,.lk__logo img{animation:none}.fl{opacity:.5;bottom:20%}.lk__ecg-live{stroke-dasharray:none}}
 @media (max-width:480px){.lk__pin input{width:48px;height:58px;font-size:26px}.lk__card{padding:26px 20px 20px}}
+
+/* ---------------------------------------------------------------- desk accent colours
+   Each desk has a soft colour of its own, shown on the edges of its cards, tiles and dialogs. */
+:root{--accent-rgb:36,70,60}
+body[data-desk=triage]{--accent-rgb:34,136,131}
+body[data-desk=consultation]{--accent-rgb:44,107,179}
+body[data-desk=lab]{--accent-rgb:201,138,43}
+body[data-desk=pharmacy]{--accent-rgb:122,74,143}
+body[data-desk=antenatal]{--accent-rgb:194,87,122}
+body[data-desk=mch]{--accent-rgb:217,112,58}
+body[data-desk=tb]{--accent-rgb:76,90,166}
+body[data-desk=hts]{--accent-rgb:168,50,74}
+body{--accent:rgb(var(--accent-rgb));--accent-soft:rgba(var(--accent-rgb),.20);--accent-edge:rgba(var(--accent-rgb),.78);--accent-wash:rgba(var(--accent-rgb),.06)}
+
+.card{border:1px solid var(--accent-soft);box-shadow:var(--shadow-card),inset 0 3px 0 var(--accent-edge)}
+.kpi{border:1px solid var(--accent-soft);box-shadow:var(--shadow-card),inset 0 -3px 0 var(--accent-edge)}
+.kpi:hover{box-shadow:var(--shadow-hover),inset 0 -3px 0 var(--accent)}
+.qcard{border:1px solid var(--accent-soft);border-left:0;background:var(--accent-wash)}
+.qcard:hover{background:rgba(var(--accent-rgb),.1)}
+.vital{border:1px solid var(--accent-soft);background:var(--accent-wash)}
+.vital.bad{background:var(--bad-bg)} .vital.warn{background:var(--warn-bg)}
+.linebox{border-color:var(--accent-soft)}
+.cwcbar{border:1px solid var(--accent-soft);background:var(--accent-wash)}
+.fpgroup{border-color:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent-edge)}
+.tbbar{border-color:var(--accent-soft);box-shadow:var(--shadow-card),inset 0 3px 0 var(--accent-edge)}
+.modal{border:1px solid var(--accent-soft);box-shadow:0 40px 80px -20px rgba(10,10,10,.35),inset 0 4px 0 var(--accent-edge)}
+.topbar{border-bottom:2px solid var(--accent-edge)}
+.pagehead__eyebrow::before{background:var(--accent);height:2px}
+.subtabs{border-bottom-color:var(--accent-soft)}
+.msblock{border-color:var(--accent-soft)}

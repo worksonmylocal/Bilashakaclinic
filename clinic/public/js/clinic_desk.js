@@ -278,6 +278,7 @@ window.Desk = (function () {
 
     // ---------------------------------------------------------------- shell
     async function shell({ page, eyebrow, title, sub, tools = "" }) {
+        document.body.dataset.desk = page;   // each desk has its own accent colour (see the stylesheet)
         const who = await call("common.whoami", {}, { quiet: true }).catch(() => ({ pages: [page], full_name: cfg.user, user: cfg.user }));
         const nav = PAGES.filter((p) => who.pages.includes(p.key))
             .map((p) => `<a href="${p.href}" class="${p.key === page ? "on" : ""}">${p.label}</a>`).join("");
