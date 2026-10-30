@@ -119,7 +119,7 @@ def dashboard(unit):
 		"Clinic Attendance",
 		filters={"clinic_unit": label, "status": "Completed", "attendance_date": [">=", start]},
 		fields=["name as attendance", "visit", "patient_name", "patient_type", "sex", "age_years", "service_type",
-				"attendance_date", "tb_screening", "referred_to_doctor"],
+				"attendance_date", "tb_screening", "referred_to_doctor", "hts_final_result"],
 		order_by="attendance_date desc",
 	)
 
@@ -238,7 +238,7 @@ def seen_month(unit):
 		"Clinic Attendance",
 		filters={"clinic_unit": label, "status": "Completed", "attendance_date": [">=", f"{first} 00:00:00"]},
 		fields=["name as attendance", "patient_name", "patient_type", "sex", "age_years", "service_type",
-				"attendance_date", "tb_screening", "referred_to_doctor"],
+				"attendance_date", "tb_screening", "referred_to_doctor", "hts_final_result"],
 		order_by="attendance_date desc",
 	)
 	by_service = {}

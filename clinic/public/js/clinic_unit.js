@@ -115,31 +115,34 @@
     }
 
     function renderQueues(d) {
-        $("#waiting-meta").textContent = d.waiting.length ? `${d.waiting.length} waiting` : "";
-        $("#waiting").innerHTML = d.waiting.length
+        // the HTS desk has no triage queue, lab or pharmacy: its page only has the open attendances
+        const put = (sel, html) => { const el = $(sel); if (el) el.innerHTML = html; };
+        const meta = (sel, text) => { const el = $(sel); if (el) el.textContent = text; };
+        meta("#waiting-meta", d.waiting.length ? `${d.waiting.length} waiting` : "");
+        put("#waiting", d.waiting.length
             ? d.waiting.map((r) => queueCard(r, `<button class="btn btn--primary btn--sm" data-open="${esc(r.visit)}">Attend</button>`)).join("")
-            : empty("No patients waiting.");
-        $("#ready-meta").textContent = d.results_ready.length ? `${d.results_ready.length} to review` : "";
-        $("#ready").innerHTML = d.results_ready.length
+            : empty("No patients waiting."));
+        meta("#ready-meta", d.results_ready.length ? `${d.results_ready.length} to review` : "");
+        put("#ready", d.results_ready.length
             ? d.results_ready.map((r) => queueCard(r, `<button class="btn btn--signal btn--sm" data-open="${esc(r.visit)}">Review results</button>`,
                 `<div class="qcard__note">${r.tests.map((t) => `${esc(t.test_type)}: <b style="color:${["Positive", "Abnormal"].includes(t.interpretation) ? "var(--bad)" : "var(--good)"}">${esc(t.interpretation || t.status)}</b>`).join(" · ")}</div>`)).join("")
-            : empty("No lab results waiting.");
+            : empty("No lab results waiting."));
         $("#progress").innerHTML = d.in_progress.length
             ? d.in_progress.map((r) => queueCard(r, `<button class="btn btn--sm" data-open="${esc(r.visit)}">Continue</button>`)).join("")
             : empty("None open.");
-        $("#flight").innerHTML = d.in_flight.length
+        put("#flight", d.in_flight.length
             ? d.in_flight.map((r) => `<div class="qcard"><div class="qcard__stripe"></div>
                 <div><div class="qcard__name">${esc(r.patient_name)} ${typeTag(r.patient_type)}</div><div class="qcard__meta">${esc(r.visit)} · ${esc(ageSex(r))}</div></div>
                 <div class="qcard__side">${pill(r.status, r.status === "Waiting Lab" ? "info" : "warn")}<button class="btn btn--link btn--sm" data-open="${esc(r.visit)}">Open</button></div></div>`).join("")
-            : empty("No one at the lab or pharmacy.");
+            : empty("No one at the lab or pharmacy."));
         $$("[data-open]").forEach((b) => b.addEventListener("click", () => openVisit(b.dataset.open)));
     }
 
     const attRows = (rows) => rows.map((r) => `<tr><td>${esc(dateOf(r.attendance_date).slice(5))} ${timeOf(r.attendance_date)}</td>
         <td><b style="color:var(--ink)">${esc(r.patient_name)}</b><br><span class="printnote">${esc(ageSex(r))}</span></td><td>${typeTag(r.patient_type)}</td>
-        <td>${esc(r.service_type)}</td><td>${r.tb_screening ? pill(r.tb_screening, r.tb_screening.startsWith("1") ? "bad" : "mute") : "—"}</td>
+        <td>${esc(r.service_type)}</td><td>${isHts ? (r.hts_final_result ? pill(r.hts_final_result, r.hts_final_result === "Positive" ? "bad" : r.hts_final_result === "Negative" ? "good" : "warn") : "—") : (r.tb_screening ? pill(r.tb_screening, r.tb_screening.startsWith("1") ? "bad" : "mute") : "—")}</td>
         <td>${r.referred_to_doctor ? pill("Sent to doctor", "warn") : pill("Completed", "good")}</td></tr>`).join("");
-    const attHead = "<tr><th>When</th><th>Patient</th><th>Type</th><th>Service</th><th>TB screening</th><th>Outcome</th></tr>";
+    const attHead = `<tr><th>When</th><th>Patient</th><th>Type</th><th>Service</th><th>${isHts ? "HIV test outcome" : "TB screening"}</th><th>Outcome</th></tr>`;
 
     function renderCompleted(rows) {
         $("#completed").innerHTML = rows.length ? `<table class="dtable">${attHead}${attRows(rows)}</table>` : empty("No completed attendances yet today.");
@@ -148,7 +151,10 @@
     async function loadMonth() {
         const d = await api("seen_month"), s = d.summary, names = Object.keys(CFG.tiles);
         $("#month-meta").textContent = d.month;
-        kpis($("#month-kpis"), [
+        kpis($("#month-kpis"), isHts ? [
+            { label: "Seen This Month", value: s.total, cls: "good", unit: d.month },
+            { label: "Employees / Community", value: `${s.employees} <span style="font-size:14px;color:var(--ink-mute)">/ ${s.community}</span>`, unit: "Clients tested" },
+        ] : [
             { label: "Seen This Month", value: s.total, cls: "good", unit: d.month },
             { label: "Employees / Community", value: `${s.employees} <span style="font-size:14px;color:var(--ink-mute)">/ ${s.community}</span>`, unit: "Patients attended" },
             { label: CFG.tiles[names[0]], value: s.by_service[names[0]] || 0, unit: "This month" },
