@@ -33,8 +33,8 @@
                 ${f.details && f.details.contact_person ? `<dt>Attention</dt><dd>${esc(f.details.contact_person)}${f.details.phone ? " · " + esc(f.details.phone) : ""}</dd>` : ""}</dl>
             <dl><dt>Period</dt><dd class="big">${esc(d.period)}</dd><dt>Encounters</dt><dd>${f.count}</dd><dt>Invoice date</dt><dd>${esc(dt(d.printed_on))}</dd></dl>
         </section>
-        ${f.rows.length ? `<table class="tbl" style="margin-top:6px"><thead><tr><th style="width:44px">No.</th><th>Patient</th><th class="r" style="width:150px">Amount</th></tr></thead><tbody>
-            ${f.rows.map((r, k) => `<tr><td>${k + 1}</td><td>${esc(r.patient_name)}</td><td class="r">${money(r.amount)}</td></tr>`).join("")}
+        ${f.rows.length ? `<table class="tbl" style="margin-top:6px"><thead><tr><th style="width:44px">No.</th><th style="width:110px">Date</th><th>Patient</th><th class="r" style="width:150px">Amount</th></tr></thead><tbody>
+            ${f.rows.map((r, k) => `<tr><td>${k + 1}</td><td>${esc(dt(r.date))}</td><td>${esc(r.patient_name)}</td><td class="r">${money(r.amount)}</td></tr>`).join("")}
         </tbody></table>
         <table class="totals"><tr class="grand"><td>Grand total</td><td style="text-align:right">${money(f.total)}</td></tr></table>
         ${f.paid_total ? `<div class="note" style="margin-top:6px">Of this, ${money(f.paid_total)} has already been paid by the farm.</div>` : ""}`

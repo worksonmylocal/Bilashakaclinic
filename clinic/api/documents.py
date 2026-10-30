@@ -269,6 +269,10 @@ def monthly_invoice(month, employer=None):
 		"Clinic Bill", filters=filters, order_by="invoiced_on asc",
 		fields=["name", "employer", "patient", "patient_name", "visit", "total", "status", "invoiced_on"],
 	)
+	dates = {v.name: v.visit_date for v in frappe.get_all("Clinic Visit", filters={"name": ["in", [b.visit for b in bills] or [""]]}, fields=["name", "visit_date"])}
+	for b in bills:
+		b.visit_date = dates.get(b.visit)
+	bills.sort(key=lambda b: (str(b.visit_date or ""), b.patient_name or ""))  # in the order the patients were seen
 	by_farm = {}
 	for b in bills:
 		by_farm.setdefault(b.employer, []).append(b)
@@ -282,7 +286,7 @@ def monthly_invoice(month, employer=None):
 		) if name else None
 		farms.append({
 			"employer": name, "details": details,
-			"rows": [{"patient_name": r.patient_name, "amount": flt(r.total), "status": r.status} for r in rows],
+			"rows": [{"date": r.visit_date, "patient_name": r.patient_name, "amount": flt(r.total), "status": r.status} for r in rows],
 			"count": len(rows),
 			"total": sum(flt(r.total) for r in rows),
 			"paid_total": sum(flt(r.total) for r in rows if r.status == "Paid"),
