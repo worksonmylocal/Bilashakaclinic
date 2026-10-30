@@ -2,7 +2,7 @@
 
 import frappe
 from frappe import _
-from frappe.utils import add_days, flt, getdate, now_datetime
+from frappe.utils import add_days, flt, get_last_day, getdate, now_datetime
 
 from clinic import billing
 from clinic.referrals import referral_for_visit
@@ -245,3 +245,51 @@ def patient_referral(visit):
 	data["clinician"] = _signer(clinician)
 	v.add_comment("Info", _("Referral letter opened by {0}").format(user_name(frappe.session.user)))
 	return data
+
+
+@frappe.whitelist()
+def monthly_invoice(month, employer=None):
+	"""One compounded invoice per farm for a month: each encounter's total per employee, and a grand total.
+
+	`month` is YYYY-MM. Leave `employer` empty for every farm that was invoiced in the month.
+	"""
+	require_any("pharmacy")
+	try:
+		first = getdate(f"{month}-01")
+	except Exception:
+		frappe.throw(_("Choose the month as YYYY-MM"))
+	last = get_last_day(first)
+	filters = {
+		"billing_mode": "Invoice", "status": ["in", ["Invoiced", "Paid"]],
+		"invoiced_on": ["between", [f"{first} 00:00:00", f"{last} 23:59:59"]],
+	}
+	if employer:
+		filters["employer"] = employer
+	bills = frappe.get_all(
+		"Clinic Bill", filters=filters, order_by="invoiced_on asc",
+		fields=["name", "employer", "patient", "patient_name", "visit", "total", "status", "invoiced_on"],
+	)
+	by_farm = {}
+	for b in bills:
+		by_farm.setdefault(b.employer, []).append(b)
+	if employer and employer not in by_farm:
+		by_farm[employer] = []
+	farms = []
+	for name in sorted(by_farm, key=lambda x: (x or "").lower()):
+		rows = by_farm[name]
+		details = frappe.db.get_value(
+			"Clinic Employer", name, ["employer_name", "address", "contact_person", "phone", "email"], as_dict=True
+		) if name else None
+		farms.append({
+			"employer": name, "details": details,
+			"rows": [{"patient_name": r.patient_name, "amount": flt(r.total), "status": r.status} for r in rows],
+			"count": len(rows),
+			"total": sum(flt(r.total) for r in rows),
+			"paid_total": sum(flt(r.total) for r in rows if r.status == "Paid"),
+		})
+	settings = frappe.get_cached_doc("Clinic Settings")
+	return {
+		"clinic": clinic_profile(), "month": month, "period": first.strftime("%B %Y"), "farms": farms,
+		"terms": settings.invoice_terms, "payment_details": settings.payment_details,
+		"printed_by": user_name(frappe.session.user), "printed_on": now_datetime(),
+	}

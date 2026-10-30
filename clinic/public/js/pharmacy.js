@@ -7,10 +7,28 @@
         eyebrow: "Northlake Medical Centre · Pharmacy",
         title: "Pharmacy",
         sub: "Dispense prescriptions, take payment and print receipts and sick sheets",
-        tools: `<button class="iconbtn" id="refresh" title="Refresh">${Desk.REFRESH_ICON}</button>`,
+        tools: `<button class="btn btn--sm" id="monthly-inv" title="One invoice per farm for a month">Monthly farm invoice</button> <button class="iconbtn" id="refresh" title="Refresh">${Desk.REFRESH_ICON}</button>`,
     });
     Desk.tabs((tab) => tab === "insights" && loadInsights());
     $("#refresh").addEventListener("click", () => { loadAll(); toast("Refreshed"); });
+
+    // one compounded invoice per farm for a month: each encounter's total per patient, and a grand total
+    $("#monthly-inv").addEventListener("click", async () => {
+        const m = await Desk.masters();
+        const now = new Date(), thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+        modal({
+            title: "Monthly farm invoice",
+            sub: "Everything invoiced to the farm in the month, one line per encounter, with a grand total.",
+            body: `${field("mi_employer", "Farm", { type: "select", options: [{ value: "", label: "All farms (one invoice each)" }, ...(m.employers || []).map((e) => ({ value: e.name, label: e.name }))] })}
+                ${field("mi_month", "Month", { type: "month", value: thisMonth, required: true })}`,
+            foot: [{ label: "Cancel" }, { label: "Open invoice to download", cls: "btn--primary", onClick: (hh) => {
+                const v = read(hh.body);
+                if (!/^\d{4}-\d{2}$/.test(v.mi_month || "")) return toast("Choose the month", "warn");
+                window.open(`/clinic/monthly_invoice?month=${encodeURIComponent(v.mi_month)}&employer=${encodeURIComponent(v.mi_employer || "")}`, "_blank");
+                hh.close();
+            } }],
+        });
+    });
 
     const receiptUrl = (bill) => `/clinic/receipt?bill=${encodeURIComponent(bill)}`;
     const invoiceUrl = (bill) => `/clinic/invoice?bill=${encodeURIComponent(bill)}`;
